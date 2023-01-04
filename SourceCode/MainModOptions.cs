@@ -3,9 +3,9 @@ using UnityEngine;
 
 namespace InfiniteSpears
 {
-    public class Options : OptionInterface
+    public class MainModOptions : OptionInterface
     {
-        public Options() : base(MainMod.instance)
+        public MainModOptions() : base(MainMod.instance)
         {
         }
 
@@ -35,7 +35,7 @@ namespace InfiniteSpears
 
             // Subtitle
             position_y += -0.5f * spacing - fontHeight;
-            Tabs[0].AddItems(new OpLabel(new Vector2(position_x, position_y), new Vector2(0.5f * boxWidth, fontHeight), "Version " + MainMod.instance?.Version, alignment: FLabelAlignment.Left));
+            Tabs[0].AddItems(new OpLabel(new Vector2(position_x, position_y), new Vector2(0.5f * boxWidth, fontHeight), "Version " + MainMod.instance?.Info.Metadata.Version, alignment: FLabelAlignment.Left));
             Tabs[0].AddItems(new OpLabel(new Vector2(position_x + 0.5f * boxWidth, position_y), new Vector2(0.5f * boxWidth, fontHeight), "by SchuhBaum", alignment: FLabelAlignment.Right));
 
 
