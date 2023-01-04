@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net35</TargetFramework>
+    <Nullable>enable</Nullable>
+    <LangVersion>10.0</LangVersion>
+    <Version>0.33</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="..\..\references\Assembly-CSharp.dll"/>
+    <Reference Include="..\..\references\BepInEx.dll"/>
+    <Reference Include="..\..\references\ConfigMachine.dll"/>  
+    <Reference Include="..\..\references\ElectricSpear.dll"/>
+    <Reference Include="..\..\references\HOOKS-Assembly-CSharp.dll"/>
+    <Reference Include="..\..\references\Partiality.dll"/>
+    <Reference Include="..\..\references\UnityEngine.dll"/>
+  </ItemGroup>
+
+</Project>
