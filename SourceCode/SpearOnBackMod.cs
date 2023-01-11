@@ -270,7 +270,7 @@ namespace InfiniteSpears
                 }
 
                 bool explosive = spearOnBack.spear.abstractSpear.explosive; // spear is not null
-                int? charge = MainMod.IsElectricSpearModEnabled ? ElectricSpearMod.GetCharge(spearOnBack.spear.abstractSpear) : null;
+                int? charge = MainMod.isElectricSpearModEnabled ? ElectricSpearMod.GetCharge(spearOnBack.spear.abstractSpear) : null;
                 orig(spearOnBack, eu);
                 SpawnSpearOnBack(spearOnBack, explosive, charge);
             }

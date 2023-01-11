@@ -1,5 +1,5 @@
 ## InfiniteSpears
-###### Version: 0.35
+###### Version: 0.36
 This is a mod for Rain World v1.5.
 
 ### Description
@@ -33,10 +33,11 @@ v0.30:
 - Fixed some bugs, where backspears wouldn't get properly deleted. Linked backspears directly to the AbstractObjectStick, i.e. deactivating the AbstractObjectStick removes the corresponding backspear.
 - Restructered code.
 
-v0.35:
+v0.36:
 - Fixed a bug, where a list was not properly iterated over.
 - Fixed a bug, where a backspear was incorrectly drawn in front of slugcat.
 - Added support for the Electric Spear mod.
 - Fixed a (vanilla?) bug, where the game attempts to push backspears out of shortcuts. This led to repeated sounds.
 - This mod is now a BepInEx plugin.
 - Added the mod description to the mod config.
+- Fixed a bug where the dependency checks would fail when using the modloader Realm.
