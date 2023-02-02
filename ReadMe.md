@@ -1,20 +1,21 @@
 ## InfiniteSpears
-###### Version: 0.36
-This is a mod for Rain World v1.5.
+###### Version: 2.0.1
+This is a mod for Rain World v1.9.
 
 ### Description
-Every character can carry spears on their back. The number of backspears can be configured (up to seven). If this number is one then the player is able to spawn or despawn spears infinitely.
-
-### Dependencies
-- ConfigMachine.dll
+This mod has two main features. You can either  
+a) carry one backspear, and spawn and despawn spear using it,
+OR
+b) carry multiple backspears which behave normally.
 
 ### Installation
-1. (ModLoader) `BepInEx` and `BOI` can be downloaded from [RainDB](https://www.raindb.net/) under `Tools`.  
-  **NOTE:** Rain World's BepInEx is a modified version. Don't download it from GitHub.
-2. (Dependency) The mod `ConfigMachine` can be downloaded from [RainDB](https://www.raindb.net/) under `Tools`.
-3. Download the file  `InfiniteSpears.dll` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases) and place it in the folder `[Steam]\SteamApps\common\Rain World\Mods`.
-4. Start `[Steam]\SteamApps\common\Rain World\BOI\BlepOutIn.exe`.
-5. Click `Select path` and enter the game's path `[Steam]\SteamApps\common\Rain World`. Enable the mod `InfiniteSpears.dll` and its dependencies. Then launch the game as normal. 
+0. Update Rain World to version 1.9 if needed.
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.0.1).
+2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
+3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
+
+### Bug reports
+Please post bugs on the Rain World Discord server (https://discord.gg/rainworld) in the channel #modding-support.
 
 ### Contact
 If you have feedback, you can message me on Discord `@SchuhBaum#7246` or write an email to SchuhBaum71@gmail.com.
@@ -23,6 +24,12 @@ If you have feedback, you can message me on Discord `@SchuhBaum#7246` or write a
 There are two licenses available - MIT and Unlicense. You can choose which one you want to use.  
 
 ### Changelog
+#### (Rain World v1.9)
+v2.0.1:  
+- Added support for Rain World 1.9.
+- Removed AutoUpdate.
+
+#### (Rain World v1.5)
 v0.20:
 - Adds the ability to carry multiple spears on the back.
 - Added an option interface to select the number of backspears (needs ConfigMachine).

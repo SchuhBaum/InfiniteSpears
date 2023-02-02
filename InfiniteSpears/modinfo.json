@@ -1,0 +1,10 @@
+{
+  "id": "InfiniteSpears",
+  "name": "InfiniteSpears",
+  "version": "2.0.1",
+  "authors": "SchuhBaum",
+  "description": "This mod has two main features. You can either a) carry one backspear, and spawn and despawn spears using it, OR b) carry multiple backspears which behave normally.",
+  "requirements": [],
+  "requirements_names": [],
+  "checksum_override_version": false
+}

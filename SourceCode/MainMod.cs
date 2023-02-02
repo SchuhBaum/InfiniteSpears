@@ -1,81 +1,56 @@
-using System;
-using System.Reflection;
+using System.Security.Permissions;
 using BepInEx;
 using UnityEngine;
 
+// temporary fix // should be added automatically //TODO
+#pragma warning disable CS0618
+[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace InfiniteSpears
 {
-    [BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "0.36")]
+    [BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.0.1")]
     public class MainMod : BaseUnityPlugin
     {
         //
-        // AutoUpdate
+        // meta data
         //
 
-        public string updateURL = "http://beestuff.pythonanywhere.com/audb/api/mods/8/1";
-        public int version = 7;
-        public string keyE = "AQAB";
-        public string keyN = "0Sb8AUUh0jkFOuNDGJti4jL0iTB4Oug0pM8opATxJH8hfAt6FW3//Q4wb4VfTHZVP3+zHMX6pxcqjdvN0wt/0SWyccfoFhx2LupmT3asV4UDPBdQNmDeA/XMfwmwYb23yxp0apq3kVJNJ3v1SExvo+EPQP4/74JueNBiYshKysRK1InJfkrO1pe1WxtcE7uIrRBVwIgegSVAJDm4PRCODWEp533RxA4FZjq8Hc4UP0Pa0LxlYlSI+jJ+hUrdoA6wd+c/R+lRqN2bjY9OE/OktAxqgthEkSXTtmZwFkCjds0RCqZTnzxfJLN7IheyZ69ptzcB6Zl7kFTEofv4uDjCYNic52/C8uarj+hl4O0yU4xpzdxhG9Tq9SAeNu7h6Dt4Impbr3dAonyVwOhA/HNIz8TUjXldRs0THcZumJ/ZvCHO3qSh7xKS/D7CWuwuY5jWzYZpyy14WOK55vnEFS0GmTwjR+zZtSUy2Y7m8hklllqHZNqRYejoORxTK4UkL4GFOk/uLZKVtOfDODwERWz3ns/eOlReeUaCG1Tole7GhvoZkSMyby/81k3Fh16Z55JD+j1HzUCaoKmT10OOmLF7muV7RV2ZWG0uzvN2oUfr5HSN3TveNw7JQPd5DvZ56whr5ExLMS7Gs6fFBesmkgAwcPTkU5pFpIjgbyk07lDI81k=";
+        public static readonly string MOD_ID = "InfiniteSpears";
+        public static readonly string author = "SchuhBaum";
+        public static readonly string version = "2.0.1";
 
         //
-        // parameters
+        // options
         //
 
-        public static bool isElectricSpearModEnabled = false;
+        public static int Option_MaxSpearCount => MainModOptions.maxSpearCountSlider.Value;
 
         //
-        // ConfigMachine
+        // variables
         //
 
-        public readonly string author;
-        public static MainMod? instance;
-
-        public static OptionalUI.OptionInterface LoadOI()
-        {
-            return new MainModOptions();
-        }
+        public static bool isInitialized = false;
 
         // 
         // main
         // 
 
-        public MainMod()
+        public MainMod() { }
+        public void OnEnable() => On.RainWorld.OnModsInit += RainWorld_OnModsInit;// look for dependencies and initialize hooks
+
+        //
+        // private
+        //
+
+        private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld rainWorld)
         {
-            author = "SchuhBaum";
-            instance = this;
-        }
+            orig(rainWorld);
 
-        public void OnEnable()
-        {
-            On.RainWorld.Start += RainWorld_Start; // look for dependencies and initialize hooks
-        }
+            MachineConnector.SetRegisteredOI(MOD_ID, MainModOptions.instance);
 
-        // ----------------- //
-        // private functions //
-        // ----------------- //
+            if (isInitialized) return;
+            isInitialized = true;
 
-        private void RainWorld_Start(On.RainWorld.orig_Start orig, RainWorld rainWorld)
-        {
-            Debug.Log("InfiniteSpears: Version " + Info.Metadata.Version);
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                // the ending ;;0 is used in the modloader Realm
-                string assemblyName = assembly.GetName().Name;
-                if (assemblyName == "ElectricSpear" || assemblyName == "ElectricSpear;;0")
-                {
-                    isElectricSpearModEnabled = true;
-                    break;
-                }
-            }
-
-            if (isElectricSpearModEnabled)
-            {
-                Debug.Log("InfiniteSpears: ElectricSpear found. Adept spawning spears.");
-            }
-            else
-            {
-                Debug.Log("InfiniteSpears: ElectricSpear not found.");
-            }
+            Debug.Log("InfiniteSpears: version " + version);
 
             AbstractObjectStickMod.OnEnable();
             PlayerCarryableItemMod.OnEnable();
@@ -85,7 +60,6 @@ namespace InfiniteSpears
             SpearMod.OnEnable();
             SpearOnBackMod.OnEnable();
             WeaponMod.OnEnable();
-            orig(rainWorld);
         }
     }
 }

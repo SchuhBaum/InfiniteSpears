@@ -1,12 +1,19 @@
 using System.Collections.Generic;
-using OptionalUI;
-using RWCustom;
+using Menu.Remix.MixedUI;
 using UnityEngine;
 
 namespace InfiniteSpears
 {
     public class MainModOptions : OptionInterface
     {
+        public static MainModOptions instance = new();
+
+        //
+        // options
+        //
+
+        public static Configurable<int> maxSpearCountSlider = instance.config.Bind("maxSpearCountSlider", defaultValue: 1, new ConfigurableInfo("For values X > 1, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(1, 7), "", "Number of BackSpears (1)"));
+
         //
         // parameters
         //
@@ -23,28 +30,30 @@ namespace InfiniteSpears
         private static readonly List<float> boxEndPositions = new();
         private static readonly List<OpLabel> textLabels = new();
 
-        private readonly List<string> sliderKeys = new();
-        private readonly List<IntVector2> sliderRanges = new();
-        private readonly List<int> sliderDefaultValues = new();
-        private readonly List<string> sliderDescriptions = new();
-
+        private readonly List<Configurable<int>> sliderConfigurables = new();
         private readonly List<string> sliderMainTextLabels = new();
         private readonly List<OpLabel> sliderTextLabelsLeft = new();
         private readonly List<OpLabel> sliderTextLabelsRight = new();
 
         //
-        // public
+        // main
         //
 
-        public MainModOptions() : base(MainMod.instance)
+        public MainModOptions()
         {
+            // ambiguity error // why? TODO
+            // OnConfigChanged += MainModOptions_OnConfigChanged;
         }
+
+        //
+        // public
+        //
 
         public override void Initialize()
         {
             base.Initialize();
             Tabs = new OpTab[1];
-            Tabs[0] = new OpTab("Options");
+            Tabs[0] = new OpTab(this, "Options");
             InitializeMarginAndPos();
 
             //
@@ -58,7 +67,7 @@ namespace InfiniteSpears
             // Subtitle
             //
             AddNewLine(0.5f);
-            AddTextLabel("Version " + MainMod.instance?.Info.Metadata.Version, FLabelAlignment.Left);
+            AddTextLabel("Version " + MainMod.version, FLabelAlignment.Left);
             AddTextLabel("by SchuhBaum", FLabelAlignment.Right);
             DrawTextLabels(ref Tabs[0]);
 
@@ -69,7 +78,7 @@ namespace InfiniteSpears
             //
             AddBox();
             AddNewLine(1.5f); // add some space for word wrapping and new lines
-            AddTextLabel("Description:\n\nEvery slugcat can carry spears on their back. The number of backspears can be\nconfigured (up to seven). If this number is one then the player is able to spawn or\ndespawn spears infinitely when carrying a backspear.", FLabelAlignment.Left);
+            AddTextLabel("Description:\n\nYou can either\na) carry one backspear, and spawn and despawn spears using it\nOR\nb) carry multiple backspears which behave normally.", FLabelAlignment.Left);
 
             DrawTextLabels(ref Tabs[0]);
             AddNewLine(1.5f);
@@ -82,21 +91,14 @@ namespace InfiniteSpears
             //
 
             AddBox();
-            AddSlider("maxSpearCountSlider", "Number of BackSpears (default: 1)", "For values X > 1, the player can simply carry X spears on the back.", new IntVector2(1, 7), defaultValue: 1, "1 (infinite)", "7");
+            AddSlider(maxSpearCountSlider, (string)maxSpearCountSlider.info.Tags[0], "1 (infinite)", "7");
             DrawSliders(ref Tabs[0]);
             DrawBox(ref Tabs[0]);
         }
 
-        public override void Update(float dt)
+        public void MainModOptions_OnConfigChanged()
         {
-            base.Update(dt);
-        }
-
-        public override void ConfigOnChange()
-        {
-            base.ConfigOnChange();
-            SpearOnBackMod.maxSpearCount = int.Parse(config["maxSpearCountSlider"]);
-            Debug.Log("InfiniteSpears: maxSpearCount " + SpearOnBackMod.maxSpearCount);
+            Debug.Log("InfiniteSpears: maxSpearCount " + MainMod.Option_MaxSpearCount);
         }
 
         //
@@ -133,34 +135,26 @@ namespace InfiniteSpears
             boxEndPositions.RemoveAt(lastIndex);
         }
 
-        private void AddSlider(string key, string text, string description, IntVector2 range, int defaultValue, string? sliderTextLeft = null, string? sliderTextRight = null)
+        private void AddSlider(Configurable<int> configurable, string text, string sliderTextLeft = "", string sliderTextRight = "")
         {
-            sliderTextLeft ??= range.x.ToString();
-            sliderTextRight ??= range.y.ToString();
-
+            sliderConfigurables.Add(configurable);
             sliderMainTextLabels.Add(text);
             sliderTextLabelsLeft.Add(new OpLabel(new Vector2(), new Vector2(), sliderTextLeft, alignment: FLabelAlignment.Right)); // set pos and size when drawing
             sliderTextLabelsRight.Add(new OpLabel(new Vector2(), new Vector2(), sliderTextRight, alignment: FLabelAlignment.Left));
-
-            sliderKeys.Add(key);
-            sliderRanges.Add(range);
-            sliderDefaultValues.Add(defaultValue);
-            sliderDescriptions.Add(description);
         }
 
         private void DrawSliders(ref OpTab tab)
         {
-            if (sliderKeys.Count != sliderRanges.Count || sliderKeys.Count != sliderDefaultValues.Count || sliderKeys.Count != sliderDescriptions.Count || sliderKeys.Count != sliderMainTextLabels.Count || sliderKeys.Count != sliderTextLabelsLeft.Count || sliderKeys.Count != sliderTextLabelsRight.Count)
-            {
-                return;
-            }
+            if (sliderConfigurables.Count != sliderMainTextLabels.Count) return;
+            if (sliderConfigurables.Count != sliderTextLabelsLeft.Count) return;
+            if (sliderConfigurables.Count != sliderTextLabelsRight.Count) return;
 
             float width = marginX.y - marginX.x;
             float sliderCenter = marginX.x + 0.5f * width;
             float sliderLabelSizeX = 0.2f * width;
             float sliderSizeX = width - 2f * sliderLabelSizeX - spacing;
 
-            for (int sliderIndex = 0; sliderIndex < sliderKeys.Count; ++sliderIndex)
+            for (int sliderIndex = 0; sliderIndex < sliderConfigurables.Count; ++sliderIndex)
             {
                 AddNewLine(2f);
 
@@ -169,10 +163,11 @@ namespace InfiniteSpears
                 opLabel.size = new Vector2(sliderLabelSizeX, fontHeight);
                 tab.AddItems(opLabel);
 
-                OpSlider slider = new(new Vector2(sliderCenter - 0.5f * sliderSizeX, pos.y), sliderKeys[sliderIndex], sliderRanges[sliderIndex], length: (int)sliderSizeX, defaultValue: sliderDefaultValues[sliderIndex])
+                Configurable<int> configurable = sliderConfigurables[sliderIndex];
+                OpSlider slider = new(configurable, new Vector2(sliderCenter - 0.5f * sliderSizeX, pos.y), (int)sliderSizeX)
                 {
                     size = new Vector2(sliderSizeX, fontHeight),
-                    description = sliderDescriptions[sliderIndex]
+                    description = configurable.info?.description ?? ""
                 };
                 tab.AddItems(slider);
 
@@ -184,17 +179,13 @@ namespace InfiniteSpears
                 AddTextLabel(sliderMainTextLabels[sliderIndex]);
                 DrawTextLabels(ref tab);
 
-                if (sliderIndex < sliderKeys.Count - 1)
+                if (sliderIndex < sliderConfigurables.Count - 1)
                 {
                     AddNewLine();
                 }
             }
 
-            sliderKeys.Clear();
-            sliderRanges.Clear();
-            sliderDefaultValues.Clear();
-            sliderDescriptions.Clear();
-
+            sliderConfigurables.Clear();
             sliderMainTextLabels.Clear();
             sliderTextLabelsLeft.Clear();
             sliderTextLabelsRight.Clear();

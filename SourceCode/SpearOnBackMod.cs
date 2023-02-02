@@ -6,11 +6,22 @@ namespace InfiniteSpears
 {
     public class SpearOnBackMod
     {
-        public static List<Player.AbstractOnBackStick>[] abstractOnBackSticks = new List<Player.AbstractOnBackStick>[4]; // change to actual size when game is created
-        public static int maxSpearCount = 1;
+        //
+        // parameters
+        //
 
         private static readonly float[] spearXYModifier = new float[7] { 0.0f, -0.4f, -0.2f, -0.2f, -0.6f, -0.6f, -0.8f };
         private static readonly float[] spearZModifier = new float[7] { 0.0f, 0.0f, 2f, -2f, 2f, -2f, 0.0f };
+
+        //
+        // variables
+        //
+
+        public static List<Player.AbstractOnBackStick>[] abstractOnBackSticks = new List<Player.AbstractOnBackStick>[4]; // change to actual size when game is created
+
+        //
+        //
+        //
 
         internal static void OnEnable()
         {
@@ -21,16 +32,42 @@ namespace InfiniteSpears
             On.Player.SpearOnBack.Update += SpearOnBack_Update;
         }
 
-        // ---------------- //
-        // public functions //
-        // ---------------- //
+        //
+        // public
+        //
+
+        public static bool DespawnSpear(Player.SpearOnBack spearOnBack)
+        {
+            if (spearOnBack.interactionLocked) return false;
+            if (spearOnBack.owner is not Player player) return false;
+            if (!player.input[0].pckp) return false;
+
+            if (spearOnBack.spear?.abstractPhysicalObject is not AbstractSpear carriedAbstractSpear) return false;
+            if (player.grasps[0]?.grabbed?.abstractPhysicalObject is not AbstractSpear heldAbstractSpear) return false;
+
+            if (carriedAbstractSpear.explosive != heldAbstractSpear.explosive) return false;
+            if (carriedAbstractSpear.electric != heldAbstractSpear.electric) return false;
+            if (carriedAbstractSpear.needle != heldAbstractSpear.needle) return false;
+            if (carriedAbstractSpear.hue != heldAbstractSpear.hue) return false;
+
+            ++spearOnBack.counter;
+            if (spearOnBack.counter <= 20)
+            {
+                // keep the counter from resetting
+                return true;
+            }
+
+            heldAbstractSpear.realizedObject.Destroy();
+            heldAbstractSpear.Destroy();
+            spearOnBack.counter = 0;
+            spearOnBack.interactionLocked = true;
+            return true;
+        }
 
         public static void DropAllSpears(Player.SpearOnBack spearOnBack)
         {
-            if (maxSpearCount == 1 || spearOnBack.owner == null)
-            {
-                return;
-            }
+            if (MainMod.Option_MaxSpearCount == 1) return;
+            if (spearOnBack.owner == null) return;
 
             spearOnBack.spear = null;
             int playerNumber = spearOnBack.owner.playerState.playerNumber;
@@ -46,76 +83,57 @@ namespace InfiniteSpears
             }
         }
 
-        // ----------------- //
-        // private functions //
-        // ----------------- //
-
-        private static void DespawnSpear(Player.SpearOnBack spearOnBack, Spear spear)
+        public static void SpawnSpearOnBack(Player.SpearOnBack spearOnBack, in AbstractSpear? abstractSpear)
         {
-            if (spearOnBack.owner == null || spearOnBack.spear == null || spear == null)
-            {
-                return;
-            }
-
-            if (spearOnBack.abstractStick != null)
-            {
-                spearOnBack.abstractStick.Deactivate();
-                spearOnBack.abstractStick = null;
-            }
-
-            spearOnBack.spear.Destroy();
-            spearOnBack.spear = null;
-            spearOnBack.SpearToBack(spear);
-        }
-
-        private static void SpawnSpearOnBack(Player.SpearOnBack spearOnBack, bool explosive, int? charge = null)
-        {
-            if (spearOnBack.owner == null || spearOnBack.spear != null || spearOnBack.abstractStick != null)
-            {
-                return;
-            }
+            if (abstractSpear == null) return;
+            if (spearOnBack.owner == null) return;
+            if (spearOnBack.spear != null) return;
+            if (spearOnBack.abstractStick != null) return;
 
             AbstractPhysicalObject abstractPlayer = spearOnBack.owner.abstractPhysicalObject;
-            World world = abstractPlayer.world;
-            AbstractSpear? abstractSpear;
+            World world = abstractSpear.world;
 
-            if (charge == null)
+            if (world == null) return;
+            AbstractSpear newAbstractSpear = new(world, null, abstractPlayer.pos, world.game.GetNewID(), abstractSpear.explosive, abstractSpear.electric)
             {
-                abstractSpear = new AbstractSpear(world, null, abstractPlayer.pos, world.game.GetNewID(), explosive);
-            }
-            else
+                electricCharge = abstractSpear.electricCharge,
+                hue = abstractSpear.hue,
+                needle = abstractSpear.needle,
+            };
+
+            newAbstractSpear.RealizeInRoom();
+            if (newAbstractSpear.realizedObject is not Spear newSpear) return;
+            newSpear.ChangeMode(Weapon.Mode.OnBack);
+
+            if (abstractSpear.realizedObject is Spear spear)
             {
-                abstractSpear = ElectricSpearMod.Ctor(world, abstractPlayer.pos, world.game.GetNewID(), (int)charge);
+                newSpear.spearmasterNeedle = spear.spearmasterNeedle;
+                newSpear.spearmasterNeedleType = spear.spearmasterNeedleType;
+                newSpear.spearmasterNeedle_hasConnection = spear.spearmasterNeedle_hasConnection;
+                newSpear.spearmasterNeedle_fadecounter = spear.spearmasterNeedle_fadecounter;
             }
 
-            if (abstractSpear == null)
-            {
-                return;
-            }
-
-            abstractSpear.RealizeInRoom();
-            spearOnBack.spear = (Spear)abstractSpear.realizedObject;
-            spearOnBack.spear.ChangeMode(Weapon.Mode.OnBack);
-            spearOnBack.abstractStick = new Player.AbstractOnBackStick(abstractPlayer, abstractSpear);
-
+            spearOnBack.spear = newSpear;
+            spearOnBack.abstractStick = new Player.AbstractOnBackStick(abstractPlayer, newAbstractSpear);
             spearOnBack.interactionLocked = true;
             spearOnBack.owner.noPickUpOnRelease = 20;
             spearOnBack.owner.room.PlaySound(SoundID.Slugcat_Pick_Up_Spear, spearOnBack.owner.mainBodyChunk);
         }
 
+        //
+        // private
+        //
 
         private static void SpearOnBack_DropSpear(On.Player.SpearOnBack.orig_DropSpear orig, Player.SpearOnBack spearOnBack)
         {
-            if (maxSpearCount == 1)
+            if (MainMod.Option_MaxSpearCount == 1)
             {
                 orig(spearOnBack);
                 return;
             }
 
-            if (spearOnBack.owner == null || spearOnBack.interactionLocked)
-            {
-                return;
-            }
+            if (spearOnBack.owner == null) return;
+            if (spearOnBack.interactionLocked) return;
 
             int playerNumber = spearOnBack.owner.playerState.playerNumber;
             List<Player.AbstractOnBackStick> abstractOnBackSticks_ = abstractOnBackSticks[playerNumber];
@@ -138,7 +156,7 @@ namespace InfiniteSpears
 
         private static void SpearOnBack_GraphicsModuleUpdated(On.Player.SpearOnBack.orig_GraphicsModuleUpdated orig, Player.SpearOnBack spearOnBack, bool actuallyViewed, bool eu)
         {
-            if (maxSpearCount == 1)
+            if (MainMod.Option_MaxSpearCount == 1)
             {
                 if (spearOnBack.spear?.slatedForDeletetion == true)
                 {
@@ -149,10 +167,7 @@ namespace InfiniteSpears
                 return;
             }
 
-            if (spearOnBack.owner == null)
-            {
-                return;
-            }
+            if (spearOnBack.owner == null) return;
 
             int playerNumber = spearOnBack.owner.playerState.playerNumber;
             List<Player.AbstractOnBackStick> abstractOnBackSticks_ = new(abstractOnBackSticks[playerNumber]);
@@ -225,22 +240,19 @@ namespace InfiniteSpears
 
         private static void SpearOnBack_SpearToBack(On.Player.SpearOnBack.orig_SpearToBack orig, Player.SpearOnBack spearOnBack, Spear spear)
         {
-            if (maxSpearCount == 1)
+            if (MainMod.Option_MaxSpearCount == 1)
             {
                 orig(spearOnBack, spear);
                 return;
             }
 
-            if (spearOnBack.owner == null)
-            {
-                return;
-            }
+            if (spearOnBack.owner == null) return;
 
             int playerNumber = spearOnBack.owner.playerState.playerNumber;
             List<Player.AbstractOnBackStick> abstractOnBackSticks_ = abstractOnBackSticks[playerNumber];
             int currentSpearIndex = abstractOnBackSticks_.Count - 1;
 
-            if (currentSpearIndex < maxSpearCount - 1)
+            if (currentSpearIndex < MainMod.Option_MaxSpearCount - 1)
             {
                 for (int grasp = 0; grasp < 2; ++grasp)
                 {
@@ -262,24 +274,18 @@ namespace InfiniteSpears
 
         private static void SpearOnBack_SpearToHand(On.Player.SpearOnBack.orig_SpearToHand orig, Player.SpearOnBack spearOnBack, bool eu)
         {
-            if (maxSpearCount == 1)
+            if (MainMod.Option_MaxSpearCount == 1)
             {
-                if (spearOnBack.spear == null || spearOnBack.abstractStick == null)
-                {
-                    return;
-                }
+                if (spearOnBack.spear == null) return;
+                if (spearOnBack.abstractStick == null) return;
 
-                bool explosive = spearOnBack.spear.abstractSpear.explosive; // spear is not null
-                int? charge = MainMod.isElectricSpearModEnabled ? ElectricSpearMod.GetCharge(spearOnBack.spear.abstractSpear) : null;
+                AbstractSpear abstractSpear = spearOnBack.spear.abstractSpear; // spear is not null
                 orig(spearOnBack, eu);
-                SpawnSpearOnBack(spearOnBack, explosive, charge);
+                SpawnSpearOnBack(spearOnBack, abstractSpear);
             }
             else
             {
-                if (spearOnBack.owner == null)
-                {
-                    return;
-                }
+                if (spearOnBack.owner == null) return;
 
                 int playerNumber = spearOnBack.owner.playerState.playerNumber;
                 List<Player.AbstractOnBackStick> abstractOnBackSticks_ = abstractOnBackSticks[playerNumber];
@@ -328,30 +334,15 @@ namespace InfiniteSpears
 
         private static void SpearOnBack_Update(On.Player.SpearOnBack.orig_Update orig, Player.SpearOnBack spearOnBack, bool eu)
         {
-            if (spearOnBack.owner == null)
-            {
-                return;
-            }
-
-            if (maxSpearCount == 1)
+            if (spearOnBack.owner == null) return;
+            if (MainMod.Option_MaxSpearCount == 1)
             {
                 if (spearOnBack.spear == null && spearOnBack.abstractStick != null) // consistency check
                 {
                     spearOnBack.spear = (Spear)spearOnBack.abstractStick.Spear.realizedObject;
                 }
 
-                if (!spearOnBack.interactionLocked && spearOnBack.owner.input[0].pckp && spearOnBack.spear is Spear carriedSpear && spearOnBack.owner.grasps[0] != null && spearOnBack.owner.grasps[0].grabbed is Spear heldSpear && carriedSpear.abstractSpear.explosive == heldSpear.abstractSpear.explosive) // despawn spear in right hand if same-type spears are carried on back and in right hand
-                {
-                    ++spearOnBack.counter;
-                    if (spearOnBack.counter > 20)
-                    {
-                        DespawnSpear(spearOnBack, heldSpear);
-                        spearOnBack.counter = 0;
-                        spearOnBack.interactionLocked = true;
-                    }
-                    return;
-                }
-
+                if (DespawnSpear(spearOnBack)) return;
                 orig(spearOnBack, eu);
                 return;
             }
@@ -367,7 +358,7 @@ namespace InfiniteSpears
                     spearOnBack.spear = null;
                 }
             }
-            else if (currentSpearIndex == maxSpearCount - 1)
+            else if (currentSpearIndex == MainMod.Option_MaxSpearCount - 1)
             {
                 spearOnBack.spear = (Spear)abstractOnBackSticks_[currentSpearIndex].Spear.realizedObject;
             }
@@ -404,7 +395,7 @@ namespace InfiniteSpears
             {
                 ++spearOnBack.counter;
                 // check if you can SpearToBack
-                if (currentSpearIndex < maxSpearCount - 1 && spearOnBack.counter > 20)
+                if (currentSpearIndex < MainMod.Option_MaxSpearCount - 1 && spearOnBack.counter > 20)
                 {
                     for (int index = 0; index < 2; ++index)
                     {
