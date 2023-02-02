@@ -4,8 +4,8 @@ This is a mod for Rain World v1.9.
 
 ### Description
 This mod has two main features. You can either  
-a) carry one backspear, and spawn and despawn spear using it,
-OR
+a) carry one backspear, and spawn and despawn spear using it,  
+OR  
 b) carry multiple backspears which behave normally.
 
 ### Installation
