@@ -78,11 +78,11 @@ namespace InfiniteSpears
             }
         }
 
-        public static void SpawnSpearOnBack(Player.SpearOnBack spearOnBack, in AbstractSpear? abstractSpear)
+        public static void SpawnSpear(Player.SpearOnBack spearOnBack, in AbstractSpear? abstractSpear)
         {
             if (abstractSpear == null) return;
-            if (spearOnBack.spear != null) return;
             if (spearOnBack.abstractStick != null) return;
+            if (spearOnBack.spear != null) return;
             if (spearOnBack.owner is not Player player) return;
 
             AbstractPhysicalObject abstractPlayer = player.abstractPhysicalObject;
@@ -98,7 +98,6 @@ namespace InfiniteSpears
 
             newAbstractSpear.RealizeInRoom();
             if (newAbstractSpear.realizedObject is not Spear newSpear) return;
-            newSpear.ChangeMode(Weapon.Mode.OnBack);
 
             if (abstractSpear.realizedObject is Spear spear)
             {
@@ -108,6 +107,7 @@ namespace InfiniteSpears
                 newSpear.spearmasterNeedle_fadecounter = spear.spearmasterNeedle_fadecounter;
             }
 
+            newSpear.ChangeMode(Weapon.Mode.OnBack);
             spearOnBack.spear = newSpear;
             spearOnBack.abstractStick = new Player.AbstractOnBackStick(abstractPlayer, newAbstractSpear);
             spearOnBack.interactionLocked = true;
@@ -247,26 +247,23 @@ namespace InfiniteSpears
             if (spearOnBack.owner is not Player player) return;
 
             List<Player.AbstractOnBackStick> abstractOnBackSticks = player.abstractCreature.GetAttachedFields().abstractOnBackSticks;
-            int currentSpearIndex = abstractOnBackSticks.Count - 1;
+            if (abstractOnBackSticks.Count >= MainMod.Option_MaxSpearCount) return;
 
-            if (currentSpearIndex < MainMod.Option_MaxSpearCount - 1)
+            for (int grasp = 0; grasp < 2; ++grasp)
             {
-                for (int grasp = 0; grasp < 2; ++grasp)
+                if (player.grasps[grasp] != null && player.grasps[grasp].grabbed == spear)
                 {
-                    if (player.grasps[grasp] != null && player.grasps[grasp].grabbed == spear)
-                    {
-                        player.ReleaseGrasp(grasp);
-                        break;
-                    }
+                    player.ReleaseGrasp(grasp);
+                    break;
                 }
-
-                spear.ChangeMode(Weapon.Mode.OnBack);
-                spearOnBack.interactionLocked = true;
-                player.noPickUpOnRelease = 20;
-                player.room.PlaySound(SoundID.Slugcat_Stash_Spear_On_Back, player.mainBodyChunk);
-
-                abstractOnBackSticks.Add(new Player.AbstractOnBackStick(player.abstractPhysicalObject, spear.abstractPhysicalObject));
             }
+
+            spear.ChangeMode(Weapon.Mode.OnBack);
+            spearOnBack.interactionLocked = true;
+            player.noPickUpOnRelease = 20;
+            player.room.PlaySound(SoundID.Slugcat_Stash_Spear_On_Back, player.mainBodyChunk);
+
+            abstractOnBackSticks.Add(new Player.AbstractOnBackStick(player.abstractPhysicalObject, spear.abstractPhysicalObject));
         }
 
         private static void SpearOnBack_SpearToHand(On.Player.SpearOnBack.orig_SpearToHand orig, Player.SpearOnBack spearOnBack, bool eu)
@@ -284,7 +281,7 @@ namespace InfiniteSpears
 
                 AbstractSpear abstractSpear = spearOnBack.spear.abstractSpear; // spear is not null
                 orig(spearOnBack, eu);
-                SpawnSpearOnBack(spearOnBack, abstractSpear);
+                SpawnSpear(spearOnBack, abstractSpear);
             }
             else
             {
@@ -293,38 +290,41 @@ namespace InfiniteSpears
                 List<Player.AbstractOnBackStick> abstractOnBackSticks = player.abstractCreature.GetAttachedFields().abstractOnBackSticks;
                 int currentSpearIndex = abstractOnBackSticks.Count - 1;
 
-                if (currentSpearIndex > -1 && abstractOnBackSticks[currentSpearIndex] is Player.AbstractOnBackStick abstractOnBackStick && abstractOnBackStick.Spear.realizedObject is Spear spear)
+                if (currentSpearIndex <= -1) return;
+                if (abstractOnBackSticks[currentSpearIndex] is not Player.AbstractOnBackStick abstractOnBackStick) return;
+                if (abstractOnBackStick.Spear.realizedObject is not Spear spear) return;
+
+                foreach (Creature.Grasp? grasp in player.grasps)
                 {
-                    foreach (Creature.Grasp? grasp in player.grasps)
-                    {
-                        if (grasp != null && player.Grabability(grasp.grabbed) >= Player.ObjectGrabability.BigOneHand) return;
-                    }
-
-                    int graspUsed = -1;
-                    for (int index = 0; index < 2 && graspUsed == -1; ++index)
-                    {
-                        if (player.grasps[index] == null)
-                        {
-                            graspUsed = index;
-                        }
-                    }
-
-                    if (graspUsed == -1) return;
-
-                    if (player.graphicsModule is PlayerGraphics playerGraphics)
-                    {
-                        spearOnBack.spear.firstChunk.MoveFromOutsideMyUpdate(eu, playerGraphics.hands[graspUsed].pos);
-                    }
-
-                    spear.ChangeMode(Weapon.Mode.Free);
-                    player.SlugcatGrab(spear, graspUsed);
-                    spearOnBack.interactionLocked = true;
-                    player.noPickUpOnRelease = 20;
-
-                    player.room.PlaySound(SoundID.Slugcat_Pick_Up_Spear, player.mainBodyChunk);
-                    abstractOnBackStick.Deactivate(); // removes as well
-                    //abstractOnBackSticks_.Remove(abstractOnBackStick);
+                    if (grasp != null && player.Grabability(grasp.grabbed) >= Player.ObjectGrabability.BigOneHand) return;
                 }
+
+                int graspUsed = -1;
+                for (int index = 0; index < 2; ++index)
+                {
+                    if (player.grasps[index] == null)
+                    {
+                        graspUsed = index;
+                        break;
+                    }
+                }
+
+                if (graspUsed == -1) return;
+
+                if (player.graphicsModule is PlayerGraphics playerGraphics)
+                {
+                    // spearOnBack.spear.firstChunk.MoveFromOutsideMyUpdate(eu, playerGraphics.hands[graspUsed].pos);
+                    spear.firstChunk.MoveFromOutsideMyUpdate(eu, playerGraphics.hands[graspUsed].pos);
+                }
+
+                spear.ChangeMode(Weapon.Mode.Free);
+                player.SlugcatGrab(spear, graspUsed);
+                spearOnBack.interactionLocked = true;
+                player.noPickUpOnRelease = 20;
+
+                player.room.PlaySound(SoundID.Slugcat_Pick_Up_Spear, player.mainBodyChunk);
+                abstractOnBackStick.Deactivate(); // removes as well
+                // abstractOnBackSticks.Remove(abstractOnBackStick);
             }
         }
 
@@ -369,7 +369,8 @@ namespace InfiniteSpears
                 bool spearInHand = false;
                 bool handsAreFull = true;
 
-                // carrying another spear and getting one off the back can be possible at the same time // check player hands to decide which one is the case
+                // carrying another spear and getting one off the back can be possible at the same time;
+                // check player hands to decide which one is the case;
                 for (int index = 0; index < 2; ++index)
                 {
                     if (player.grasps[index] == null)

@@ -1,5 +1,5 @@
 ## InfiniteSpears
-###### Version: 2.0.2
+###### Version: 2.0.3
 This is a mod for Rain World v1.9.
 
 ### Description
@@ -10,7 +10,7 @@ b) carry multiple backspears which behave normally.
 
 ### Installation
 0. Update Rain World to version 1.9 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.0.2).
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.0.3).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -25,10 +25,11 @@ There are two licenses available - MIT and Unlicense. You can choose which one y
 
 ### Changelog
 #### (Rain World v1.9)
-v2.0.2:  
+v2.0.3:  
 - Added support for Rain World 1.9.
 - Removed AutoUpdate.
 - Added options to exclude certain characters. Saint is excluded by default.
+- Spearmaster can spawn needles to his back. Spawning spears from backspears is prioritized.
 
 #### (Rain World v1.5)
 v0.20:
