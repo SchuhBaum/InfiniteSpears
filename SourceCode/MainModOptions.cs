@@ -14,12 +14,27 @@ namespace InfiniteSpears
 
         public static Configurable<int> maxSpearCountSlider = instance.config.Bind("maxSpearCountSlider", defaultValue: 1, new ConfigurableInfo("For values X > 1, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(1, 7), "", "Number of BackSpears (1)"));
 
+        public static Configurable<bool> includeYellow = instance.config.Bind("includeYellow", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Monk.", null, "", "Monk"));
+        public static Configurable<bool> includeWhite = instance.config.Bind("includeWhite", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Survivor.", null, "", "Survivor"));
+        public static Configurable<bool> includeRed = instance.config.Bind("includeRed", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Hunter.", null, "", "Hunter"));
+
+        public static Configurable<bool> includeGourmand = instance.config.Bind("includeGourmand", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Gourmand.", null, "", "Gourmand"));
+        public static Configurable<bool> includeArtificer = instance.config.Bind("includeArtificer", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Artificer.", null, "", "Artificer"));
+        public static Configurable<bool> includeRivulet = instance.config.Bind("includeRivulet", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Rivulet.", null, "", "Rivulet"));
+        public static Configurable<bool> includeSpearmaster = instance.config.Bind("includeSpearmaster", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Spearmaster.", null, "", "Spearmaster"));
+        public static Configurable<bool> includeSaint = instance.config.Bind("includeSaint", defaultValue: false, new ConfigurableInfo("When disabled, changes will not affect Saint.", null, "", "Saint"));
+
+
         //
         // parameters
         //
 
         private static readonly float fontHeight = 20f;
         private static readonly float spacing = 20f;
+
+        private readonly int numberOfCheckboxes = 3;
+        private readonly float checkBoxSize = 24f;
+        private float CheckBoxWithSpacing => checkBoxSize + 0.25f * spacing;
 
         //
         // variables
@@ -29,6 +44,9 @@ namespace InfiniteSpears
         private static Vector2 pos = new();
         private static readonly List<float> boxEndPositions = new();
         private static readonly List<OpLabel> textLabels = new();
+
+        private readonly List<Configurable<bool>> checkBoxConfigurables = new();
+        private readonly List<OpLabel> checkBoxesTextLabels = new();
 
         private readonly List<Configurable<int>> sliderConfigurables = new();
         private readonly List<string> sliderMainTextLabels = new();
@@ -78,7 +96,7 @@ namespace InfiniteSpears
             //
             AddBox();
             AddNewLine(1.5f); // add some space for word wrapping and new lines
-            AddTextLabel("Description:\n\nYou can either\na) carry one backspear, and spawn and despawn spears using it\nOR\nb) carry multiple backspears which behave normally.", FLabelAlignment.Left);
+            AddTextLabel("Description:\n\nYou can either\na) carry one backspear, and spawn or despawn spears using it\nOR\nb) carry multiple backspears which behave normally.", FLabelAlignment.Left);
 
             DrawTextLabels(ref Tabs[0]);
             AddNewLine(1.5f);
@@ -89,42 +107,66 @@ namespace InfiniteSpears
             //
             // content
             //
-
             AddBox();
             AddSlider(maxSpearCountSlider, (string)maxSpearCountSlider.info.Tags[0], "1 (infinite)", "7");
             DrawSliders(ref Tabs[0]);
+
+            AddNewLine(2f);
+
+            AddCheckBox(includeYellow, (string)includeYellow.info.Tags[0]);
+            AddCheckBox(includeWhite, (string)includeWhite.info.Tags[0]);
+            AddCheckBox(includeRed, (string)includeRed.info.Tags[0]);
+
+            AddCheckBox(includeGourmand, (string)includeGourmand.info.Tags[0]);
+            AddCheckBox(includeArtificer, (string)includeArtificer.info.Tags[0]);
+            AddCheckBox(includeRivulet, (string)includeRivulet.info.Tags[0]);
+            AddCheckBox(includeSpearmaster, (string)includeSpearmaster.info.Tags[0]);
+            AddCheckBox(includeSaint, (string)includeSaint.info.Tags[0]);
+
+            DrawCheckBoxes(ref Tabs[0]);
+
             DrawBox(ref Tabs[0]);
         }
 
         public void MainModOptions_OnConfigChanged()
         {
-            Debug.Log("InfiniteSpears: maxSpearCount " + MainMod.Option_MaxSpearCount);
+            Debug.Log("InfiniteSpears: Option_MaxSpearCount " + MainMod.Option_MaxSpearCount);
+
+            Debug.Log("InfiniteSpears: Option_Yellow " + MainMod.Option_Yellow);
+            Debug.Log("InfiniteSpears: Option_White " + MainMod.Option_White);
+            Debug.Log("InfiniteSpears: Option_Red " + MainMod.Option_Red);
+
+            Debug.Log("InfiniteSpears: Option_Gourmand " + MainMod.Option_Gourmand);
+            Debug.Log("InfiniteSpears: Option_Artificer " + MainMod.Option_Artificer);
+            Debug.Log("InfiniteSpears: Option_Rivulet " + MainMod.Option_Rivulet);
+            Debug.Log("InfiniteSpears: Option_Spearmaster " + MainMod.Option_Spearmaster);
+            Debug.Log("InfiniteSpears: Option_Saint " + MainMod.Option_Saint);
         }
 
         //
         // private
         //
 
-        private static void InitializeMarginAndPos()
+        private void InitializeMarginAndPos()
         {
             marginX = new Vector2(50f, 550f);
             pos = new Vector2(50f, 600f);
         }
 
-        private static void AddNewLine(float spacingModifier = 1f)
+        private void AddNewLine(float spacingModifier = 1f)
         {
             pos.x = marginX.x; // left margin
             pos.y -= spacingModifier * spacing;
         }
 
-        private static void AddBox()
+        private void AddBox()
         {
             marginX += new Vector2(spacing, -spacing);
             boxEndPositions.Add(pos.y);
             AddNewLine();
         }
 
-        private static void DrawBox(ref OpTab tab)
+        private void DrawBox(ref OpTab tab)
         {
             marginX += new Vector2(-spacing, spacing);
             AddNewLine();
@@ -133,6 +175,55 @@ namespace InfiniteSpears
             int lastIndex = boxEndPositions.Count - 1;
             tab.AddItems(new OpRect(pos, new Vector2(boxWidth, boxEndPositions[lastIndex] - pos.y)));
             boxEndPositions.RemoveAt(lastIndex);
+        }
+
+        private void AddCheckBox(Configurable<bool> configurable, string text)
+        {
+            checkBoxConfigurables.Add(configurable);
+            checkBoxesTextLabels.Add(new OpLabel(new Vector2(), new Vector2(), text, FLabelAlignment.Left));
+        }
+
+        private void DrawCheckBoxes(ref OpTab tab) // changes pos.y but not pos.x
+        {
+            if (checkBoxConfigurables.Count != checkBoxesTextLabels.Count) return;
+
+            float width = marginX.y - marginX.x;
+            float elementWidth = (width - (numberOfCheckboxes - 1) * 0.5f * spacing) / numberOfCheckboxes;
+            pos.y -= checkBoxSize;
+            float _posX = pos.x;
+
+            for (int checkBoxIndex = 0; checkBoxIndex < checkBoxConfigurables.Count; ++checkBoxIndex)
+            {
+                Configurable<bool> configurable = checkBoxConfigurables[checkBoxIndex];
+                OpCheckBox checkBox = new(configurable, new Vector2(_posX, pos.y))
+                {
+                    description = configurable.info?.description ?? ""
+                };
+                tab.AddItems(checkBox);
+                _posX += CheckBoxWithSpacing;
+
+                OpLabel checkBoxLabel = checkBoxesTextLabels[checkBoxIndex];
+                checkBoxLabel.pos = new Vector2(_posX, pos.y + 2f);
+                checkBoxLabel.size = new Vector2(elementWidth - CheckBoxWithSpacing, fontHeight);
+                tab.AddItems(checkBoxLabel);
+
+                if (checkBoxIndex < checkBoxConfigurables.Count - 1)
+                {
+                    if ((checkBoxIndex + 1) % numberOfCheckboxes == 0)
+                    {
+                        AddNewLine();
+                        pos.y -= checkBoxSize;
+                        _posX = pos.x;
+                    }
+                    else
+                    {
+                        _posX += elementWidth - CheckBoxWithSpacing + 0.5f * spacing;
+                    }
+                }
+            }
+
+            checkBoxConfigurables.Clear();
+            checkBoxesTextLabels.Clear();
         }
 
         private void AddSlider(Configurable<int> configurable, string text, string sliderTextLeft = "", string sliderTextRight = "")
@@ -191,7 +282,7 @@ namespace InfiniteSpears
             sliderTextLabelsRight.Clear();
         }
 
-        private static void AddTextLabel(string text, FLabelAlignment alignment = FLabelAlignment.Center, bool bigText = false)
+        private void AddTextLabel(string text, FLabelAlignment alignment = FLabelAlignment.Center, bool bigText = false)
         {
             float textHeight = (bigText ? 2f : 1f) * fontHeight;
             if (textLabels.Count == 0)
@@ -206,7 +297,7 @@ namespace InfiniteSpears
             textLabels.Add(textLabel);
         }
 
-        private static void DrawTextLabels(ref OpTab tab)
+        private void DrawTextLabels(ref OpTab tab)
         {
             if (textLabels.Count == 0)
             {

@@ -23,7 +23,7 @@ namespace InfiniteSpears
                 if (abstractObjectStick is Player.AbstractOnBackStick abstractOnBackStick && abstractOnBackStick.Player.realizedObject is Player player && player.spearOnBack != null)
                 {
                     spear.ChangeMode(Weapon.Mode.OnBack);
-                    SpearOnBackMod.abstractOnBackSticks[player.playerState.playerNumber].Add(abstractOnBackStick);
+                    player.abstractCreature.GetAttachedFields().abstractOnBackSticks.Add(abstractOnBackStick);
                 }
             }
             orig(spear);

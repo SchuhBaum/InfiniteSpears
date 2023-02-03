@@ -1,16 +1,16 @@
 ## InfiniteSpears
-###### Version: 2.0.1
+###### Version: 2.0.2
 This is a mod for Rain World v1.9.
 
 ### Description
 This mod has two main features. You can either  
-a) carry one backspear, and spawn and despawn spear using it,  
+a) carry one backspear, and spawn or despawn spears using it,  
 OR  
 b) carry multiple backspears which behave normally.
 
 ### Installation
 0. Update Rain World to version 1.9 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.0.1).
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.0.2).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -25,9 +25,10 @@ There are two licenses available - MIT and Unlicense. You can choose which one y
 
 ### Changelog
 #### (Rain World v1.9)
-v2.0.1:  
+v2.0.2:  
 - Added support for Rain World 1.9.
 - Removed AutoUpdate.
+- Added options to exclude certain characters. Saint is excluded by default.
 
 #### (Rain World v1.5)
 v0.20:

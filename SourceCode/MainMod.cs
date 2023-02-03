@@ -7,7 +7,7 @@ using UnityEngine;
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace InfiniteSpears
 {
-    [BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.0.1")]
+    [BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.0.2")]
     public class MainMod : BaseUnityPlugin
     {
         //
@@ -16,13 +16,24 @@ namespace InfiniteSpears
 
         public static readonly string MOD_ID = "InfiniteSpears";
         public static readonly string author = "SchuhBaum";
-        public static readonly string version = "2.0.1";
+        public static readonly string version = "2.0.2";
 
         //
         // options
         //
 
         public static int Option_MaxSpearCount => MainModOptions.maxSpearCountSlider.Value;
+
+        public static bool Option_Yellow => MainModOptions.includeYellow.Value;
+        public static bool Option_White => MainModOptions.includeWhite.Value;
+        public static bool Option_Red => MainModOptions.includeRed.Value;
+
+        public static bool Option_Gourmand => MainModOptions.includeGourmand.Value;
+        public static bool Option_Artificer => MainModOptions.includeArtificer.Value;
+        public static bool Option_Rivulet => MainModOptions.includeRivulet.Value;
+        public static bool Option_Spearmaster => MainModOptions.includeSpearmaster.Value;
+        public static bool Option_Saint => MainModOptions.includeSaint.Value;
+
 
         //
         // variables

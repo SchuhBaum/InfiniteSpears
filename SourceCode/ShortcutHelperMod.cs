@@ -17,10 +17,7 @@ namespace InfiniteSpears
             {
                 foreach (AbstractPhysicalObject abstractPhysicalObject in abstractSpear.GetAllConnectedObjects())
                 {
-                    if (abstractPhysicalObject is AbstractCreature)
-                    {
-                        return;
-                    }
+                    if (abstractPhysicalObject is AbstractCreature) return;
                 }
             }
             orig(shortcutHelper, physicalObject);

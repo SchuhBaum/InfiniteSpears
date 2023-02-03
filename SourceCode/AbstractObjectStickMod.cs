@@ -14,9 +14,9 @@ namespace InfiniteSpears
         private static void AbstractObjectStick_Deactivate(On.AbstractPhysicalObject.AbstractObjectStick.orig_Deactivate orig, AbstractPhysicalObject.AbstractObjectStick abstractObjectStick)
         {
             orig(abstractObjectStick);
-            if(abstractObjectStick is Player.AbstractOnBackStick abstractOnBackStick && abstractOnBackStick.Player is AbstractCreature abstractCreature && abstractOnBackStick.Spear is AbstractSpear) // JollyCoop uses Spear to store players
+            if (abstractObjectStick is Player.AbstractOnBackStick abstractOnBackStick && abstractOnBackStick.Player is AbstractCreature abstractPlayer && abstractOnBackStick.Spear is AbstractSpear) // JollyCoop uses Spear to store players
             {
-                SpearOnBackMod.abstractOnBackSticks[((PlayerState)abstractCreature.state).playerNumber].Remove(abstractOnBackStick);
+                abstractPlayer.GetAttachedFields().abstractOnBackSticks.Remove(abstractOnBackStick);
             }
         }
     }
