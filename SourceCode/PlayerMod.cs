@@ -132,7 +132,11 @@ namespace InfiniteSpears
         {
             orig(player, abstractCreature, world);
 
+            // is already initialized;
+            // otherwise this can conflict with the swallow everything mod;
+            if (AbstractPlayerMod.allAttachedFields.ContainsKey(abstractCreature)) return;
             AbstractPlayerMod.allAttachedFields.Add(abstractCreature, new AbstractPlayerMod.AttachedFields());
+
             if (player.SlugCatClass == null) return;
             if (player.SlugCatClass == SlugcatStats.Name.Yellow && !MainMod.Option_Yellow) return;
             if (player.SlugCatClass == SlugcatStats.Name.White && !MainMod.Option_White) return;
