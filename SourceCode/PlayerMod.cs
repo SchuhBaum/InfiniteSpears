@@ -51,7 +51,7 @@ namespace InfiniteSpears
                 cursor.EmitDelegate<Func<Player, bool>>(player =>
                 {
                     AbstractPlayerMod.AttachedFields attachedFields = player.abstractCreature.GetAttachedFields();
-                    if (attachedFields.isBlacklisted || player.spearOnBack is not Player.SpearOnBack spearOnBack)
+                    if (player.spearOnBack is not Player.SpearOnBack spearOnBack) // attachedFields.isBlacklisted || // I might not want to check this since you can have a backspear perk as well
                     {
                         // vanilla case
                         return player.grasps[0] == null || player.grasps[1] == null;
@@ -98,7 +98,7 @@ namespace InfiniteSpears
                     }
 
                     AbstractPlayerMod.AttachedFields attachedFields = player.abstractCreature.GetAttachedFields();
-                    if (attachedFields.isBlacklisted) return;
+                    // if (attachedFields.isBlacklisted) return; // I might not want to check this since you can have a backspear perk as well
                     if (player.spearOnBack is not Player.SpearOnBack spearOnBack) return;
                     if (spearOnBack.spear != null) return;
 
@@ -157,19 +157,19 @@ namespace InfiniteSpears
 
         private static void Player_Die(On.Player.orig_Die orig, Player player)
         {
-            if (player.spearOnBack != null)
-            {
-                SpearOnBackMod.DropAllSpears(player.spearOnBack);
-            }
+            if (player.abstractCreature.GetAttachedFields().isBlacklisted) return;
+            if (player.spearOnBack == null) return;
+
+            SpearOnBackMod.DropAllSpears(player.spearOnBack);
             orig(player);
         }
 
         private static void Player_Stun(On.Player.orig_Stun orig, Player player, int stun)
         {
-            if (stun > 80 && player.spearOnBack != null)
-            {
-                SpearOnBackMod.DropAllSpears(player.spearOnBack);
-            }
+            if (player.abstractCreature.GetAttachedFields().isBlacklisted) return;
+            if (player.spearOnBack == null) return;
+
+            SpearOnBackMod.DropAllSpears(player.spearOnBack);
             orig(player, stun);
         }
     }

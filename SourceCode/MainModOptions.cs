@@ -96,7 +96,7 @@ namespace InfiniteSpears
             //
             AddBox();
             AddNewLine(1.5f); // add some space for word wrapping and new lines
-            AddTextLabel("Description:\n\nYou can either\na) carry one backspear, and spawn or despawn spears using it\nOR\nb) carry multiple backspears which behave normally.", FLabelAlignment.Left);
+            AddTextLabel("Description:\n\nYou can either\na) carry one spear on your back, and spawn or despawn spears using it\nOR\nb) carry multiple spears on your back which behave normally.", FLabelAlignment.Left);
 
             DrawTextLabels(ref Tabs[0]);
             AddNewLine(1.5f);

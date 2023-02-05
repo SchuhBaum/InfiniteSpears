@@ -19,7 +19,7 @@ namespace InfiniteSpears
             AbstractPlayerMod.allAttachedFields.Clear();
 
             Debug.Log("InfiniteSpears: Initialize variables.");
-            MainModOptions.instance.MainModOptions_OnConfigChanged(); //TODO // remporary fix for events not working
+            MainModOptions.instance.MainModOptions_OnConfigChanged(); //TODO // temporary fix for events not working
             orig(game, manager);
         }
 

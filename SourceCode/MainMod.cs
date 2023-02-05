@@ -8,7 +8,7 @@ using UnityEngine;
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace InfiniteSpears
 {
-    [BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.0.4")]
+    [BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.0.5")]
     public class MainMod : BaseUnityPlugin
     {
         //
@@ -17,7 +17,7 @@ namespace InfiniteSpears
 
         public static readonly string MOD_ID = "InfiniteSpears";
         public static readonly string author = "SchuhBaum";
-        public static readonly string version = "2.0.4";
+        public static readonly string version = "2.0.5";
 
         //
         // options
@@ -47,7 +47,7 @@ namespace InfiniteSpears
         // 
 
         public MainMod() { }
-        public void OnEnable() => On.RainWorld.OnModsInit += RainWorld_OnModsInit;// look for dependencies and initialize hooks
+        public void OnEnable() => On.RainWorld.OnModsInit += RainWorld_OnModsInit; // look for dependencies and initialize hooks
 
         //
         // public
@@ -58,7 +58,7 @@ namespace InfiniteSpears
             if (context == null) return;
 
             Debug.Log("-----------------------------------------------------------------");
-            Debug.Log("InfiniteSpears: Log all IL-instructions.");
+            Debug.Log("Log all IL-instructions.");
             Debug.Log("Index:" + new string(' ', indexStringLength - 6) + "OpCode:" + new string(' ', opCodeStringLength - 7) + "Operand:");
 
             ILCursor cursor = new(context);
