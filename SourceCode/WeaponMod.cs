@@ -7,9 +7,9 @@ namespace InfiniteSpears
             On.Weapon.AddToContainer += Weapon_AddToContainer;
         }
 
-        // ----------------- //
-        // private functions //
-        // ----------------- //
+        //
+        // private
+        //
 
         private static void Weapon_AddToContainer(On.Weapon.orig_AddToContainer orig, Weapon weapon, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer)
         {

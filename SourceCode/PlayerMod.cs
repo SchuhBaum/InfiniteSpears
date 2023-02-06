@@ -157,8 +157,11 @@ namespace InfiniteSpears
 
         private static void Player_Die(On.Player.orig_Die orig, Player player)
         {
-            if (player.abstractCreature.GetAttachedFields().isBlacklisted) return;
-            if (player.spearOnBack == null) return;
+            if (player.abstractCreature.GetAttachedFields().isBlacklisted || player.spearOnBack == null)
+            {
+                orig(player);
+                return;
+            }
 
             SpearOnBackMod.DropAllSpears(player.spearOnBack);
             orig(player);
@@ -166,8 +169,11 @@ namespace InfiniteSpears
 
         private static void Player_Stun(On.Player.orig_Stun orig, Player player, int stun)
         {
-            if (player.abstractCreature.GetAttachedFields().isBlacklisted) return;
-            if (player.spearOnBack == null) return;
+            if (player.abstractCreature.GetAttachedFields().isBlacklisted || player.spearOnBack == null)
+            {
+                orig(player, stun);
+                return;
+            }
 
             SpearOnBackMod.DropAllSpears(player.spearOnBack);
             orig(player, stun);

@@ -8,7 +8,7 @@ using UnityEngine;
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace InfiniteSpears
 {
-    [BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.0.5")]
+    [BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.0.6")]
     public class MainMod : BaseUnityPlugin
     {
         //
@@ -17,7 +17,7 @@ namespace InfiniteSpears
 
         public static readonly string MOD_ID = "InfiniteSpears";
         public static readonly string author = "SchuhBaum";
-        public static readonly string version = "2.0.5";
+        public static readonly string version = "2.0.6";
 
         //
         // options
@@ -135,8 +135,9 @@ namespace InfiniteSpears
             AbstractObjectStickMod.OnEnable();
             PlayerCarryableItemMod.OnEnable();
             PlayerMod.OnEnable();
-            ShortcutHelperMod.OnEnable();
+            RainWorldGameMod.OnEnable();
 
+            ShortcutHelperMod.OnEnable();
             SpearMod.OnEnable();
             SpearOnBackMod.OnEnable();
             WeaponMod.OnEnable();
