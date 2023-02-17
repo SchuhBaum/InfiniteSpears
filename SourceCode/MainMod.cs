@@ -8,7 +8,7 @@ using UnityEngine;
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace InfiniteSpears
 {
-    [BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.0.7")]
+    [BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.0.8")]
     public class MainMod : BaseUnityPlugin
     {
         //
@@ -17,7 +17,7 @@ namespace InfiniteSpears
 
         public static readonly string MOD_ID = "InfiniteSpears";
         public static readonly string author = "SchuhBaum";
-        public static readonly string version = "2.0.7";
+        public static readonly string version = "2.0.8";
 
         //
         // options
