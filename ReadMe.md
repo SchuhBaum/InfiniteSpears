@@ -1,5 +1,5 @@
 ## InfiniteSpears
-###### Version: 2.0.6
+###### Version: 2.0.7
 This is a mod for Rain World v1.9.
 
 ### Description
@@ -10,7 +10,7 @@ b) carry multiple spears on your back which behave normally.
 
 ### Installation
 0. Update Rain World to version 1.9 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.0.6).
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.0.7).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -26,7 +26,7 @@ There are two licenses available - MIT and Unlicense. You can choose which one y
 
 ### Changelog
 #### (Rain World v1.9)
-v2.0.6:  
+v2.0.7:  
 - Added support for Rain World 1.9.
 - Removed AutoUpdate.
 - Added options to exclude certain characters. Saint is excluded by default.
@@ -35,6 +35,7 @@ v2.0.6:
 - Restructured code.
 - You can spawn needles to your back even when blacklisted since you can have a backspear perk as well.
 - Fixed a bug where the player would gain invincibility.
+- Fixed a bug where you would drop spears prematurely when being stunned. For example, being grabbed by leeches counts as stun. 
 
 #### (Rain World v1.5)
 v0.20:

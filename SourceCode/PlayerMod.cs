@@ -175,6 +175,12 @@ namespace InfiniteSpears
                 return;
             }
 
+            if (stun <= UnityEngine.Random.Range(40, 80))
+            {
+                orig(player, stun);
+                return;
+            }
+
             SpearOnBackMod.DropAllSpears(player.spearOnBack);
             orig(player, stun);
         }
