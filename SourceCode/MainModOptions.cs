@@ -125,7 +125,7 @@ public class MainModOptions : OptionInterface
 
         DrawCheckBoxes(ref Tabs[0]);
 
-        AddNewLine(2f);
+        AddNewLine(1.5f);
 
         AddCheckBox(joke_rifle, (string)joke_rifle.info.Tags[0]);
         AddCheckBox(swallowed_items, (string)swallowed_items.info.Tags[0]);

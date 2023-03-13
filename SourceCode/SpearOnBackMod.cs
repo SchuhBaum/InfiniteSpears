@@ -91,7 +91,13 @@ public static class SpearOnBackMod
         World world = abstractSpear.world;
 
         if (world == null) return;
-        AbstractSpear newAbstractSpear = new(world, null, abstractPlayer.pos, world.game.GetNewID(), abstractSpear.explosive, abstractSpear.electric)
+
+        // not sure what is random about spears;
+        // but for consistency;
+        EntityID id = world.game.GetNewID();
+        id.altSeed = abstractSpear.ID.RandomSeed;
+
+        AbstractSpear newAbstractSpear = new(world, null, abstractPlayer.pos, id, abstractSpear.explosive, abstractSpear.electric)
         {
             electricCharge = abstractSpear.electricCharge,
             hue = abstractSpear.hue,

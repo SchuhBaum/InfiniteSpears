@@ -252,51 +252,55 @@ public static class PlayerMod
         if (abstract_physical_object is AbstractCreature abstract_player && abstract_player.creatureTemplate.type == CreatureTemplate.Type.Slugcat) return;
         if (abstract_physical_object is UniqueAbstractObject) return;
 
+        // the random seed sets for example the color for slugpups;
+        EntityID id = abstract_physical_object.world.game.GetNewID();
+        id.altSeed = abstract_physical_object.ID.RandomSeed;
+
         if (abstract_physical_object is EggBugEgg.AbstractBugEgg abstract_egg_bug_egg)
         {
-            player.objectInStomach = new EggBugEgg.AbstractBugEgg(abstract_physical_object.world, null, abstract_physical_object.pos, abstract_physical_object.world.game.GetNewID(), abstract_egg_bug_egg.hue);
+            player.objectInStomach = new EggBugEgg.AbstractBugEgg(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_egg_bug_egg.hue);
             return;
         }
 
         if (abstract_physical_object is FireEgg.AbstractBugEgg abstract_fire_egg)
         {
-            player.objectInStomach = new FireEgg.AbstractBugEgg(abstract_physical_object.world, null, abstract_physical_object.pos, abstract_physical_object.world.game.GetNewID(), abstract_fire_egg.hue);
+            player.objectInStomach = new FireEgg.AbstractBugEgg(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_fire_egg.hue);
             return;
         }
 
         if (abstract_physical_object is AbstractBullet abstract_bullet)
         {
-            player.objectInStomach = new AbstractBullet(abstract_physical_object.world, null, abstract_physical_object.pos, abstract_physical_object.world.game.GetNewID(), abstract_bullet.bulletType, abstract_bullet.timeToLive);
+            player.objectInStomach = new AbstractBullet(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_bullet.bulletType, abstract_bullet.timeToLive);
             return;
         }
 
         if (abstract_physical_object is AbstractCreature abstract_creature)
         {
-            player.objectInStomach = new AbstractCreature(abstract_physical_object.world, abstract_creature.creatureTemplate, null, abstract_physical_object.pos, abstract_physical_object.world.game.GetNewID());
+            player.objectInStomach = new AbstractCreature(abstract_physical_object.world, abstract_creature.creatureTemplate, null, abstract_physical_object.pos, id);
             return;
         }
 
         if (abstract_physical_object is AbstractConsumable)
         {
-            player.objectInStomach = new AbstractConsumable(abstract_physical_object.world, abstract_physical_object.type, null, abstract_physical_object.pos, abstract_physical_object.world.game.GetNewID(), -1, -1, null);
+            player.objectInStomach = new AbstractConsumable(abstract_physical_object.world, abstract_physical_object.type, null, abstract_physical_object.pos, id, -1, -1, null);
             return;
         }
 
         if (abstract_physical_object is OverseerCarcass.AbstractOverseerCarcass abstract_overseer_carcass)
         {
-            player.objectInStomach = new OverseerCarcass.AbstractOverseerCarcass(abstract_physical_object.world, null, abstract_physical_object.pos, abstract_physical_object.world.game.GetNewID(), abstract_overseer_carcass.color, abstract_overseer_carcass.ownerIterator);
+            player.objectInStomach = new OverseerCarcass.AbstractOverseerCarcass(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_overseer_carcass.color, abstract_overseer_carcass.ownerIterator);
             return;
         }
 
         if (abstract_physical_object is JokeRifle.AbstractRifle abstract_rifle)
         {
-            player.objectInStomach = new JokeRifle.AbstractRifle(abstract_physical_object.world, null, abstract_physical_object.pos, abstract_physical_object.world.game.GetNewID(), abstract_rifle.ammoStyle);
+            player.objectInStomach = new JokeRifle.AbstractRifle(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_rifle.ammoStyle);
             return;
         }
 
         if (abstract_physical_object is AbstractSpear abstract_spear)
         {
-            player.objectInStomach = new AbstractSpear(abstract_physical_object.world, null, abstract_physical_object.pos, abstract_physical_object.world.game.GetNewID(), abstract_spear.explosive, abstract_spear.electric)
+            player.objectInStomach = new AbstractSpear(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_spear.explosive, abstract_spear.electric)
             {
                 electricCharge = abstract_spear.electricCharge,
                 hue = abstract_spear.hue,
@@ -307,11 +311,11 @@ public static class PlayerMod
 
         if (abstract_physical_object is VultureMask.AbstractVultureMask abstract_vulture_mask)
         {
-            player.objectInStomach = new VultureMask.AbstractVultureMask(abstract_physical_object.world, null, abstract_physical_object.pos, abstract_physical_object.world.game.GetNewID(), abstract_vulture_mask.colorSeed, abstract_vulture_mask.king);
+            player.objectInStomach = new VultureMask.AbstractVultureMask(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_vulture_mask.colorSeed, abstract_vulture_mask.king);
             return;
         }
 
-        player.objectInStomach = new(abstract_physical_object.world, abstract_physical_object.type, null, abstract_physical_object.pos, abstract_physical_object.world.game.GetNewID());
+        player.objectInStomach = new(abstract_physical_object.world, abstract_physical_object.type, null, abstract_physical_object.pos, id);
     }
 
     private static void Player_Stun(On.Player.orig_Stun orig, Player player, int stun)
