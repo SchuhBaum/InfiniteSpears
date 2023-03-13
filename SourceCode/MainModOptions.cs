@@ -86,7 +86,7 @@ public class MainModOptions : OptionInterface
         //
         AddNewLine(0.5f);
         AddTextLabel("Version " + version, FLabelAlignment.Left);
-        AddTextLabel("by SchuhBaum", FLabelAlignment.Right);
+        AddTextLabel("by " + author, FLabelAlignment.Right);
         DrawTextLabels(ref Tabs[0]);
 
         AddNewLine();
