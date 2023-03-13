@@ -4,9 +4,10 @@ This is a mod for Rain World v1.9.
 
 ### Description
 This mod has two main features. You can either  
-a) carry one spear on your back, and spawn or despawn spears using it,  
+- carry one spear on your back, and spawn or despawn spears using it,  
 OR  
-b) carry multiple spears on your back which behave normally.
+- carry multiple spears on your back which behave normally.
+
 In addition, spearmaster can spawn needles directly to its back.
 
 This mod has additional options:
