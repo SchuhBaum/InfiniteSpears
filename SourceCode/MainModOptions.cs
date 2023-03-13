@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using Menu.Remix.MixedUI;
 using UnityEngine;
 
+using static InfiniteSpears.MainMod;
+
 namespace InfiniteSpears;
 
 public class MainModOptions : OptionInterface
@@ -24,6 +26,8 @@ public class MainModOptions : OptionInterface
     public static Configurable<bool> includeSpearmaster = instance.config.Bind("includeSpearmaster", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Spearmaster.", null, "", "Spearmaster"));
     public static Configurable<bool> includeSaint = instance.config.Bind("includeSaint", defaultValue: false, new ConfigurableInfo("When disabled, changes will not affect Saint.", null, "", "Saint"));
 
+    public static Configurable<bool> joke_rifle = instance.config.Bind("joke_rifle", defaultValue: false, new ConfigurableInfo("When enabled, you have infinite ammunition for the joke rifle.", null, "", "Joke Rifle"));
+    public static Configurable<bool> swallowed_items = instance.config.Bind("swallowed_items", defaultValue: false, new ConfigurableInfo("When enabled, most swallowed item are duplicated when regurgitating unless your hands are full.", null, "", "Swallowed Items"));
 
     //
     // parameters
@@ -57,11 +61,7 @@ public class MainModOptions : OptionInterface
     // main
     //
 
-    public MainModOptions()
-    {
-        // ambiguity error // why? TODO
-        // OnConfigChanged += MainModOptions_OnConfigChanged;
-    }
+    public MainModOptions() => OnConfigChanged += MainModOptions_OnConfigChanged;
 
     //
     // public
@@ -85,7 +85,7 @@ public class MainModOptions : OptionInterface
         // Subtitle
         //
         AddNewLine(0.5f);
-        AddTextLabel("Version " + MainMod.version, FLabelAlignment.Left);
+        AddTextLabel("Version " + version, FLabelAlignment.Left);
         AddTextLabel("by SchuhBaum", FLabelAlignment.Right);
         DrawTextLabels(ref Tabs[0]);
 
@@ -125,22 +125,31 @@ public class MainModOptions : OptionInterface
 
         DrawCheckBoxes(ref Tabs[0]);
 
+        AddNewLine(2f);
+
+        AddCheckBox(joke_rifle, (string)joke_rifle.info.Tags[0]);
+        AddCheckBox(swallowed_items, (string)swallowed_items.info.Tags[0]);
+        DrawCheckBoxes(ref Tabs[0]);
+
         DrawBox(ref Tabs[0]);
     }
 
     public void MainModOptions_OnConfigChanged()
     {
-        Debug.Log("InfiniteSpears: Option_MaxSpearCount " + MainMod.Option_MaxSpearCount);
+        Debug.Log("InfiniteSpears: Option_MaxSpearCount " + Option_MaxSpearCount);
 
-        Debug.Log("InfiniteSpears: Option_Yellow " + MainMod.Option_Yellow);
-        Debug.Log("InfiniteSpears: Option_White " + MainMod.Option_White);
-        Debug.Log("InfiniteSpears: Option_Red " + MainMod.Option_Red);
+        Debug.Log("InfiniteSpears: Option_Yellow " + Option_Yellow);
+        Debug.Log("InfiniteSpears: Option_White " + Option_White);
+        Debug.Log("InfiniteSpears: Option_Red " + Option_Red);
 
-        Debug.Log("InfiniteSpears: Option_Gourmand " + MainMod.Option_Gourmand);
-        Debug.Log("InfiniteSpears: Option_Artificer " + MainMod.Option_Artificer);
-        Debug.Log("InfiniteSpears: Option_Rivulet " + MainMod.Option_Rivulet);
-        Debug.Log("InfiniteSpears: Option_Spearmaster " + MainMod.Option_Spearmaster);
-        Debug.Log("InfiniteSpears: Option_Saint " + MainMod.Option_Saint);
+        Debug.Log("InfiniteSpears: Option_Gourmand " + Option_Gourmand);
+        Debug.Log("InfiniteSpears: Option_Artificer " + Option_Artificer);
+        Debug.Log("InfiniteSpears: Option_Rivulet " + Option_Rivulet);
+        Debug.Log("InfiniteSpears: Option_Spearmaster " + Option_Spearmaster);
+        Debug.Log("InfiniteSpears: Option_Saint " + Option_Saint);
+
+        Debug.Log("InfiniteSpears: Option_JokeRifle " + Option_JokeRifle);
+        Debug.Log("InfiniteSpears: Option_SwallowedItems " + Option_SwallowedItems);
     }
 
     //

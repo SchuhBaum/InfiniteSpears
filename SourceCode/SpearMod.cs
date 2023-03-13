@@ -19,10 +19,10 @@ internal class SpearMod
         {
             if (abstractObjectStick is Player.AbstractOnBackStick abstractOnBackStick && abstractOnBackStick.Player.realizedObject is Player player && player.spearOnBack != null)
             {
-                AbstractPlayerMod.AttachedFields attachedFields = player.abstractCreature.GetAttachedFields();
-                if (attachedFields.isBlacklisted) break;
+                AbstractPlayerMod.Attached_Fields attached_fields = player.abstractCreature.Get_Attached_Fields();
+                if (attached_fields.is_blacklisted) break;
 
-                attachedFields.abstractOnBackSticks.Add(abstractOnBackStick);
+                attached_fields.abstract_on_back_sticks.Add(abstractOnBackStick);
                 spear.ChangeMode(Weapon.Mode.OnBack);
             }
         }

@@ -1,5 +1,5 @@
 ## InfiniteSpears
-###### Version: 2.0.8
+###### Version: 2.0.9
 This is a mod for Rain World v1.9.
 
 ### Description
@@ -7,10 +7,15 @@ This mod has two main features. You can either
 a) carry one spear on your back, and spawn or despawn spears using it,  
 OR  
 b) carry multiple spears on your back which behave normally.
+In addition, spearmaster can spawn needles directly to its back.
+
+This mod has additional options:
+- `(Joke Rifle)` You have infinite ammunition for the joke rifle.
+- `(Swallowed Items)` Most swallowed item are duplicated when regurgitating unless your hands are full.
 
 ### Installation
 0. Update Rain World to version 1.9 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.0.8).
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.0.9).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -26,7 +31,7 @@ There are two licenses available - MIT and Unlicense. You can choose which one y
 
 ### Changelog
 #### (Rain World v1.9)
-v2.0.8:  
+v2.0.9:  
 - Added support for Rain World 1.9.
 - Removed AutoUpdate.
 - Added options to exclude certain characters. Saint is excluded by default.
@@ -37,6 +42,8 @@ v2.0.8:
 - Fixed a bug where the player would gain invincibility.
 - Fixed a bug where you would drop spears prematurely when being stunned. For example, being grabbed by leeches counts as stun.
 - Added a consistency check. There seems to be cases where spears on your back are deactivated but the mode of the spears is not changed.
+- (joke rifle) Added this option (disabled by default).
+- (swallowed items) Added this option (disabled by default).
 
 #### (Rain World v1.5)
 v0.20:

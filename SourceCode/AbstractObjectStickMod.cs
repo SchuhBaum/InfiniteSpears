@@ -20,8 +20,8 @@ internal class AbstractObjectStickMod
         if (abstractObjectStick is not Player.AbstractOnBackStick abstractOnBackStick) return;
         if (abstractOnBackStick.Player is not AbstractCreature abstractPlayer) return;
 
-        AbstractPlayerMod.AttachedFields attachedFields = abstractPlayer.GetAttachedFields();
-        if (attachedFields.isBlacklisted) return;
+        AbstractPlayerMod.Attached_Fields attached_fields = abstractPlayer.Get_Attached_Fields();
+        if (attached_fields.is_blacklisted) return;
 
         // there seems to be sources where spear get deactivated but 
         // the mode is not changed and they clip through the floor;
@@ -30,6 +30,6 @@ internal class AbstractObjectStickMod
             Debug.Log("InfiniteSpears: Trying to deactivate AbstractOnBackStick but the spear is still on the back. Release spear.");
             spear.ChangeMode(Weapon.Mode.Free);
         }
-        attachedFields.abstractOnBackSticks.Remove(abstractOnBackStick);
+        attached_fields.abstract_on_back_sticks.Remove(abstractOnBackStick);
     }
 }

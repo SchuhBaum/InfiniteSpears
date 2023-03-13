@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using RWCustom;
 using UnityEngine;
 
+using static InfiniteSpears.MainMod;
+
 namespace InfiniteSpears;
 
-public class SpearOnBackMod
+public static class SpearOnBackMod
 {
     //
     // parameters
@@ -60,18 +62,18 @@ public class SpearOnBackMod
 
     public static void DropAllSpears(Player.SpearOnBack spearOnBack)
     {
-        if (MainMod.Option_MaxSpearCount == 1) return;
+        if (Option_MaxSpearCount == 1) return;
         if (spearOnBack.owner is not Player player) return;
 
         spearOnBack.spear = null;
-        AbstractPlayerMod.AttachedFields attachedFields = player.abstractCreature.GetAttachedFields();
+        AbstractPlayerMod.Attached_Fields attached_fields = player.abstractCreature.Get_Attached_Fields();
 
-        for (int stickIndex = attachedFields.abstractOnBackSticks.Count - 1; stickIndex >= 0; --stickIndex)
+        for (int stickIndex = attached_fields.abstract_on_back_sticks.Count - 1; stickIndex >= 0; --stickIndex)
         {
-            Player.AbstractOnBackStick abstractOnBackStick = attachedFields.abstractOnBackSticks[stickIndex];
+            Player.AbstractOnBackStick abstractOnBackStick = attached_fields.abstract_on_back_sticks[stickIndex];
             if (abstractOnBackStick.Spear.realizedObject is Spear spear)
             {
-                spear.firstChunk.vel = player.mainBodyChunk.vel + Custom.RNV() * 3f * UnityEngine.Random.value;
+                spear.firstChunk.vel = player.mainBodyChunk.vel + Custom.RNV() * 3f * Random.value;
                 spear.ChangeMode(Weapon.Mode.Free);
             }
             abstractOnBackStick.Deactivate(); // removes the backspear as well
@@ -121,7 +123,7 @@ public class SpearOnBackMod
 
     private static void SpearOnBack_DropSpear(On.Player.SpearOnBack.orig_DropSpear orig, Player.SpearOnBack spearOnBack)
     {
-        if (MainMod.Option_MaxSpearCount == 1 || spearOnBack.owner.GetAttachedFields().isBlacklisted)
+        if (Option_MaxSpearCount == 1 || spearOnBack.owner.GetAttachedFields().is_blacklisted)
         {
             orig(spearOnBack);
             return;
@@ -130,14 +132,14 @@ public class SpearOnBackMod
         if (spearOnBack.interactionLocked) return;
         if (spearOnBack.owner is not Player player) return;
 
-        List<Player.AbstractOnBackStick> abstractOnBackSticks = player.abstractCreature.GetAttachedFields().abstractOnBackSticks;
+        List<Player.AbstractOnBackStick> abstractOnBackSticks = player.abstractCreature.Get_Attached_Fields().abstract_on_back_sticks;
         int currentSpearIndex = abstractOnBackSticks.Count - 1;
 
         if (currentSpearIndex > -1 && abstractOnBackSticks[currentSpearIndex] is Player.AbstractOnBackStick abstractOnBackStick)
         {
             if (abstractOnBackStick.Spear.realizedObject is Spear spear)
             {
-                spear.firstChunk.vel = spearOnBack.owner.mainBodyChunk.vel + Custom.RNV() * 3f * UnityEngine.Random.value;
+                spear.firstChunk.vel = spearOnBack.owner.mainBodyChunk.vel + Custom.RNV() * 3f * Random.value;
                 spear.ChangeMode(Weapon.Mode.Free);
             }
             abstractOnBackStick.Deactivate(); // removes now from abstractOnBackSticks as well
@@ -149,13 +151,13 @@ public class SpearOnBackMod
 
     private static void SpearOnBack_GraphicsModuleUpdated(On.Player.SpearOnBack.orig_GraphicsModuleUpdated orig, Player.SpearOnBack spearOnBack, bool actuallyViewed, bool eu)
     {
-        if (spearOnBack.owner.GetAttachedFields().isBlacklisted)
+        if (spearOnBack.owner.GetAttachedFields().is_blacklisted)
         {
             orig(spearOnBack, actuallyViewed, eu);
             return;
         }
 
-        if (MainMod.Option_MaxSpearCount == 1)
+        if (Option_MaxSpearCount == 1)
         {
             if (spearOnBack.spear?.slatedForDeletetion == true)
             {
@@ -168,7 +170,7 @@ public class SpearOnBackMod
 
         if (spearOnBack.owner is not Player player) return;
 
-        List<Player.AbstractOnBackStick> abstractOnBackSticks = player.abstractCreature.GetAttachedFields().abstractOnBackSticks;
+        List<Player.AbstractOnBackStick> abstractOnBackSticks = player.abstractCreature.Get_Attached_Fields().abstract_on_back_sticks;
         int currentSpearIndex = abstractOnBackSticks.Count - 1;
 
         if (currentSpearIndex > -1)
@@ -238,7 +240,7 @@ public class SpearOnBackMod
 
     private static void SpearOnBack_SpearToBack(On.Player.SpearOnBack.orig_SpearToBack orig, Player.SpearOnBack spearOnBack, Spear spear)
     {
-        if (MainMod.Option_MaxSpearCount == 1 || spearOnBack.owner.GetAttachedFields().isBlacklisted)
+        if (Option_MaxSpearCount == 1 || spearOnBack.owner.GetAttachedFields().is_blacklisted)
         {
             orig(spearOnBack, spear);
             return;
@@ -246,8 +248,8 @@ public class SpearOnBackMod
 
         if (spearOnBack.owner is not Player player) return;
 
-        List<Player.AbstractOnBackStick> abstractOnBackSticks = player.abstractCreature.GetAttachedFields().abstractOnBackSticks;
-        if (abstractOnBackSticks.Count >= MainMod.Option_MaxSpearCount) return;
+        List<Player.AbstractOnBackStick> abstractOnBackSticks = player.abstractCreature.Get_Attached_Fields().abstract_on_back_sticks;
+        if (abstractOnBackSticks.Count >= Option_MaxSpearCount) return;
 
         for (int grasp = 0; grasp < 2; ++grasp)
         {
@@ -268,13 +270,13 @@ public class SpearOnBackMod
 
     private static void SpearOnBack_SpearToHand(On.Player.SpearOnBack.orig_SpearToHand orig, Player.SpearOnBack spearOnBack, bool eu)
     {
-        if (spearOnBack.owner.GetAttachedFields().isBlacklisted)
+        if (spearOnBack.owner.GetAttachedFields().is_blacklisted)
         {
             orig(spearOnBack, eu);
             return;
         }
 
-        if (MainMod.Option_MaxSpearCount == 1)
+        if (Option_MaxSpearCount == 1)
         {
             if (spearOnBack.spear == null) return;
             if (spearOnBack.abstractStick == null) return;
@@ -287,7 +289,7 @@ public class SpearOnBackMod
         {
             if (spearOnBack.owner is not Player player) return;
 
-            List<Player.AbstractOnBackStick> abstractOnBackSticks = player.abstractCreature.GetAttachedFields().abstractOnBackSticks;
+            List<Player.AbstractOnBackStick> abstractOnBackSticks = player.abstractCreature.Get_Attached_Fields().abstract_on_back_sticks;
             int currentSpearIndex = abstractOnBackSticks.Count - 1;
 
             if (currentSpearIndex <= -1) return;
@@ -324,19 +326,20 @@ public class SpearOnBackMod
 
             player.room.PlaySound(SoundID.Slugcat_Pick_Up_Spear, player.mainBodyChunk);
             abstractOnBackStick.Deactivate(); // removes as well
-                                              // abstractOnBackSticks.Remove(abstractOnBackStick);
+
+            // abstractOnBackSticks.Remove(abstractOnBackStick);
         }
     }
 
     private static void SpearOnBack_Update(On.Player.SpearOnBack.orig_Update orig, Player.SpearOnBack spearOnBack, bool eu)
     {
-        if (spearOnBack.owner.GetAttachedFields().isBlacklisted)
+        if (spearOnBack.owner.GetAttachedFields().is_blacklisted)
         {
             orig(spearOnBack, eu);
             return;
         }
 
-        if (MainMod.Option_MaxSpearCount == 1)
+        if (Option_MaxSpearCount == 1)
         {
             if (spearOnBack.spear == null && spearOnBack.abstractStick != null) // consistency check
             {
@@ -350,7 +353,7 @@ public class SpearOnBackMod
 
         if (spearOnBack.owner is not Player player) return;
 
-        List<Player.AbstractOnBackStick> abstractOnBackSticks = player.abstractCreature.GetAttachedFields().abstractOnBackSticks;
+        List<Player.AbstractOnBackStick> abstractOnBackSticks = player.abstractCreature.Get_Attached_Fields().abstract_on_back_sticks;
         int currentSpearIndex = abstractOnBackSticks.Count - 1;
 
         if (currentSpearIndex == -1)
@@ -360,7 +363,7 @@ public class SpearOnBackMod
                 spearOnBack.spear = null;
             }
         }
-        else if (currentSpearIndex == MainMod.Option_MaxSpearCount - 1)
+        else if (currentSpearIndex == Option_MaxSpearCount - 1)
         {
             spearOnBack.spear = (Spear)abstractOnBackSticks[currentSpearIndex].Spear.realizedObject;
         }
@@ -398,7 +401,7 @@ public class SpearOnBackMod
         {
             ++spearOnBack.counter;
             // check if you can SpearToBack
-            if (currentSpearIndex < MainMod.Option_MaxSpearCount - 1 && spearOnBack.counter > 20)
+            if (currentSpearIndex < Option_MaxSpearCount - 1 && spearOnBack.counter > 20)
             {
                 for (int index = 0; index < 2; ++index)
                 {

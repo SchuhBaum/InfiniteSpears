@@ -3,12 +3,14 @@ using BepInEx;
 using MonoMod.Cil;
 using UnityEngine;
 
+using static InfiniteSpears.MainModOptions;
+
 // temporary fix // should be added automatically //TODO
 #pragma warning disable CS0618
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace InfiniteSpears;
 
-[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.0.8")]
+[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.0.9")]
 public class MainMod : BaseUnityPlugin
 {
     //
@@ -17,30 +19,32 @@ public class MainMod : BaseUnityPlugin
 
     public static readonly string MOD_ID = "InfiniteSpears";
     public static readonly string author = "SchuhBaum";
-    public static readonly string version = "2.0.8";
+    public static readonly string version = "2.0.9";
 
     //
     // options
     //
 
-    public static int Option_MaxSpearCount => MainModOptions.maxSpearCountSlider.Value;
+    public static int Option_MaxSpearCount => maxSpearCountSlider.Value;
 
-    public static bool Option_Yellow => MainModOptions.includeYellow.Value;
-    public static bool Option_White => MainModOptions.includeWhite.Value;
-    public static bool Option_Red => MainModOptions.includeRed.Value;
+    public static bool Option_Yellow => includeYellow.Value;
+    public static bool Option_White => includeWhite.Value;
+    public static bool Option_Red => includeRed.Value;
 
-    public static bool Option_Gourmand => MainModOptions.includeGourmand.Value;
-    public static bool Option_Artificer => MainModOptions.includeArtificer.Value;
-    public static bool Option_Rivulet => MainModOptions.includeRivulet.Value;
-    public static bool Option_Spearmaster => MainModOptions.includeSpearmaster.Value;
-    public static bool Option_Saint => MainModOptions.includeSaint.Value;
+    public static bool Option_Gourmand => includeGourmand.Value;
+    public static bool Option_Artificer => includeArtificer.Value;
+    public static bool Option_Rivulet => includeRivulet.Value;
+    public static bool Option_Spearmaster => includeSpearmaster.Value;
+    public static bool Option_Saint => includeSaint.Value;
 
+    public static bool Option_JokeRifle => joke_rifle.Value;
+    public static bool Option_SwallowedItems => swallowed_items.Value;
 
     //
     // variables
     //
 
-    public static bool isInitialized = false;
+    public static bool is_initialized = false;
 
     // 
     // main
@@ -125,10 +129,10 @@ public class MainMod : BaseUnityPlugin
     {
         orig(rainWorld);
 
-        MachineConnector.SetRegisteredOI(MOD_ID, MainModOptions.instance);
+        MachineConnector.SetRegisteredOI(MOD_ID, instance);
 
-        if (isInitialized) return;
-        isInitialized = true;
+        if (is_initialized) return;
+        is_initialized = true;
 
         Debug.Log("InfiniteSpears: version " + version);
 
