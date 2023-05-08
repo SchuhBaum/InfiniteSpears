@@ -284,6 +284,42 @@ public static class PlayerMod
 
         if (abstract_physical_object is AbstractConsumable)
         {
+            if (abstract_physical_object is BubbleGrass.AbstractBubbleGrass abstract_bubble_grass)
+            {
+                player.objectInStomach = new BubbleGrass.AbstractBubbleGrass(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_bubble_grass.oxygenLeft, -1, -1, null);
+                return;
+            }
+
+            if (abstract_physical_object is DataPearl.AbstractDataPearl abstract_data_pearl)
+            {
+                player.objectInStomach = new DataPearl.AbstractDataPearl(abstract_physical_object.world, abstract_physical_object.type, null, abstract_physical_object.pos, id, -1, -1, null, abstract_data_pearl.dataPearlType);
+                return;
+            }
+
+            if (abstract_physical_object is LillyPuck.AbstractLillyPuck abstract_lilly_puck)
+            {
+                player.objectInStomach = new LillyPuck.AbstractLillyPuck(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_lilly_puck.bites, -1, -1, null);
+                return;
+            }
+
+            if (abstract_physical_object is SeedCob.AbstractSeedCob abstract_seed_cob)
+            {
+                player.objectInStomach = new SeedCob.AbstractSeedCob(abstract_physical_object.world, null, abstract_physical_object.pos, id, -1, -1, abstract_seed_cob.dead, null);
+                return;
+            }
+
+            if (abstract_physical_object is SporePlant.AbstractSporePlant abstract_spore_plant)
+            {
+                player.objectInStomach = new SporePlant.AbstractSporePlant(abstract_physical_object.world, null, abstract_physical_object.pos, id, -1, -1, null, abstract_spore_plant.used, abstract_spore_plant.pacified);
+                return;
+            }
+
+            if (abstract_physical_object is WaterNut.AbstractWaterNut abstract_water_nut)
+            {
+                player.objectInStomach = new WaterNut.AbstractWaterNut(abstract_physical_object.world, null, abstract_physical_object.pos, id, -1, -1, null, abstract_water_nut.swollen);
+                return;
+            }
+
             player.objectInStomach = new AbstractConsumable(abstract_physical_object.world, abstract_physical_object.type, null, abstract_physical_object.pos, id, -1, -1, null);
             return;
         }

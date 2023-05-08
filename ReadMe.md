@@ -1,5 +1,5 @@
 ## InfiniteSpears
-###### Version: 2.1.1
+###### Version: 2.1.2
 This is a mod for Rain World v1.9.
 
 ### Description
@@ -16,7 +16,7 @@ This mod has additional options:
 
 ### Installation
 0. Update Rain World to version 1.9 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.1.1).
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.1.2).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -46,8 +46,9 @@ v2.1.0:
 - (swallowed items) Added this option (disabled by default).
 - Duplicated items should have the same randomness now. For example the color for slugpups should match (if the swallow everything mod is used).
 
-v2.1.1:
+v2.1.2:
 - Made the IL hook more robust.
+- (swallowed items) Fixed some bugs where specific consumables could not be duplicated.
 
 #### (Rain World v1.5)
 v0.20:
