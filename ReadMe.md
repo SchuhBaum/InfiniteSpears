@@ -1,5 +1,5 @@
 ## InfiniteSpears
-###### Version: 2.1.0
+###### Version: 2.1.1
 This is a mod for Rain World v1.9.
 
 ### Description
@@ -16,13 +16,12 @@ This mod has additional options:
 
 ### Installation
 0. Update Rain World to version 1.9 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.1.0).
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.1.1).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
 ### Bug reports
-Please post bugs on the Rain World Discord server in the channel #modding-support:  
-https://discord.gg/rainworld
+Please post bugs on the [Rain World Discord](https://discord.gg/rainworld) server in the channel `#modding-support`. Try to describe the steps that are needed to reproduce the bug. If possible provide (drag & drop) the files `consoleLog.txt`, `/BepInEx/LogOutput.log` and `exceptionLog.txt` (if it exists) from your Rain World folder. These logs get cleared when you launch the game. Send them after you encounter the problem.
 
 ### Contact
 If you have feedback, you can message me on Discord `@SchuhBaum#7246` or write an email to SchuhBaum71@gmail.com.
@@ -46,6 +45,9 @@ v2.1.0:
 - (joke rifle) Added this option (disabled by default).
 - (swallowed items) Added this option (disabled by default).
 - Duplicated items should have the same randomness now. For example the color for slugpups should match (if the swallow everything mod is used).
+
+v2.1.1:
+- Made the IL hook more robust.
 
 #### (Rain World v1.5)
 v0.20:

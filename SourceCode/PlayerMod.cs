@@ -72,17 +72,19 @@ public static class PlayerMod
 
     private static void IL_Player_GrabUpdate(ILContext context)
     {
+        // LogAllInstructions(context);
         ILCursor cursor = new(context);
-        // MainMod.LogAllInstructions(context);
-
-        cursor.TryGotoNext(instruction => instruction.MatchLdsfld<MoreSlugcatsEnums.SlugcatStatsName>("Spear"));
-        cursor.TryGotoNext(instruction => instruction.MatchLdsfld<MoreSlugcatsEnums.SlugcatStatsName>("Spear"));
-        cursor.TryGotoNext(instruction => instruction.MatchLdsfld<MoreSlugcatsEnums.SlugcatStatsName>("Spear"));
 
         // allow needles to be created when there is space on the back
-        if (cursor.TryGotoNext(instruction => instruction.MatchLdsfld<MoreSlugcatsEnums.SlugcatStatsName>("Spear")))
+        if (cursor.TryGotoNext(
+              instruction => instruction.MatchLdsfld<MoreSlugcatsEnums.SlugcatStatsName>("Spear"),
+              instruction => instruction.MatchCall("ExtEnum`1<SlugcatStats/Name>", "op_Equality"),
+              instruction => instruction.MatchBrfalse(out ILLabel _),
+              instruction => instruction.MatchLdarg(0),
+              instruction => instruction.MatchCall<Creature>("get_grasps")
+            ))
         {
-            Debug.Log("InfiniteSpears: IL_Player_GrabUpdate_1: Index " + cursor.Index); // 597
+            Debug.Log("InfiniteSpears: IL_Player_GrabUpdate: Index " + cursor.Index); // 597
             cursor.Goto(cursor.Index + 4);
             cursor.RemoveRange(8); // 601-608
             cursor.Next.OpCode = OpCodes.Brfalse;
@@ -99,28 +101,29 @@ public static class PlayerMod
                 if (spearOnBack.spear != null)
                 {
                     // priotize spawning spears from backspears;
-                    if (MainMod.Option_MaxSpearCount == 1) return false;
+                    if (Option_MaxSpearCount == 1) return false;
                     return player.grasps[0] == null || player.grasps[1] == null;
                 }
 
                 // abstractStick is not used when Option_MaxSpearCount > 1
-                if (MainMod.Option_MaxSpearCount == 1 && spearOnBack.abstractStick != null)
-                {
-                    return false;
-                }
+                if (Option_MaxSpearCount == 1 && spearOnBack.abstractStick != null) return false;
                 return true;
             });
         }
         else
         {
-            Debug.LogException(new Exception("InfiniteSpears: IL_Player_GrabUpdate_1 failed."));
-            return;
+            Debug.Log("InfiniteSpears: Some changes in IL_Player_GrabUpdate could not be applied.");
         }
 
         // allows needles to be put on the back instead of being dropped when hands are full
-        if (cursor.TryGotoNext(instruction => instruction.MatchCall<Player>("FreeHand")))
+        if (cursor.TryGotoNext(
+              instruction => instruction.MatchStfld<BodyChunk>("vel"),
+              instruction => instruction.MatchLdarg(0),
+              instruction => instruction.MatchCall<Player>("FreeHand")
+            ))
         {
-            Debug.Log("InfiniteSpears: IL_Player_GrabUpdate_2: Index " + cursor.Index); // 957 // 952
+            Debug.Log("InfiniteSpears: IL_Player_GrabUpdate: Index " + cursor.Index); // 955
+            cursor.Goto(cursor.Index + 2);
             cursor = cursor.RemoveRange(4); // 957-960
 
             // cursor.GotoNext() didn't work for some reason;
@@ -144,7 +147,7 @@ public static class PlayerMod
                 // abstractStick is not consistently updated if number of backspears > 1;
                 // otherwise this can lead to the situation that you have room on your back
                 // but you still can't spawn needles;
-                if (MainMod.Option_MaxSpearCount == 1 && spearOnBack.abstractStick != null) return;
+                if (Option_MaxSpearCount == 1 && spearOnBack.abstractStick != null) return;
 
                 spearOnBack.abstractStick = new AbstractOnBackStick(player.abstractPhysicalObject, abstractSpear);
                 spearOnBack.spear = (Spear)abstractSpear.realizedObject; // null is okay;
@@ -157,10 +160,9 @@ public static class PlayerMod
         }
         else
         {
-            Debug.LogException(new Exception("InfiniteSpears: IL_Player_GrabUpdate_2 failed."));
-            return;
+            Debug.Log("InfiniteSpears: Some changes in IL_Player_GrabUpdate could not be applied.");
         }
-        // MainMod.LogAllInstructions(context);
+        // LogAllInstructions(context);
     }
 
     //
@@ -177,17 +179,17 @@ public static class PlayerMod
         all_attached_fields.Add(abstractCreature, new Attached_Fields());
 
         if (player.SlugCatClass == null) return;
-        if (player.SlugCatClass == SlugcatStats.Name.Yellow && !MainMod.Option_Yellow) return;
-        if (player.SlugCatClass == SlugcatStats.Name.White && !MainMod.Option_White) return;
-        if (player.SlugCatClass == SlugcatStats.Name.Red && !MainMod.Option_Red) return;
+        if (player.SlugCatClass == SlugcatStats.Name.Yellow && !Option_Yellow) return;
+        if (player.SlugCatClass == SlugcatStats.Name.White && !Option_White) return;
+        if (player.SlugCatClass == SlugcatStats.Name.Red && !Option_Red) return;
 
         if (ModManager.MSC)
         {
-            if (player.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Gourmand && !MainMod.Option_Gourmand) return;
-            if (player.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Artificer && !MainMod.Option_Artificer) return;
-            if (player.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Rivulet && !MainMod.Option_Rivulet) return;
-            if (player.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && !MainMod.Option_Spearmaster) return;
-            if (player.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Saint && !MainMod.Option_Saint) return;
+            if (player.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Gourmand && !Option_Gourmand) return;
+            if (player.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Artificer && !Option_Artificer) return;
+            if (player.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Rivulet && !Option_Rivulet) return;
+            if (player.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Spear && !Option_Spearmaster) return;
+            if (player.SlugCatClass == MoreSlugcatsEnums.SlugcatStatsName.Saint && !Option_Saint) return;
         }
 
         player.spearOnBack = new SpearOnBack(player); // all characters can carry spears on their back
