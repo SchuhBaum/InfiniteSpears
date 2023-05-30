@@ -12,7 +12,7 @@ Every character can carry spears on their back. The number of backspears can be 
 1. (ModLoader) `BepInEx` and `BOI` can be downloaded from [RainDB](https://www.raindb.net/) under `Tools`.  
   **NOTE:** Rain World's BepInEx is a modified version. Don't download it from GitHub.
 2. (Dependency) The mod `ConfigMachine` can be downloaded from [RainDB](https://www.raindb.net/) under `Tools`.
-3. Download the file  `InfiniteSpears.dll` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases) and place it in the folder `[Steam]\SteamApps\common\Rain World\Mods`.
+3. Download the file  `InfiniteSpears.dll` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v0.36) and place it in the folder `[Steam]\SteamApps\common\Rain World\Mods`.
 4. Start `[Steam]\SteamApps\common\Rain World\BOI\BlepOutIn.exe`.
 5. Click `Select path` and enter the game's path `[Steam]\SteamApps\common\Rain World`. Enable the mod `InfiniteSpears.dll` and its dependencies. Then launch the game as normal. 
 
