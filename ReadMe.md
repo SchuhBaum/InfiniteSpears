@@ -1,5 +1,5 @@
 ## InfiniteSpears
-###### Version: 2.1.2
+###### Version: 2.1.3
 This is a mod for Rain World v1.9.
 
 ### Description
@@ -16,7 +16,7 @@ This mod has additional options:
 
 ### Installation
 0. Update Rain World to version 1.9 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.1.2).
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.1.3).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -31,6 +31,12 @@ There are two licenses available - MIT and Unlicense. You can choose which one y
 
 ### Changelog
 #### (Rain World v1.9)
+v2.1.3:
+- Made the IL hook more robust.
+- (swallowed items) Fixed some bugs where specific consumables could not be duplicated.
+- IL hooks should no longer be logged multiple times when other mods add these IL hooks as well.
+- Option specific hooks are no longer initialized every cycle. Instead they are initialized when starting the game or changing the options.
+
 v2.1.0:  
 - Added support for Rain World 1.9.
 - Removed AutoUpdate.
@@ -46,21 +52,7 @@ v2.1.0:
 - (swallowed items) Added this option (disabled by default).
 - Duplicated items should have the same randomness now. For example the color for slugpups should match (if the swallow everything mod is used).
 
-v2.1.2:
-- Made the IL hook more robust.
-- (swallowed items) Fixed some bugs where specific consumables could not be duplicated.
-
 #### (Rain World v1.5)
-v0.20:
-- Adds the ability to carry multiple spears on the back.
-- Added an option interface to select the number of backspears (needs ConfigMachine).
-
-v0.30:
-- Added support for AutoUpdate.
-- Fixed an oversight, where you couldn't collect spears when holding two rocks.
-- Fixed some bugs, where backspears wouldn't get properly deleted. Linked backspears directly to the AbstractObjectStick, i.e. deactivating the AbstractObjectStick removes the corresponding backspear.
-- Restructered code.
-
 v0.36:
 - Fixed a bug, where a list was not properly iterated over.
 - Fixed a bug, where a backspear was incorrectly drawn in front of slugcat.
@@ -69,3 +61,13 @@ v0.36:
 - This mod is now a BepInEx plugin.
 - Added the mod description to the mod config.
 - Fixed a bug where the dependency checks would fail when using the modloader Realm.
+
+v0.30:
+- Added support for AutoUpdate.
+- Fixed an oversight, where you couldn't collect spears when holding two rocks.
+- Fixed some bugs, where backspears wouldn't get properly deleted. Linked backspears directly to the AbstractObjectStick, i.e. deactivating the AbstractObjectStick removes the corresponding backspear.
+- Restructered code.
+
+v0.20:
+- Adds the ability to carry multiple spears on the back.
+- Added an option interface to select the number of backspears (needs ConfigMachine).

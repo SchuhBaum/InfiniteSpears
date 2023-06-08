@@ -19,10 +19,8 @@ public static class PlayerMod
 
     public static Attached_Fields GetAttachedFields(this Player player) => player.abstractCreature.Get_Attached_Fields();
 
-    private static bool is_enabled = false;
-
     //
-    //
+    // main
     //
 
     internal static void OnEnable()
@@ -34,19 +32,13 @@ public static class PlayerMod
         On.Player.Stun += Player_Stun; // drop all backspears
     }
 
-    internal static void OnToggle()
+    internal static void On_Config_Changed()
     {
-        is_enabled = !is_enabled;
+        On.Player.Regurgitate -= Player_Regurgitate;
+
         if (Option_SwallowedItems)
         {
-            if (is_enabled)
-            {
-                On.Player.Regurgitate += Player_Regurgitate;
-            }
-            else
-            {
-                On.Player.Regurgitate -= Player_Regurgitate;
-            }
+            On.Player.Regurgitate += Player_Regurgitate;
         }
     }
 
@@ -84,7 +76,11 @@ public static class PlayerMod
               instruction => instruction.MatchCall<Creature>("get_grasps")
             ))
         {
-            Debug.Log("InfiniteSpears: IL_Player_GrabUpdate: Index " + cursor.Index); // 597
+            if (can_log_il_hooks)
+            {
+                Debug.Log("InfiniteSpears: IL_Player_GrabUpdate: Index " + cursor.Index); // 597
+            }
+
             cursor.Goto(cursor.Index + 4);
             cursor.RemoveRange(8); // 601-608
             cursor.Next.OpCode = OpCodes.Brfalse;
@@ -112,7 +108,11 @@ public static class PlayerMod
         }
         else
         {
-            Debug.Log("InfiniteSpears: Some changes in IL_Player_GrabUpdate could not be applied.");
+            if (can_log_il_hooks)
+            {
+                Debug.Log("InfiniteSpears: IL_Player_GrabUpdate failed.");
+            }
+            return;
         }
 
         // allows needles to be put on the back instead of being dropped when hands are full
@@ -122,7 +122,11 @@ public static class PlayerMod
               instruction => instruction.MatchCall<Player>("FreeHand")
             ))
         {
-            Debug.Log("InfiniteSpears: IL_Player_GrabUpdate: Index " + cursor.Index); // 955
+            if (can_log_il_hooks)
+            {
+                Debug.Log("InfiniteSpears: IL_Player_GrabUpdate: Index " + cursor.Index); // 955
+            }
+
             cursor.Goto(cursor.Index + 2);
             cursor = cursor.RemoveRange(4); // 957-960
 
@@ -160,7 +164,11 @@ public static class PlayerMod
         }
         else
         {
-            Debug.Log("InfiniteSpears: Some changes in IL_Player_GrabUpdate could not be applied.");
+            if (can_log_il_hooks)
+            {
+                Debug.Log("InfiniteSpears: IL_Player_GrabUpdate failed.");
+            }
+            return;
         }
         // LogAllInstructions(context);
     }

@@ -5,28 +5,16 @@ namespace InfiniteSpears;
 internal class JokeRifleMod
 {
     //
-    // variables
+    // main
     //
 
-    private static bool is_enabled = false;
-
-    //
-    //
-    //
-
-    internal static void OnToggle()
+    internal static void On_Config_Changed()
     {
-        is_enabled = !is_enabled;
+        On.JokeRifle.AbstractRifle.setCurrentAmmo -= JokeRifle_AbstractRifle_SetCurrentAmmo;
+
         if (Option_JokeRifle)
         {
-            if (is_enabled)
-            {
-                On.JokeRifle.AbstractRifle.setCurrentAmmo += JokeRifle_AbstractRifle_SetCurrentAmmo;
-            }
-            else
-            {
-                On.JokeRifle.AbstractRifle.setCurrentAmmo -= JokeRifle_AbstractRifle_SetCurrentAmmo;
-            }
+            On.JokeRifle.AbstractRifle.setCurrentAmmo += JokeRifle_AbstractRifle_SetCurrentAmmo;
         }
     }
 

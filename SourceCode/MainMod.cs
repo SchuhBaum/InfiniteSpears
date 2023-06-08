@@ -5,12 +5,14 @@ using UnityEngine;
 
 using static InfiniteSpears.MainModOptions;
 
-// temporary fix // should be added automatically //TODO
+// allows access to private members;
 #pragma warning disable CS0618
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
+#pragma warning restore CS0618
+
 namespace InfiniteSpears;
 
-[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.1.2")]
+[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.1.3")]
 public class MainMod : BaseUnityPlugin
 {
     //
@@ -19,7 +21,7 @@ public class MainMod : BaseUnityPlugin
 
     public static readonly string MOD_ID = "InfiniteSpears";
     public static readonly string author = "SchuhBaum";
-    public static readonly string version = "2.1.2";
+    public static readonly string version = "2.1.3";
 
     //
     // options
@@ -45,6 +47,7 @@ public class MainMod : BaseUnityPlugin
     //
 
     public static bool is_initialized = false;
+    public static bool can_log_il_hooks = false;
 
     // 
     // main
@@ -128,22 +131,25 @@ public class MainMod : BaseUnityPlugin
     private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld rainWorld)
     {
         orig(rainWorld);
-
-        MachineConnector.SetRegisteredOI(MOD_ID, instance);
+        MachineConnector.SetRegisteredOI(MOD_ID, main_mod_options);
 
         if (is_initialized) return;
         is_initialized = true;
 
         Debug.Log("InfiniteSpears: version " + version);
 
+        can_log_il_hooks = true;
         AbstractObjectStickMod.OnEnable();
         PlayerCarryableItemMod.OnEnable();
         PlayerMod.OnEnable();
-        RainWorldGameMod.OnEnable();
 
+        RainWorldGameMod.OnEnable();
+        ProcessManagerMod.OnEnable();
         ShortcutHelperMod.OnEnable();
         SpearMod.OnEnable();
         SpearOnBackMod.OnEnable();
+
         WeaponMod.OnEnable();
+        can_log_il_hooks = false;
     }
 }

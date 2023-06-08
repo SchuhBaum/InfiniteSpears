@@ -3,31 +3,32 @@ using Menu.Remix.MixedUI;
 using UnityEngine;
 
 using static InfiniteSpears.MainMod;
+using static InfiniteSpears.ProcessManagerMod;
 
 namespace InfiniteSpears;
 
 public class MainModOptions : OptionInterface
 {
-    public static MainModOptions instance = new();
+    public static MainModOptions main_mod_options = new();
 
     //
     // options
     //
 
-    public static Configurable<int> maxSpearCountSlider = instance.config.Bind("maxSpearCountSlider", defaultValue: 1, new ConfigurableInfo("For values X > 1, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(1, 7), "", "Number of BackSpears (1)"));
+    public static Configurable<int> maxSpearCountSlider = main_mod_options.config.Bind("maxSpearCountSlider", defaultValue: 1, new ConfigurableInfo("For values X > 1, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(1, 7), "", "Number of BackSpears (1)"));
 
-    public static Configurable<bool> includeYellow = instance.config.Bind("includeYellow", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Monk.", null, "", "Monk"));
-    public static Configurable<bool> includeWhite = instance.config.Bind("includeWhite", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Survivor.", null, "", "Survivor"));
-    public static Configurable<bool> includeRed = instance.config.Bind("includeRed", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Hunter.", null, "", "Hunter"));
+    public static Configurable<bool> includeYellow = main_mod_options.config.Bind("includeYellow", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Monk.", null, "", "Monk"));
+    public static Configurable<bool> includeWhite = main_mod_options.config.Bind("includeWhite", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Survivor.", null, "", "Survivor"));
+    public static Configurable<bool> includeRed = main_mod_options.config.Bind("includeRed", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Hunter.", null, "", "Hunter"));
 
-    public static Configurable<bool> includeGourmand = instance.config.Bind("includeGourmand", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Gourmand.", null, "", "Gourmand"));
-    public static Configurable<bool> includeArtificer = instance.config.Bind("includeArtificer", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Artificer.", null, "", "Artificer"));
-    public static Configurable<bool> includeRivulet = instance.config.Bind("includeRivulet", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Rivulet.", null, "", "Rivulet"));
-    public static Configurable<bool> includeSpearmaster = instance.config.Bind("includeSpearmaster", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Spearmaster.", null, "", "Spearmaster"));
-    public static Configurable<bool> includeSaint = instance.config.Bind("includeSaint", defaultValue: false, new ConfigurableInfo("When disabled, changes will not affect Saint.", null, "", "Saint"));
+    public static Configurable<bool> includeGourmand = main_mod_options.config.Bind("includeGourmand", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Gourmand.", null, "", "Gourmand"));
+    public static Configurable<bool> includeArtificer = main_mod_options.config.Bind("includeArtificer", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Artificer.", null, "", "Artificer"));
+    public static Configurable<bool> includeRivulet = main_mod_options.config.Bind("includeRivulet", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Rivulet.", null, "", "Rivulet"));
+    public static Configurable<bool> includeSpearmaster = main_mod_options.config.Bind("includeSpearmaster", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Spearmaster.", null, "", "Spearmaster"));
+    public static Configurable<bool> includeSaint = main_mod_options.config.Bind("includeSaint", defaultValue: false, new ConfigurableInfo("When disabled, changes will not affect Saint.", null, "", "Saint"));
 
-    public static Configurable<bool> joke_rifle = instance.config.Bind("joke_rifle", defaultValue: false, new ConfigurableInfo("When enabled, you have infinite ammunition for the joke rifle.", null, "", "Joke Rifle"));
-    public static Configurable<bool> swallowed_items = instance.config.Bind("swallowed_items", defaultValue: false, new ConfigurableInfo("When enabled, most swallowed item are duplicated when regurgitating unless your hands are full.", null, "", "Swallowed Items"));
+    public static Configurable<bool> joke_rifle = main_mod_options.config.Bind("joke_rifle", defaultValue: false, new ConfigurableInfo("When enabled, you have infinite ammunition for the joke rifle.", null, "", "Joke Rifle"));
+    public static Configurable<bool> swallowed_items = main_mod_options.config.Bind("swallowed_items", defaultValue: false, new ConfigurableInfo("When enabled, most swallowed item are duplicated when regurgitating unless your hands are full.", null, "", "Swallowed Items"));
 
     //
     // parameters
@@ -61,7 +62,25 @@ public class MainModOptions : OptionInterface
     // main
     //
 
-    public MainModOptions() => OnConfigChanged += MainModOptions_OnConfigChanged;
+    private MainModOptions()
+    {
+        On.OptionInterface._SaveConfigFile -= Save_Config_File;
+        On.OptionInterface._SaveConfigFile += Save_Config_File;
+    }
+
+    private void Save_Config_File(On.OptionInterface.orig__SaveConfigFile orig, OptionInterface option_interface)
+    {
+        // the event OnConfigChange is triggered too often;
+        // it is triggered when you click on the mod name in the
+        // remix menu;
+        // initializing the hooks takes like half a second;
+        // I don't want to do that too often;
+
+        orig(option_interface);
+        if (option_interface != main_mod_options) return;
+        Debug.Log("InfiniteSpears: Save_Config_File.");
+        Initialize_Option_Specific_Hooks();
+    }
 
     //
     // public
@@ -134,7 +153,7 @@ public class MainModOptions : OptionInterface
         DrawBox(ref Tabs[0]);
     }
 
-    public void MainModOptions_OnConfigChanged()
+    public void Log_All_Options()
     {
         Debug.Log("InfiniteSpears: Option_MaxSpearCount " + Option_MaxSpearCount);
 
