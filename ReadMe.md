@@ -20,8 +20,8 @@ This mod has additional options:
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
-### Bug reports
-Please post bugs on the [Rain World Discord](https://discord.gg/rainworld) server in the channel `#modding-support`. Try to describe the steps that are needed to reproduce the bug. If possible provide (drag & drop) the files `consoleLog.txt`, `/BepInEx/LogOutput.log` and `exceptionLog.txt` (if it exists) from your Rain World folder. These logs get cleared when you launch the game. Send them after you encounter the problem.
+### Bug reports & FAQ
+See the corresponding sections on the [Steam Workshop page](https://steamcommunity.com/sharedfiles/filedetails/?id=2928752589) for the mod `SBCameraScroll`.
 
 ### Contact
 If you have feedback, you can message me on Discord `@SchuhBaum#7246` or write an email to SchuhBaum71@gmail.com.
