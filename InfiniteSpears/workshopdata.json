@@ -1,0 +1,17 @@
+{
+  "Title": "InfiniteSpears",
+  "Description": "This mod has two main features. You can either a) carry one spear on your back, and spawn or despawn spears using it, OR b) carry multiple spears on your back which behave normally.",
+  "ID": "InfiniteSpears",
+  "Version": "2.1.4",
+  "TargetGameVersion": "",
+  "Requirements": "",
+  "RequirementNames": "",
+  "Authors": "SchuhBaum",
+  "Visibility": "Public",
+  "Tags": [
+    "Game Mechanics",
+    "Accessibility"
+  ],
+  "WorkshopID": 2927500273,
+  "UploadFilesOnly": true
+}
