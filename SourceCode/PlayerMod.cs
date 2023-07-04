@@ -87,22 +87,32 @@ public static class PlayerMod
 
             cursor.EmitDelegate<Func<Player, bool>>(player =>
             {
-                Attached_Fields attached_fields = player.abstractCreature.Get_Attached_Fields();
-                if (player.spearOnBack is not SpearOnBack spearOnBack) // attached_fields.is_blacklisted || // I might not want to check this since you can have a backspear perk as well
+                if (player.slugOnBack is SlugOnBack slug_on_back && slug_on_back.HasASlug)
                 {
-                    // vanilla case
+                    // vanilla case;
                     return player.grasps[0] == null || player.grasps[1] == null;
                 }
 
-                if (spearOnBack.spear != null)
+                // Attached_Fields attached_fields = player.abstractCreature.Get_Attached_Fields();
+                // don't check attached_fields.is_blacklisted since you might have the backspear perk
+                // active;
+                if (player.spearOnBack is not SpearOnBack spear_on_back)
                 {
-                    // priotize spawning spears from backspears;
+                    // vanilla case;
+                    return player.grasps[0] == null || player.grasps[1] == null;
+                }
+
+                if (spear_on_back.spear != null)
+                {
+                    // prioritize spawning spears from backspears;
                     if (Option_MaxSpearCount == 1) return false;
                     return player.grasps[0] == null || player.grasps[1] == null;
                 }
 
-                // abstractStick is not used when Option_MaxSpearCount > 1
-                if (Option_MaxSpearCount == 1 && spearOnBack.abstractStick != null) return false;
+                // abstractStick is not used when Option_MaxSpearCount > 1; (this case should not
+                // matter in any case since the player is realized inside this function and 
+                // spear_on_back.spear != null is already considered;)
+                if (Option_MaxSpearCount == 1 && spear_on_back.abstractStick != null) return false;
                 return true;
             });
         }
