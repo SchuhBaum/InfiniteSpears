@@ -8,7 +8,10 @@
   "RequirementNames": "",
   "Authors": "SchuhBaum",
   "Visibility": "Public",
-  "Tags": ["Game Mechanics", "Accessibility"],
+  "Tags": [
+    "Game Mechanics",
+    "Accessibility"
+  ],
   "WorkshopID": 2927500273,
   "UploadFilesOnly": true
 }

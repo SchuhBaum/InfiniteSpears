@@ -1,14 +1,12 @@
-using System.Collections.Generic;
 using Menu.Remix.MixedUI;
+using System.Collections.Generic;
 using UnityEngine;
-
 using static InfiniteSpears.MainMod;
 using static InfiniteSpears.ProcessManagerMod;
 
 namespace InfiniteSpears;
 
-public class MainModOptions : OptionInterface
-{
+public class MainModOptions : OptionInterface {
     public static MainModOptions main_mod_options = new();
 
     //
@@ -62,14 +60,12 @@ public class MainModOptions : OptionInterface
     // main
     //
 
-    private MainModOptions()
-    {
+    private MainModOptions() {
         On.OptionInterface._SaveConfigFile -= Save_Config_File;
         On.OptionInterface._SaveConfigFile += Save_Config_File;
     }
 
-    private void Save_Config_File(On.OptionInterface.orig__SaveConfigFile orig, OptionInterface option_interface)
-    {
+    private void Save_Config_File(On.OptionInterface.orig__SaveConfigFile orig, OptionInterface option_interface) {
         // the event OnConfigChange is triggered too often;
         // it is triggered when you click on the mod name in the
         // remix menu;
@@ -86,8 +82,7 @@ public class MainModOptions : OptionInterface
     // public
     //
 
-    public override void Initialize()
-    {
+    public override void Initialize() {
         base.Initialize();
         Tabs = new OpTab[1];
         Tabs[0] = new OpTab(this, "Options");
@@ -153,8 +148,7 @@ public class MainModOptions : OptionInterface
         DrawBox(ref Tabs[0]);
     }
 
-    public void Log_All_Options()
-    {
+    public void Log_All_Options() {
         Debug.Log("InfiniteSpears: Option_MaxSpearCount " + Option_MaxSpearCount);
 
         Debug.Log("InfiniteSpears: Option_Yellow " + Option_Yellow);
@@ -175,27 +169,23 @@ public class MainModOptions : OptionInterface
     // private
     //
 
-    private void InitializeMarginAndPos()
-    {
+    private void InitializeMarginAndPos() {
         marginX = new Vector2(50f, 550f);
         pos = new Vector2(50f, 600f);
     }
 
-    private void AddNewLine(float spacingModifier = 1f)
-    {
+    private void AddNewLine(float spacingModifier = 1f) {
         pos.x = marginX.x; // left margin
         pos.y -= spacingModifier * spacing;
     }
 
-    private void AddBox()
-    {
+    private void AddBox() {
         marginX += new Vector2(spacing, -spacing);
         boxEndPositions.Add(pos.y);
         AddNewLine();
     }
 
-    private void DrawBox(ref OpTab tab)
-    {
+    private void DrawBox(ref OpTab tab) {
         marginX += new Vector2(-spacing, spacing);
         AddNewLine();
 
@@ -205,8 +195,7 @@ public class MainModOptions : OptionInterface
         boxEndPositions.RemoveAt(lastIndex);
     }
 
-    private void AddCheckBox(Configurable<bool> configurable, string text)
-    {
+    private void AddCheckBox(Configurable<bool> configurable, string text) {
         checkBoxConfigurables.Add(configurable);
         checkBoxesTextLabels.Add(new OpLabel(new Vector2(), new Vector2(), text, FLabelAlignment.Left));
     }
@@ -220,11 +209,9 @@ public class MainModOptions : OptionInterface
         pos.y -= checkBoxSize;
         float _posX = pos.x;
 
-        for (int checkBoxIndex = 0; checkBoxIndex < checkBoxConfigurables.Count; ++checkBoxIndex)
-        {
+        for (int checkBoxIndex = 0; checkBoxIndex < checkBoxConfigurables.Count; ++checkBoxIndex) {
             Configurable<bool> configurable = checkBoxConfigurables[checkBoxIndex];
-            OpCheckBox checkBox = new(configurable, new Vector2(_posX, pos.y))
-            {
+            OpCheckBox checkBox = new(configurable, new Vector2(_posX, pos.y)) {
                 description = configurable.info?.description ?? ""
             };
             tab.AddItems(checkBox);
@@ -235,16 +222,12 @@ public class MainModOptions : OptionInterface
             checkBoxLabel.size = new Vector2(elementWidth - CheckBoxWithSpacing, fontHeight);
             tab.AddItems(checkBoxLabel);
 
-            if (checkBoxIndex < checkBoxConfigurables.Count - 1)
-            {
-                if ((checkBoxIndex + 1) % numberOfCheckboxes == 0)
-                {
+            if (checkBoxIndex < checkBoxConfigurables.Count - 1) {
+                if ((checkBoxIndex + 1) % numberOfCheckboxes == 0) {
                     AddNewLine();
                     pos.y -= checkBoxSize;
                     _posX = pos.x;
-                }
-                else
-                {
+                } else {
                     _posX += elementWidth - CheckBoxWithSpacing + 0.5f * spacing;
                 }
             }
@@ -254,16 +237,14 @@ public class MainModOptions : OptionInterface
         checkBoxesTextLabels.Clear();
     }
 
-    private void AddSlider(Configurable<int> configurable, string text, string sliderTextLeft = "", string sliderTextRight = "")
-    {
+    private void AddSlider(Configurable<int> configurable, string text, string sliderTextLeft = "", string sliderTextRight = "") {
         sliderConfigurables.Add(configurable);
         sliderMainTextLabels.Add(text);
         sliderTextLabelsLeft.Add(new OpLabel(new Vector2(), new Vector2(), sliderTextLeft, alignment: FLabelAlignment.Right)); // set pos and size when drawing
         sliderTextLabelsRight.Add(new OpLabel(new Vector2(), new Vector2(), sliderTextRight, alignment: FLabelAlignment.Left));
     }
 
-    private void DrawSliders(ref OpTab tab)
-    {
+    private void DrawSliders(ref OpTab tab) {
         if (sliderConfigurables.Count != sliderMainTextLabels.Count) return;
         if (sliderConfigurables.Count != sliderTextLabelsLeft.Count) return;
         if (sliderConfigurables.Count != sliderTextLabelsRight.Count) return;
@@ -273,8 +254,7 @@ public class MainModOptions : OptionInterface
         float sliderLabelSizeX = 0.2f * width;
         float sliderSizeX = width - 2f * sliderLabelSizeX - spacing;
 
-        for (int sliderIndex = 0; sliderIndex < sliderConfigurables.Count; ++sliderIndex)
-        {
+        for (int sliderIndex = 0; sliderIndex < sliderConfigurables.Count; ++sliderIndex) {
             AddNewLine(2f);
 
             OpLabel opLabel = sliderTextLabelsLeft[sliderIndex];
@@ -283,8 +263,7 @@ public class MainModOptions : OptionInterface
             tab.AddItems(opLabel);
 
             Configurable<int> configurable = sliderConfigurables[sliderIndex];
-            OpSlider slider = new(configurable, new Vector2(sliderCenter - 0.5f * sliderSizeX, pos.y), (int)sliderSizeX)
-            {
+            OpSlider slider = new(configurable, new Vector2(sliderCenter - 0.5f * sliderSizeX, pos.y), (int)sliderSizeX) {
                 size = new Vector2(sliderSizeX, fontHeight),
                 description = configurable.info?.description ?? ""
             };
@@ -298,8 +277,7 @@ public class MainModOptions : OptionInterface
             AddTextLabel(sliderMainTextLabels[sliderIndex]);
             DrawTextLabels(ref tab);
 
-            if (sliderIndex < sliderConfigurables.Count - 1)
-            {
+            if (sliderIndex < sliderConfigurables.Count - 1) {
                 AddNewLine();
             }
         }
@@ -310,11 +288,9 @@ public class MainModOptions : OptionInterface
         sliderTextLabelsRight.Clear();
     }
 
-    private void AddTextLabel(string text, FLabelAlignment alignment = FLabelAlignment.Center, bool bigText = false)
-    {
+    private void AddTextLabel(string text, FLabelAlignment alignment = FLabelAlignment.Center, bool bigText = false) {
         float textHeight = (bigText ? 2f : 1f) * fontHeight;
-        if (textLabels.Count == 0)
-        {
+        if (textLabels.Count == 0) {
             pos.y -= textHeight;
         }
 
@@ -325,16 +301,13 @@ public class MainModOptions : OptionInterface
         textLabels.Add(textLabel);
     }
 
-    private void DrawTextLabels(ref OpTab tab)
-    {
-        if (textLabels.Count == 0)
-        {
+    private void DrawTextLabels(ref OpTab tab) {
+        if (textLabels.Count == 0) {
             return;
         }
 
         float width = (marginX.y - marginX.x) / textLabels.Count;
-        foreach (OpLabel textLabel in textLabels)
-        {
+        foreach (OpLabel textLabel in textLabels) {
             textLabel.pos = pos;
             textLabel.size += new Vector2(width - 20f, 0.0f);
             tab.AddItems(textLabel);

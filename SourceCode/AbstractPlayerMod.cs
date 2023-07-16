@@ -2,8 +2,7 @@ using System.Collections.Generic;
 
 namespace InfiniteSpears;
 
-public static class AbstractPlayerMod
-{
+public static class AbstractPlayerMod {
     //
     // variables
     //
@@ -15,8 +14,7 @@ public static class AbstractPlayerMod
     //
     //
 
-    public sealed class Attached_Fields
-    {
+    public sealed class Attached_Fields {
         public bool is_blacklisted = true;
         public List<Player.AbstractOnBackStick> abstract_on_back_sticks = new(); // change to actual size when game is created
     }

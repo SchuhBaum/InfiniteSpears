@@ -2,18 +2,15 @@ using static InfiniteSpears.MainMod;
 
 namespace InfiniteSpears;
 
-internal class JokeRifleMod
-{
+internal class JokeRifleMod {
     //
     // main
     //
 
-    internal static void On_Config_Changed()
-    {
+    internal static void On_Config_Changed() {
         On.JokeRifle.AbstractRifle.setCurrentAmmo -= JokeRifle_AbstractRifle_SetCurrentAmmo;
 
-        if (Option_JokeRifle)
-        {
+        if (Option_JokeRifle) {
             On.JokeRifle.AbstractRifle.setCurrentAmmo += JokeRifle_AbstractRifle_SetCurrentAmmo;
         }
     }
