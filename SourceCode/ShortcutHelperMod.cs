@@ -9,12 +9,12 @@ internal class ShortcutHelperMod {
     // private functions //
     // ----------------- //
 
-    private static void ShortcutHelper_AddPushOutObject(On.ShortcutHelper.orig_AddPushOutObject orig, ShortcutHelper shortcutHelper, PhysicalObject physicalObject) {
-        if (physicalObject.abstractPhysicalObject is AbstractSpear abstractSpear) {
-            foreach (AbstractPhysicalObject abstractPhysicalObject in abstractSpear.GetAllConnectedObjects()) {
-                if (abstractPhysicalObject is AbstractCreature) return;
+    private static void ShortcutHelper_AddPushOutObject(On.ShortcutHelper.orig_AddPushOutObject orig, ShortcutHelper shortcut_helper, PhysicalObject physical_object) {
+        if (physical_object.abstractPhysicalObject is AbstractSpear abstract_spear) {
+            foreach (AbstractPhysicalObject abstract_physical_object in abstract_spear.GetAllConnectedObjects()) {
+                if (abstract_physical_object is AbstractCreature) return;
             }
         }
-        orig(shortcutHelper, physicalObject);
+        orig(shortcut_helper, physical_object);
     }
 }

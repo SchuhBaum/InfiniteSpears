@@ -13,48 +13,49 @@ public class MainModOptions : OptionInterface {
     // options
     //
 
-    public static Configurable<int> maxSpearCountSlider = main_mod_options.config.Bind("maxSpearCountSlider", defaultValue: 1, new ConfigurableInfo("For values X > 1, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(1, 7), "", "Number of BackSpears (1)"));
-
-    public static Configurable<bool> includeYellow = main_mod_options.config.Bind("includeYellow", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Monk.", null, "", "Monk"));
-    public static Configurable<bool> includeWhite = main_mod_options.config.Bind("includeWhite", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Survivor.", null, "", "Survivor"));
-    public static Configurable<bool> includeRed = main_mod_options.config.Bind("includeRed", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Hunter.", null, "", "Hunter"));
-
-    public static Configurable<bool> includeGourmand = main_mod_options.config.Bind("includeGourmand", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Gourmand.", null, "", "Gourmand"));
-    public static Configurable<bool> includeArtificer = main_mod_options.config.Bind("includeArtificer", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Artificer.", null, "", "Artificer"));
-    public static Configurable<bool> includeRivulet = main_mod_options.config.Bind("includeRivulet", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Rivulet.", null, "", "Rivulet"));
-    public static Configurable<bool> includeSpearmaster = main_mod_options.config.Bind("includeSpearmaster", defaultValue: true, new ConfigurableInfo("When disabled, changes will not affect Spearmaster.", null, "", "Spearmaster"));
-    public static Configurable<bool> includeSaint = main_mod_options.config.Bind("includeSaint", defaultValue: false, new ConfigurableInfo("When disabled, changes will not affect Saint.", null, "", "Saint"));
-
     public static Configurable<bool> joke_rifle = main_mod_options.config.Bind("joke_rifle", defaultValue: false, new ConfigurableInfo("When enabled, you have infinite ammunition for the joke rifle.", null, "", "Joke Rifle"));
     public static Configurable<bool> swallowed_items = main_mod_options.config.Bind("swallowed_items", defaultValue: false, new ConfigurableInfo("When enabled, most swallowed item are duplicated when regurgitating unless your hands are full.", null, "", "Swallowed Items"));
+
+    public static Configurable<int> max_spear_count_slider_yellow = main_mod_options.config.Bind("max_spear_count_slider_yellow", defaultValue: -1, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Monk (-1)"));
+    public static Configurable<int> max_spear_count_slider_white = main_mod_options.config.Bind("max_spear_count_slider_white", defaultValue: -1, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Survivor (-1)"));
+    public static Configurable<int> max_spear_count_slider_red = main_mod_options.config.Bind("max_spear_count_slider_red", defaultValue: -1, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Hunter (-1)"));
+
+    public static Configurable<int> max_spear_count_slider_gourmand = main_mod_options.config.Bind("max_spear_count_slider_gourmand", defaultValue: -1, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Gourmand (-1)"));
+    public static Configurable<int> max_spear_count_slider_artificer = main_mod_options.config.Bind("max_spear_count_slider_artificer", defaultValue: -1, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Artificer (-1)"));
+    public static Configurable<int> max_spear_count_slider_rivulet = main_mod_options.config.Bind("max_spear_count_slider_rivulet", defaultValue: -1, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Rivulet (-1)"));
+    public static Configurable<int> max_spear_count_slider_spearmaster = main_mod_options.config.Bind("max_spear_count_slider_spearmaster", defaultValue: -1, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Spearmaster (-1)"));
+    public static Configurable<int> max_spear_count_slider_saint = main_mod_options.config.Bind("max_spear_count_slider_saint", defaultValue: 0, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Saint (0)"));
+
+    public static Configurable<int> max_spear_count_slider_sofanthiel = main_mod_options.config.Bind("max_spear_count_slider_sofanthiel", defaultValue: 0, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Inv (0)"));
+    public static Configurable<int> max_spear_count_slider_custom_slugcats = main_mod_options.config.Bind("max_spear_count_slider_custom_slugcats", defaultValue: 0, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Custom Slugcats (0)"));
 
     //
     // parameters
     //
 
-    private static readonly float fontHeight = 20f;
-    private static readonly float spacing = 20f;
+    private static readonly float _font_height = 20f;
+    private static readonly float _spacing = 20f;
 
-    private readonly int numberOfCheckboxes = 3;
-    private readonly float checkBoxSize = 24f;
-    private float CheckBoxWithSpacing => checkBoxSize + 0.25f * spacing;
+    private readonly int _number_of_checkboxes = 3;
+    private readonly float _checkbox_size = 24f;
+    private float Checkbox_With_Spacing => _checkbox_size + 0.25f * _spacing;
 
     //
     // variables
     //
 
-    private static Vector2 marginX = new();
-    private static Vector2 pos = new();
-    private static readonly List<float> boxEndPositions = new();
-    private static readonly List<OpLabel> textLabels = new();
+    private static Vector2 _margin_x = new();
+    private static Vector2 _position = new();
+    private static readonly List<float> _box_end_position = new();
+    private static readonly List<OpLabel> _text_labels = new();
 
-    private readonly List<Configurable<bool>> checkBoxConfigurables = new();
-    private readonly List<OpLabel> checkBoxesTextLabels = new();
+    private readonly List<Configurable<bool>> _checkbox_configurables = new();
+    private readonly List<OpLabel> _checkboxes_text_labels = new();
 
-    private readonly List<Configurable<int>> sliderConfigurables = new();
-    private readonly List<string> sliderMainTextLabels = new();
-    private readonly List<OpLabel> sliderTextLabelsLeft = new();
-    private readonly List<OpLabel> sliderTextLabelsRight = new();
+    private readonly List<Configurable<int>> _slider_configurables = new();
+    private readonly List<string> _slider_main_text_labels = new();
+    private readonly List<OpLabel> _slider_text_labels_left = new();
+    private readonly List<OpLabel> _slider_text_labels_right = new();
 
     //
     // main
@@ -84,16 +85,23 @@ public class MainModOptions : OptionInterface {
 
     public override void Initialize() {
         base.Initialize();
-        Tabs = new OpTab[1];
-        Tabs[0] = new OpTab(this, "Options");
+        int number_of_tabs = 3;
+        Tabs = new OpTab[number_of_tabs];
+
+        //
+        // General A
+        //
+
+        int tab_index = Mathf.Min(0, number_of_tabs);
+        Tabs[tab_index] = new OpTab(this, "General A");
         InitializeMarginAndPos();
 
         //
         // Title
         //
         AddNewLine();
-        AddTextLabel("Infinite Spears Mod", bigText: true);
-        DrawTextLabels(ref Tabs[0]);
+        AddTextLabel("Infinite Spears Mod", has_big_text: true);
+        DrawTextLabels(ref Tabs[tab_index]);
 
         //
         // Subtitle
@@ -101,7 +109,7 @@ public class MainModOptions : OptionInterface {
         AddNewLine(0.5f);
         AddTextLabel("Version " + version, FLabelAlignment.Left);
         AddTextLabel("by " + author, FLabelAlignment.Right);
-        DrawTextLabels(ref Tabs[0]);
+        DrawTextLabels(ref Tabs[tab_index]);
 
         AddNewLine();
 
@@ -112,9 +120,9 @@ public class MainModOptions : OptionInterface {
         AddNewLine(1.5f); // add some space for word wrapping and new lines
         AddTextLabel("Description:\n\nYou can either\na) carry one spear on your back, and spawn or despawn spears using it\nOR\nb) carry multiple spears on your back which behave normally.", FLabelAlignment.Left);
 
-        DrawTextLabels(ref Tabs[0]);
+        DrawTextLabels(ref Tabs[tab_index]);
         AddNewLine(1.5f);
-        DrawBox(ref Tabs[0]);
+        DrawBox(ref Tabs[tab_index]);
 
         AddNewLine();
 
@@ -122,47 +130,110 @@ public class MainModOptions : OptionInterface {
         // content
         //
         AddBox();
-        AddSlider(maxSpearCountSlider, (string)maxSpearCountSlider.info.Tags[0], "1 (infinite)", "7");
-        DrawSliders(ref Tabs[0]);
+        AddSlider(max_spear_count_slider_yellow, (string)max_spear_count_slider_yellow.info.Tags[0], "-1 (infinite)", "7");
+        AddSlider(max_spear_count_slider_white, (string)max_spear_count_slider_white.info.Tags[0], "-1 (infinite)", "7");
+        AddSlider(max_spear_count_slider_red, (string)max_spear_count_slider_red.info.Tags[0], "-1 (infinite)", "7");
+        DrawSliders(ref Tabs[tab_index]);
 
         AddNewLine(2f);
 
-        AddCheckBox(includeYellow, (string)includeYellow.info.Tags[0]);
-        AddCheckBox(includeWhite, (string)includeWhite.info.Tags[0]);
-        AddCheckBox(includeRed, (string)includeRed.info.Tags[0]);
-
-        AddCheckBox(includeGourmand, (string)includeGourmand.info.Tags[0]);
-        AddCheckBox(includeArtificer, (string)includeArtificer.info.Tags[0]);
-        AddCheckBox(includeRivulet, (string)includeRivulet.info.Tags[0]);
-        AddCheckBox(includeSpearmaster, (string)includeSpearmaster.info.Tags[0]);
-        AddCheckBox(includeSaint, (string)includeSaint.info.Tags[0]);
-
-        DrawCheckBoxes(ref Tabs[0]);
-
-        AddNewLine(1.5f);
-
         AddCheckBox(joke_rifle, (string)joke_rifle.info.Tags[0]);
         AddCheckBox(swallowed_items, (string)swallowed_items.info.Tags[0]);
-        DrawCheckBoxes(ref Tabs[0]);
+        DrawCheckBoxes(ref Tabs[tab_index]);
 
-        DrawBox(ref Tabs[0]);
+        DrawBox(ref Tabs[tab_index]);
+
+        //
+        // General B
+        //
+        tab_index = Mathf.Min(1, number_of_tabs);
+        Tabs[tab_index] = new OpTab(this, "General B");
+        InitializeMarginAndPos();
+
+        //
+        // Title
+        //
+        AddNewLine();
+        AddTextLabel("Infinite Spears Mod", has_big_text: true);
+        DrawTextLabels(ref Tabs[tab_index]);
+
+        //
+        // Subtitle
+        //
+        AddNewLine(0.5f);
+        AddTextLabel("Version " + version, FLabelAlignment.Left);
+        AddTextLabel("by " + author, FLabelAlignment.Right);
+        DrawTextLabels(ref Tabs[tab_index]);
+
+        AddNewLine();
+
+        //
+        // content
+        //
+        AddBox();
+
+        AddSlider(max_spear_count_slider_gourmand, (string)max_spear_count_slider_gourmand.info.Tags[0], "-1 (infinite)", "7");
+        AddSlider(max_spear_count_slider_artificer, (string)max_spear_count_slider_artificer.info.Tags[0], "-1 (infinite)", "7");
+        AddSlider(max_spear_count_slider_rivulet, (string)max_spear_count_slider_rivulet.info.Tags[0], "-1 (infinite)", "7");
+        AddSlider(max_spear_count_slider_spearmaster, (string)max_spear_count_slider_spearmaster.info.Tags[0], "-1 (infinite)", "7");
+        AddSlider(max_spear_count_slider_saint, (string)max_spear_count_slider_saint.info.Tags[0], "-1 (infinite)", "7");
+        DrawSliders(ref Tabs[tab_index]);
+
+        DrawBox(ref Tabs[tab_index]);
+
+        //
+        // General C
+        //
+        tab_index = Mathf.Min(2, number_of_tabs);
+        Tabs[tab_index] = new OpTab(this, "General C");
+        InitializeMarginAndPos();
+
+        //
+        // Title
+        //
+        AddNewLine();
+        AddTextLabel("Infinite Spears Mod", has_big_text: true);
+        DrawTextLabels(ref Tabs[tab_index]);
+
+        //
+        // Subtitle
+        //
+        AddNewLine(0.5f);
+        AddTextLabel("Version " + version, FLabelAlignment.Left);
+        AddTextLabel("by " + author, FLabelAlignment.Right);
+        DrawTextLabels(ref Tabs[tab_index]);
+
+        AddNewLine();
+
+        //
+        // content
+        //
+
+        AddBox();
+
+        AddSlider(max_spear_count_slider_sofanthiel, (string)max_spear_count_slider_sofanthiel.info.Tags[0], "-1 (infinite)", "7");
+        AddSlider(max_spear_count_slider_custom_slugcats, (string)max_spear_count_slider_custom_slugcats.info.Tags[0], "-1 (infinite)", "7");
+        DrawSliders(ref Tabs[tab_index]);
+
+        DrawBox(ref Tabs[tab_index]);
     }
 
     public void Log_All_Options() {
-        Debug.Log("InfiniteSpears: Option_MaxSpearCount " + Option_MaxSpearCount);
-
-        Debug.Log("InfiniteSpears: Option_Yellow " + Option_Yellow);
-        Debug.Log("InfiniteSpears: Option_White " + Option_White);
-        Debug.Log("InfiniteSpears: Option_Red " + Option_Red);
-
-        Debug.Log("InfiniteSpears: Option_Gourmand " + Option_Gourmand);
-        Debug.Log("InfiniteSpears: Option_Artificer " + Option_Artificer);
-        Debug.Log("InfiniteSpears: Option_Rivulet " + Option_Rivulet);
-        Debug.Log("InfiniteSpears: Option_Spearmaster " + Option_Spearmaster);
-        Debug.Log("InfiniteSpears: Option_Saint " + Option_Saint);
+        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Yellow " + Option_Max_Spear_Count_Yellow);
+        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_White " + Option_Max_Spear_Count_White);
+        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Red " + Option_Max_Spear_Count_Red);
 
         Debug.Log("InfiniteSpears: Option_JokeRifle " + Option_JokeRifle);
         Debug.Log("InfiniteSpears: Option_SwallowedItems " + Option_SwallowedItems);
+
+        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Gourmand " + Option_Max_Spear_Count_Gourmand);
+        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Artificer " + Option_Max_Spear_Count_Artificer);
+        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Rivulet " + Option_Max_Spear_Count_Rivulet);
+        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Spearmaster " + Option_Max_Spear_Count_Spearmaster);
+        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Saint " + Option_Max_Spear_Count_Saint);
+
+        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Sofanthiel " + Option_Max_Spear_Count_Sofanthiel);
+        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Custom_Slugcats " + Option_Max_Spear_Count_Custom_Slugcats);
     }
 
     //
@@ -170,151 +241,151 @@ public class MainModOptions : OptionInterface {
     //
 
     private void InitializeMarginAndPos() {
-        marginX = new Vector2(50f, 550f);
-        pos = new Vector2(50f, 600f);
+        _margin_x = new Vector2(50f, 550f);
+        _position = new Vector2(50f, 600f);
     }
 
-    private void AddNewLine(float spacingModifier = 1f) {
-        pos.x = marginX.x; // left margin
-        pos.y -= spacingModifier * spacing;
+    private void AddNewLine(float spacing_modifier = 1f) {
+        _position.x = _margin_x.x; // left margin
+        _position.y -= spacing_modifier * _spacing;
     }
 
     private void AddBox() {
-        marginX += new Vector2(spacing, -spacing);
-        boxEndPositions.Add(pos.y);
+        _margin_x += new Vector2(_spacing, -_spacing);
+        _box_end_position.Add(_position.y);
         AddNewLine();
     }
 
     private void DrawBox(ref OpTab tab) {
-        marginX += new Vector2(-spacing, spacing);
+        _margin_x += new Vector2(-_spacing, _spacing);
         AddNewLine();
 
-        float boxWidth = marginX.y - marginX.x;
-        int lastIndex = boxEndPositions.Count - 1;
-        tab.AddItems(new OpRect(pos, new Vector2(boxWidth, boxEndPositions[lastIndex] - pos.y)));
-        boxEndPositions.RemoveAt(lastIndex);
+        float box_width = _margin_x.y - _margin_x.x;
+        int last_index = _box_end_position.Count - 1;
+        tab.AddItems(new OpRect(_position, new Vector2(box_width, _box_end_position[last_index] - _position.y)));
+        _box_end_position.RemoveAt(last_index);
     }
 
     private void AddCheckBox(Configurable<bool> configurable, string text) {
-        checkBoxConfigurables.Add(configurable);
-        checkBoxesTextLabels.Add(new OpLabel(new Vector2(), new Vector2(), text, FLabelAlignment.Left));
+        _checkbox_configurables.Add(configurable);
+        _checkboxes_text_labels.Add(new OpLabel(new Vector2(), new Vector2(), text, FLabelAlignment.Left));
     }
 
     private void DrawCheckBoxes(ref OpTab tab) // changes pos.y but not pos.x
     {
-        if (checkBoxConfigurables.Count != checkBoxesTextLabels.Count) return;
+        if (_checkbox_configurables.Count != _checkboxes_text_labels.Count) return;
 
-        float width = marginX.y - marginX.x;
-        float elementWidth = (width - (numberOfCheckboxes - 1) * 0.5f * spacing) / numberOfCheckboxes;
-        pos.y -= checkBoxSize;
-        float _posX = pos.x;
+        float width = _margin_x.y - _margin_x.x;
+        float element_width = (width - (_number_of_checkboxes - 1) * 0.5f * _spacing) / _number_of_checkboxes;
+        _position.y -= _checkbox_size;
+        float position_x = _position.x;
 
-        for (int checkBoxIndex = 0; checkBoxIndex < checkBoxConfigurables.Count; ++checkBoxIndex) {
-            Configurable<bool> configurable = checkBoxConfigurables[checkBoxIndex];
-            OpCheckBox checkBox = new(configurable, new Vector2(_posX, pos.y)) {
+        for (int checkbox_index = 0; checkbox_index < _checkbox_configurables.Count; ++checkbox_index) {
+            Configurable<bool> configurable = _checkbox_configurables[checkbox_index];
+            OpCheckBox checkbox = new(configurable, new Vector2(position_x, _position.y)) {
                 description = configurable.info?.description ?? ""
             };
-            tab.AddItems(checkBox);
-            _posX += CheckBoxWithSpacing;
+            tab.AddItems(checkbox);
+            position_x += Checkbox_With_Spacing;
 
-            OpLabel checkBoxLabel = checkBoxesTextLabels[checkBoxIndex];
-            checkBoxLabel.pos = new Vector2(_posX, pos.y + 2f);
-            checkBoxLabel.size = new Vector2(elementWidth - CheckBoxWithSpacing, fontHeight);
-            tab.AddItems(checkBoxLabel);
+            OpLabel checkbox_label = _checkboxes_text_labels[checkbox_index];
+            checkbox_label.pos = new Vector2(position_x, _position.y + 2f);
+            checkbox_label.size = new Vector2(element_width - Checkbox_With_Spacing, _font_height);
+            tab.AddItems(checkbox_label);
 
-            if (checkBoxIndex < checkBoxConfigurables.Count - 1) {
-                if ((checkBoxIndex + 1) % numberOfCheckboxes == 0) {
+            if (checkbox_index < _checkbox_configurables.Count - 1) {
+                if ((checkbox_index + 1) % _number_of_checkboxes == 0) {
                     AddNewLine();
-                    pos.y -= checkBoxSize;
-                    _posX = pos.x;
+                    _position.y -= _checkbox_size;
+                    position_x = _position.x;
                 } else {
-                    _posX += elementWidth - CheckBoxWithSpacing + 0.5f * spacing;
+                    position_x += element_width - Checkbox_With_Spacing + 0.5f * _spacing;
                 }
             }
         }
 
-        checkBoxConfigurables.Clear();
-        checkBoxesTextLabels.Clear();
+        _checkbox_configurables.Clear();
+        _checkboxes_text_labels.Clear();
     }
 
-    private void AddSlider(Configurable<int> configurable, string text, string sliderTextLeft = "", string sliderTextRight = "") {
-        sliderConfigurables.Add(configurable);
-        sliderMainTextLabels.Add(text);
-        sliderTextLabelsLeft.Add(new OpLabel(new Vector2(), new Vector2(), sliderTextLeft, alignment: FLabelAlignment.Right)); // set pos and size when drawing
-        sliderTextLabelsRight.Add(new OpLabel(new Vector2(), new Vector2(), sliderTextRight, alignment: FLabelAlignment.Left));
+    private void AddSlider(Configurable<int> configurable, string text, string slider_text_left = "", string slider_text_right = "") {
+        _slider_configurables.Add(configurable);
+        _slider_main_text_labels.Add(text);
+        _slider_text_labels_left.Add(new OpLabel(new Vector2(), new Vector2(), slider_text_left, alignment: FLabelAlignment.Right)); // set pos and size when drawing
+        _slider_text_labels_right.Add(new OpLabel(new Vector2(), new Vector2(), slider_text_right, alignment: FLabelAlignment.Left));
     }
 
     private void DrawSliders(ref OpTab tab) {
-        if (sliderConfigurables.Count != sliderMainTextLabels.Count) return;
-        if (sliderConfigurables.Count != sliderTextLabelsLeft.Count) return;
-        if (sliderConfigurables.Count != sliderTextLabelsRight.Count) return;
+        if (_slider_configurables.Count != _slider_main_text_labels.Count) return;
+        if (_slider_configurables.Count != _slider_text_labels_left.Count) return;
+        if (_slider_configurables.Count != _slider_text_labels_right.Count) return;
 
-        float width = marginX.y - marginX.x;
-        float sliderCenter = marginX.x + 0.5f * width;
-        float sliderLabelSizeX = 0.2f * width;
-        float sliderSizeX = width - 2f * sliderLabelSizeX - spacing;
+        float width = _margin_x.y - _margin_x.x;
+        float slider_center = _margin_x.x + 0.5f * width;
+        float slider_label_size_x = 0.2f * width;
+        float slider_size_x = width - 2f * slider_label_size_x - _spacing;
 
-        for (int sliderIndex = 0; sliderIndex < sliderConfigurables.Count; ++sliderIndex) {
+        for (int slider_index = 0; slider_index < _slider_configurables.Count; ++slider_index) {
             AddNewLine(2f);
 
-            OpLabel opLabel = sliderTextLabelsLeft[sliderIndex];
-            opLabel.pos = new Vector2(marginX.x, pos.y + 5f);
-            opLabel.size = new Vector2(sliderLabelSizeX, fontHeight);
-            tab.AddItems(opLabel);
+            OpLabel op_label = _slider_text_labels_left[slider_index];
+            op_label.pos = new Vector2(_margin_x.x, _position.y + 5f);
+            op_label.size = new Vector2(slider_label_size_x, _font_height);
+            tab.AddItems(op_label);
 
-            Configurable<int> configurable = sliderConfigurables[sliderIndex];
-            OpSlider slider = new(configurable, new Vector2(sliderCenter - 0.5f * sliderSizeX, pos.y), (int)sliderSizeX) {
-                size = new Vector2(sliderSizeX, fontHeight),
+            Configurable<int> configurable = _slider_configurables[slider_index];
+            OpSlider slider = new(configurable, new Vector2(slider_center - 0.5f * slider_size_x, _position.y), (int)slider_size_x) {
+                size = new Vector2(slider_size_x, _font_height),
                 description = configurable.info?.description ?? ""
             };
             tab.AddItems(slider);
 
-            opLabel = sliderTextLabelsRight[sliderIndex];
-            opLabel.pos = new Vector2(sliderCenter + 0.5f * sliderSizeX + 0.5f * spacing, pos.y + 5f);
-            opLabel.size = new Vector2(sliderLabelSizeX, fontHeight);
-            tab.AddItems(opLabel);
+            op_label = _slider_text_labels_right[slider_index];
+            op_label.pos = new Vector2(slider_center + 0.5f * slider_size_x + 0.5f * _spacing, _position.y + 5f);
+            op_label.size = new Vector2(slider_label_size_x, _font_height);
+            tab.AddItems(op_label);
 
-            AddTextLabel(sliderMainTextLabels[sliderIndex]);
+            AddTextLabel(_slider_main_text_labels[slider_index]);
             DrawTextLabels(ref tab);
 
-            if (sliderIndex < sliderConfigurables.Count - 1) {
+            if (slider_index < _slider_configurables.Count - 1) {
                 AddNewLine();
             }
         }
 
-        sliderConfigurables.Clear();
-        sliderMainTextLabels.Clear();
-        sliderTextLabelsLeft.Clear();
-        sliderTextLabelsRight.Clear();
+        _slider_configurables.Clear();
+        _slider_main_text_labels.Clear();
+        _slider_text_labels_left.Clear();
+        _slider_text_labels_right.Clear();
     }
 
-    private void AddTextLabel(string text, FLabelAlignment alignment = FLabelAlignment.Center, bool bigText = false) {
-        float textHeight = (bigText ? 2f : 1f) * fontHeight;
-        if (textLabels.Count == 0) {
-            pos.y -= textHeight;
+    private void AddTextLabel(string text, FLabelAlignment alignment = FLabelAlignment.Center, bool has_big_text = false) {
+        float text_height = (has_big_text ? 2f : 1f) * _font_height;
+        if (_text_labels.Count == 0) {
+            _position.y -= text_height;
         }
 
-        OpLabel textLabel = new(new Vector2(), new Vector2(20f, textHeight), text, alignment, bigText) // minimal size.x = 20f
+        OpLabel text_label = new(new Vector2(), new Vector2(20f, text_height), text, alignment, has_big_text) // minimal size.x = 20f
         {
             autoWrap = true
         };
-        textLabels.Add(textLabel);
+        _text_labels.Add(text_label);
     }
 
     private void DrawTextLabels(ref OpTab tab) {
-        if (textLabels.Count == 0) {
+        if (_text_labels.Count == 0) {
             return;
         }
 
-        float width = (marginX.y - marginX.x) / textLabels.Count;
-        foreach (OpLabel textLabel in textLabels) {
-            textLabel.pos = pos;
-            textLabel.size += new Vector2(width - 20f, 0.0f);
-            tab.AddItems(textLabel);
-            pos.x += width;
+        float width = (_margin_x.y - _margin_x.x) / _text_labels.Count;
+        foreach (OpLabel text_label in _text_labels) {
+            text_label.pos = _position;
+            text_label.size += new Vector2(width - 20f, 0.0f);
+            tab.AddItems(text_label);
+            _position.x += width;
         }
 
-        pos.x = marginX.x;
-        textLabels.Clear();
+        _position.x = _margin_x.x;
+        _text_labels.Clear();
     }
 }

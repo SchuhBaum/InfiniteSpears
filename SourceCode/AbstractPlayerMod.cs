@@ -8,7 +8,7 @@ public static class AbstractPlayerMod {
     //
 
     internal static readonly Dictionary<AbstractCreature, Attached_Fields> all_attached_fields = new();
-    public static Attached_Fields Get_Attached_Fields(this AbstractCreature abstractPlayer) => all_attached_fields[abstractPlayer];
+    public static Attached_Fields Get_Attached_Fields(this AbstractCreature abstract_player) => all_attached_fields[abstract_player];
 
     //
     //
@@ -16,6 +16,7 @@ public static class AbstractPlayerMod {
 
     public sealed class Attached_Fields {
         public bool is_blacklisted = true;
+        public int max_spear_count = 0;
         public List<Player.AbstractOnBackStick> abstract_on_back_sticks = new(); // change to actual size when game is created
     }
 }

@@ -9,9 +9,9 @@ internal class PlayerCarryableItemMod {
     // private functions //
     // ----------------- //
 
-    private static void PlayerCarryableItem_Update(On.PlayerCarryableItem.orig_Update orig, PlayerCarryableItem playerCarryableItem, bool eu) {
-        orig(playerCarryableItem, eu);
-        if (playerCarryableItem is Spear spear && spear.mode == Weapon.Mode.OnBack) {
+    private static void PlayerCarryableItem_Update(On.PlayerCarryableItem.orig_Update orig, PlayerCarryableItem player_carryable_item, bool eu) {
+        orig(player_carryable_item, eu);
+        if (player_carryable_item is Spear spear && spear.mode == Weapon.Mode.OnBack) {
             spear.firstChunk.collideWithObjects = false;
         }
     }

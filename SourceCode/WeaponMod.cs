@@ -9,13 +9,13 @@ internal class WeaponMod {
     // private
     //
 
-    private static void Weapon_AddToContainer(On.Weapon.orig_AddToContainer orig, Weapon weapon, RoomCamera.SpriteLeaser sLeaser, RoomCamera rCam, FContainer newContainer) {
-        if (newContainer != null) {
-            orig(weapon, sLeaser, rCam, newContainer);
+    private static void Weapon_AddToContainer(On.Weapon.orig_AddToContainer orig, Weapon weapon, RoomCamera.SpriteLeaser sprite_leaser, RoomCamera room_camera, FContainer new_container) {
+        if (new_container != null) {
+            orig(weapon, sprite_leaser, room_camera, new_container);
             return;
         }
 
         weapon.inFrontOfObjects = 1; // load previous value instead of resetting
-        orig(weapon, sLeaser, rCam, newContainer);
+        orig(weapon, sprite_leaser, room_camera, new_container);
     }
 }

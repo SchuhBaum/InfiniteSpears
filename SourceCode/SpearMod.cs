@@ -1,3 +1,5 @@
+using static InfiniteSpears.AbstractPlayerMod;
+
 namespace InfiniteSpears;
 
 internal class SpearMod {
@@ -12,12 +14,12 @@ internal class SpearMod {
     private static void Spear_RecreateSticksFromAbstract(On.Spear.orig_RecreateSticksFromAbstract orig, Spear spear) {
         if (spear.sticksRespawned) return;
 
-        foreach (AbstractPhysicalObject.AbstractObjectStick abstractObjectStick in spear.abstractPhysicalObject.stuckObjects) {
-            if (abstractObjectStick is Player.AbstractOnBackStick abstractOnBackStick && abstractOnBackStick.Player.realizedObject is Player player && player.spearOnBack != null) {
-                AbstractPlayerMod.Attached_Fields attached_fields = player.abstractCreature.Get_Attached_Fields();
+        foreach (AbstractPhysicalObject.AbstractObjectStick abstract_object_stick in spear.abstractPhysicalObject.stuckObjects) {
+            if (abstract_object_stick is Player.AbstractOnBackStick abstract_on_back_stick && abstract_on_back_stick.Player.realizedObject is Player player && player.spearOnBack != null) {
+                Attached_Fields attached_fields = player.Get_Attached_Fields();
                 if (attached_fields.is_blacklisted) break;
 
-                attached_fields.abstract_on_back_sticks.Add(abstractOnBackStick);
+                attached_fields.abstract_on_back_sticks.Add(abstract_on_back_stick);
                 spear.ChangeMode(Weapon.Mode.OnBack);
             }
         }

@@ -1,5 +1,4 @@
 using UnityEngine;
-
 using static InfiniteSpears.MainMod;
 using static InfiniteSpears.MainModOptions;
 using static ProcessManager;

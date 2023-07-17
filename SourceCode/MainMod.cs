@@ -11,34 +11,35 @@ using static InfiniteSpears.MainModOptions;
 
 namespace InfiniteSpears;
 
-[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.1.5")]
+[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.1.6")]
 public class MainMod : BaseUnityPlugin {
     //
     // meta data
     //
 
-    public static readonly string MOD_ID = "InfiniteSpears";
+    public static readonly string mod_id = "InfiniteSpears";
     public static readonly string author = "SchuhBaum";
-    public static readonly string version = "2.1.5";
+    public static readonly string version = "2.1.6";
 
     //
     // options
     //
 
-    public static int Option_MaxSpearCount => maxSpearCountSlider.Value;
-
-    public static bool Option_Yellow => includeYellow.Value;
-    public static bool Option_White => includeWhite.Value;
-    public static bool Option_Red => includeRed.Value;
-
-    public static bool Option_Gourmand => includeGourmand.Value;
-    public static bool Option_Artificer => includeArtificer.Value;
-    public static bool Option_Rivulet => includeRivulet.Value;
-    public static bool Option_Spearmaster => includeSpearmaster.Value;
-    public static bool Option_Saint => includeSaint.Value;
-
     public static bool Option_JokeRifle => joke_rifle.Value;
     public static bool Option_SwallowedItems => swallowed_items.Value;
+
+    public static int Option_Max_Spear_Count_Yellow => max_spear_count_slider_yellow.Value;
+    public static int Option_Max_Spear_Count_White => max_spear_count_slider_white.Value;
+    public static int Option_Max_Spear_Count_Red => max_spear_count_slider_red.Value;
+
+    public static int Option_Max_Spear_Count_Gourmand => max_spear_count_slider_gourmand.Value;
+    public static int Option_Max_Spear_Count_Artificer => max_spear_count_slider_artificer.Value;
+    public static int Option_Max_Spear_Count_Rivulet => max_spear_count_slider_rivulet.Value;
+    public static int Option_Max_Spear_Count_Spearmaster => max_spear_count_slider_spearmaster.Value;
+    public static int Option_Max_Spear_Count_Saint => max_spear_count_slider_saint.Value;
+
+    public static int Option_Max_Spear_Count_Sofanthiel => max_spear_count_slider_sofanthiel.Value;
+    public static int Option_Max_Spear_Count_Custom_Slugcats => max_spear_count_slider_custom_slugcats.Value;
 
     //
     // variables
@@ -58,19 +59,19 @@ public class MainMod : BaseUnityPlugin {
     // public
     //
 
-    public static void LogAllInstructions(ILContext? context, int indexStringLength = 9, int opCodeStringLength = 14) {
+    public static void LogAllInstructions(ILContext? context, int index_string_length = 9, int op_code_string_length = 14) {
         if (context == null) return;
 
         Debug.Log("-----------------------------------------------------------------");
         Debug.Log("Log all IL-instructions.");
-        Debug.Log("Index:" + new string(' ', indexStringLength - 6) + "OpCode:" + new string(' ', opCodeStringLength - 7) + "Operand:");
+        Debug.Log("Index:" + new string(' ', index_string_length - 6) + "OpCode:" + new string(' ', op_code_string_length - 7) + "Operand:");
 
         ILCursor cursor = new(context);
-        ILCursor labelCursor = cursor.Clone();
+        ILCursor label_cursor = cursor.Clone();
 
-        string cursorIndexString;
-        string opCodeString;
-        string operandString;
+        string cursor_index_string;
+        string op_code_string;
+        string operand_string;
 
         while (true) {
             // this might return too early;
@@ -81,22 +82,22 @@ public class MainMod : BaseUnityPlugin {
             // it still throws an exception;
             try {
                 if (cursor.TryGotoNext(MoveType.Before)) {
-                    cursorIndexString = cursor.Index.ToString();
-                    cursorIndexString = cursorIndexString.Length < indexStringLength ? cursorIndexString + new string(' ', indexStringLength - cursorIndexString.Length) : cursorIndexString;
-                    opCodeString = cursor.Next.OpCode.ToString();
+                    cursor_index_string = cursor.Index.ToString();
+                    cursor_index_string = cursor_index_string.Length < index_string_length ? cursor_index_string + new string(' ', index_string_length - cursor_index_string.Length) : cursor_index_string;
+                    op_code_string = cursor.Next.OpCode.ToString();
 
                     if (cursor.Next.Operand is ILLabel label) {
-                        labelCursor.GotoLabel(label);
-                        operandString = "Label >>> " + labelCursor.Index;
+                        label_cursor.GotoLabel(label);
+                        operand_string = "Label >>> " + label_cursor.Index;
                     } else {
-                        operandString = cursor.Next.Operand?.ToString() ?? "";
+                        operand_string = cursor.Next.Operand?.ToString() ?? "";
                     }
 
-                    if (operandString == "") {
-                        Debug.Log(cursorIndexString + opCodeString);
+                    if (operand_string == "") {
+                        Debug.Log(cursor_index_string + op_code_string);
                     } else {
-                        opCodeString = opCodeString.Length < opCodeStringLength ? opCodeString + new string(' ', opCodeStringLength - opCodeString.Length) : opCodeString;
-                        Debug.Log(cursorIndexString + opCodeString + operandString);
+                        op_code_string = op_code_string.Length < op_code_string_length ? op_code_string + new string(' ', op_code_string_length - op_code_string.Length) : op_code_string;
+                        Debug.Log(cursor_index_string + op_code_string + operand_string);
                     }
                 } else {
                     break;
@@ -112,9 +113,9 @@ public class MainMod : BaseUnityPlugin {
     // private
     //
 
-    private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld rainWorld) {
-        orig(rainWorld);
-        MachineConnector.SetRegisteredOI(MOD_ID, main_mod_options);
+    private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld rain_world) {
+        orig(rain_world);
+        MachineConnector.SetRegisteredOI(mod_id, main_mod_options);
 
         if (is_initialized) return;
         is_initialized = true;
@@ -130,8 +131,8 @@ public class MainMod : BaseUnityPlugin {
         ProcessManagerMod.OnEnable();
         ShortcutHelperMod.OnEnable();
         SpearMod.OnEnable();
-        SpearOnBackMod.OnEnable();
 
+        SpearOnBackMod.OnEnable();
         WeaponMod.OnEnable();
         can_log_il_hooks = false;
     }
