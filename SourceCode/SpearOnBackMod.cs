@@ -167,53 +167,52 @@ public static class SpearOnBackMod {
 
         List<AbstractOnBackStick> abstract_on_back_sticks = attached_fields.abstract_on_back_sticks;
         int current_spear_index = abstract_on_back_sticks.Count - 1;
+        if (current_spear_index < 0) return;
 
-        if (current_spear_index > -1) {
-            Vector2 chunk0_pos = player.mainBodyChunk.pos;
-            Vector2 chunk1_pos = player.bodyChunks[1].pos;
+        Vector2 chunk0_pos = player.mainBodyChunk.pos;
+        Vector2 chunk1_pos = player.bodyChunks[1].pos;
 
-            if (player.graphicsModule is PlayerGraphics player_graphics) {
-                chunk0_pos = Vector2.Lerp(player_graphics.drawPositions[0, 0], player_graphics.head.pos, 0.2f);
-                chunk1_pos = player_graphics.drawPositions[1, 0];
-            }
+        if (player.graphicsModule is PlayerGraphics player_graphics) {
+            chunk0_pos = Vector2.Lerp(player_graphics.drawPositions[0, 0], player_graphics.head.pos, 0.2f);
+            chunk1_pos = player_graphics.drawPositions[1, 0];
+        }
 
-            Vector2 body_vector = Custom.DirVec(chunk1_pos, chunk0_pos);
-            bool has_gravity_and_stuff = player.Consious && player.bodyMode != BodyModeIndex.ZeroG && player.room.gravity > 0.0;
+        Vector2 body_vector = Custom.DirVec(chunk1_pos, chunk0_pos);
+        bool has_gravity_and_stuff = player.Consious && player.bodyMode != BodyModeIndex.ZeroG && player.room.gravity > 0.0;
 
-            if (has_gravity_and_stuff) {
-                spear_on_back.flip = player.bodyMode != BodyModeIndex.Default || player.animation != AnimationIndex.None || (!player.standing || player.bodyChunks[1].pos.y >= player.bodyChunks[0].pos.y - 6.0) ? (player.bodyMode != BodyModeIndex.Stand || player.input[0].x == 0 ? Custom.LerpAndTick(spear_on_back.flip, player.flipDirection * Mathf.Abs(body_vector.x), 0.15f, 1f / 6f) : Custom.LerpAndTick(spear_on_back.flip, player.input[0].x, 0.02f, 0.1f)) : Custom.LerpAndTick(spear_on_back.flip, player.input[0].x * 0.3f, 0.05f, 0.02f);
-            } else {
-                spear_on_back.flip = Custom.LerpAndTick(spear_on_back.flip, 0.0f, 0.15f, 1f / 7f);
-            }
+        if (has_gravity_and_stuff) {
+            spear_on_back.flip = player.bodyMode != BodyModeIndex.Default || player.animation != AnimationIndex.None || (!player.standing || player.bodyChunks[1].pos.y >= player.bodyChunks[0].pos.y - 6.0) ? (player.bodyMode != BodyModeIndex.Stand || player.input[0].x == 0 ? Custom.LerpAndTick(spear_on_back.flip, player.flipDirection * Mathf.Abs(body_vector.x), 0.15f, 1f / 6f) : Custom.LerpAndTick(spear_on_back.flip, player.input[0].x, 0.02f, 0.1f)) : Custom.LerpAndTick(spear_on_back.flip, player.input[0].x * 0.3f, 0.05f, 0.02f);
+        } else {
+            spear_on_back.flip = Custom.LerpAndTick(spear_on_back.flip, 0.0f, 0.15f, 1f / 7f);
+        }
 
-            for (int index = 0; index <= current_spear_index; ++index) {
-                if (abstract_on_back_sticks[index].Spear.realizedObject is Spear spear && !spear.slatedForDeletetion) {
-                    if (has_gravity_and_stuff) {
-                        if (spear_on_back.counter > 12 && !spear_on_back.interactionLocked && (player.input[0].x != 0 && player.standing)) {
-                            float hand_direction = 0.0f;
-                            for (int index2 = 0; index2 < player.grasps.Length; ++index2) {
-                                if (player.grasps[index2] == null) {
-                                    hand_direction = index2 != 0 ? 1f : -1f;
-                                    break;
-                                }
+        for (int index = 0; index <= current_spear_index; ++index) {
+            if (abstract_on_back_sticks[index].Spear.realizedObject is Spear spear && !spear.slatedForDeletetion) {
+                if (has_gravity_and_stuff) {
+                    if (spear_on_back.counter > 12 && !spear_on_back.interactionLocked && (player.input[0].x != 0 && player.standing)) {
+                        float hand_direction = 0.0f;
+                        for (int index2 = 0; index2 < player.grasps.Length; ++index2) {
+                            if (player.grasps[index2] == null) {
+                                hand_direction = index2 != 0 ? 1f : -1f;
+                                break;
                             }
-                            spear.setRotation = new Vector2?(Custom.DegToVec(Custom.AimFromOneVectorToAnother(chunk1_pos, chunk0_pos) + Custom.LerpMap(spear_on_back.counter, 12f, 20f, 0.0f, 360f * hand_direction)));
-                        } else {
-                            // structure: [default] - PerpendicularVector * ([rotation when standing] + [rotation when walking/crawling])
-                            spear.setRotation = new Vector2?(body_vector - Custom.PerpendicularVector(body_vector) * ((1.2f + _spear_xy_modifier[index]) * (1f - Mathf.Abs(spear_on_back.flip)) - spear_on_back.flip * 0.02f * _spear_z_modifier[index]));
-                            spear.ChangeOverlap(body_vector.y < -0.1 && player.bodyMode != BodyModeIndex.ClimbingOnBeam);
                         }
+                        spear.setRotation = new Vector2?(Custom.DegToVec(Custom.AimFromOneVectorToAnother(chunk1_pos, chunk0_pos) + Custom.LerpMap(spear_on_back.counter, 12f, 20f, 0.0f, 360f * hand_direction)));
                     } else {
-                        // structure: [default] - PerpendicularVector * [rotation when standing]
-                        spear.setRotation = new Vector2?(body_vector - Custom.PerpendicularVector(body_vector) * (1.2f + _spear_xy_modifier[index]));
-                        spear.ChangeOverlap(false);
+                        // structure: [default] - PerpendicularVector * ([rotation when standing] + [rotation when walking/crawling])
+                        spear.setRotation = new Vector2?(body_vector - Custom.PerpendicularVector(body_vector) * ((1.2f + _spear_xy_modifier[index]) * (1f - Mathf.Abs(spear_on_back.flip)) - spear_on_back.flip * 0.02f * _spear_z_modifier[index]));
+                        spear.ChangeOverlap(body_vector.y < -0.1 && player.bodyMode != BodyModeIndex.ClimbingOnBeam);
                     }
-
-                    // structure: [height] - PerpendicularVector * [depth] // flip is about zero when standing, i.e. no depth required
-                    spear.firstChunk.MoveFromOutsideMyUpdate(eu, Vector2.Lerp(chunk1_pos, chunk0_pos, 0.5f - _spear_xy_modifier[index] / 4f) - Custom.PerpendicularVector(chunk1_pos, chunk0_pos) * (7.5f + _spear_z_modifier[index]) * spear_on_back.flip);
-                    spear.firstChunk.vel = player.mainBodyChunk.vel;
-                    spear.rotationSpeed = 0.0f;
+                } else {
+                    // structure: [default] - PerpendicularVector * [rotation when standing]
+                    spear.setRotation = new Vector2?(body_vector - Custom.PerpendicularVector(body_vector) * (1.2f + _spear_xy_modifier[index]));
+                    spear.ChangeOverlap(false);
                 }
+
+                // structure: [height] - PerpendicularVector * [depth] // flip is about zero when standing, i.e. no depth required
+                spear.firstChunk.MoveFromOutsideMyUpdate(eu, Vector2.Lerp(chunk1_pos, chunk0_pos, 0.5f - _spear_xy_modifier[index] / 4f) - Custom.PerpendicularVector(chunk1_pos, chunk0_pos) * (7.5f + _spear_z_modifier[index]) * spear_on_back.flip);
+                spear.firstChunk.vel = player.mainBodyChunk.vel;
+                spear.rotationSpeed = 0.0f;
             }
         }
     }
@@ -270,7 +269,7 @@ public static class SpearOnBackMod {
             return;
         }
 
-        List<AbstractOnBackStick> abstract_on_back_sticks = player.abstractCreature.Get_Attached_Fields().abstract_on_back_sticks;
+        List<AbstractOnBackStick> abstract_on_back_sticks = attached_fields.abstract_on_back_sticks;
         int current_spear_index = abstract_on_back_sticks.Count - 1;
 
         if (current_spear_index <= -1) return;

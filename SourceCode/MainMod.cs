@@ -11,7 +11,7 @@ using static InfiniteSpears.MainModOptions;
 
 namespace InfiniteSpears;
 
-[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.1.6")]
+[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.1.7")]
 public class MainMod : BaseUnityPlugin {
     //
     // meta data
@@ -19,7 +19,7 @@ public class MainMod : BaseUnityPlugin {
 
     public static readonly string mod_id = "InfiniteSpears";
     public static readonly string author = "SchuhBaum";
-    public static readonly string version = "2.1.6";
+    public static readonly string version = "2.1.7";
 
     //
     // options
