@@ -7,8 +7,8 @@ public static class AbstractPlayerMod {
     // variables
     //
 
-    internal static readonly Dictionary<AbstractCreature, Attached_Fields> all_attached_fields = new();
-    public static Attached_Fields Get_Attached_Fields(this AbstractCreature abstract_player) => all_attached_fields[abstract_player];
+    internal static readonly Dictionary<AbstractCreature, Attached_Fields> _all_attached_fields = new();
+    public static Attached_Fields Get_Attached_Fields(this AbstractCreature abstract_player) => _all_attached_fields[abstract_player];
 
     //
     //

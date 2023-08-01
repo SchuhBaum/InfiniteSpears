@@ -171,9 +171,9 @@ public static class PlayerMod {
 
         // return when this is already initialized; otherwise this can conflict with the
         // swallow everything mod;
-        if (all_attached_fields.ContainsKey(abstract_creature)) return;
+        if (_all_attached_fields.ContainsKey(abstract_creature)) return;
         Attached_Fields attached_fields = new();
-        all_attached_fields.Add(abstract_creature, attached_fields);
+        _all_attached_fields.Add(abstract_creature, attached_fields);
         if (player.SlugCatClass is not Name slugcat_name) return;
 
         if (slugcat_name == Yellow) {
@@ -268,27 +268,12 @@ public static class PlayerMod {
             }
         }
 
-        if (Option_Max_Spear_Count_Custom_Slugcats != 0) {
-            if (slugcat_name == Yellow) return;
-            if (slugcat_name == White) return;
-            if (slugcat_name == Red) return;
+        if (Option_Max_Spear_Count_Custom_Slugcats == 0) return;
+        player.spearOnBack = new SpearOnBack(player);
+        if (Option_Max_Spear_Count_Custom_Slugcats == 1) return;
 
-            if (ModManager.MSC) {
-                if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Gourmand) return;
-                if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Artificer) return;
-                if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Rivulet) return;
-                if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Spear) return;
-                if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Saint) return;
-                if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Sofanthiel) return;
-            }
-
-            player.spearOnBack = new SpearOnBack(player);
-            if (Option_Max_Spear_Count_Custom_Slugcats == 1) return;
-
-            attached_fields.max_spear_count = Option_Max_Spear_Count_Custom_Slugcats;
-            attached_fields.is_blacklisted = false;
-            return;
-        }
+        attached_fields.max_spear_count = Option_Max_Spear_Count_Custom_Slugcats;
+        attached_fields.is_blacklisted = false;
     }
 
     private static void Player_Die(On.Player.orig_Die orig, Player player) {

@@ -26,7 +26,7 @@ internal class AbstractObjectStickMod {
         // the mode is not changed and they clip through the floor;
         if (abstract_on_back_stick.Spear.realizedObject is Spear spear && spear.mode == OnBack) {
             Debug.Log("InfiniteSpears: Trying to deactivate AbstractOnBackStick but the spear is still on the back. Release spear.");
-            spear.ChangeMode(Weapon.Mode.Free);
+            spear.ChangeMode(Free);
         }
         attached_fields.abstract_on_back_sticks.Remove(abstract_on_back_stick);
     }

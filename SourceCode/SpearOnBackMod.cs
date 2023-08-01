@@ -11,8 +11,8 @@ public static class SpearOnBackMod {
     // parameters
     //
 
-    private static readonly float[] spearXYModifier = new float[7] { 0.0f, -0.4f, -0.2f, -0.2f, -0.6f, -0.6f, -0.8f };
-    private static readonly float[] spearZModifier = new float[7] { 0.0f, 0.0f, 2f, -2f, 2f, -2f, 0.0f };
+    private static readonly float[] _spear_xy_modifier = new float[7] { 0.0f, -0.4f, -0.2f, -0.2f, -0.6f, -0.6f, -0.8f };
+    private static readonly float[] _spear_z_modifier = new float[7] { 0.0f, 0.0f, 2f, -2f, 2f, -2f, 0.0f };
 
     //
     //
@@ -35,13 +35,13 @@ public static class SpearOnBackMod {
         if (spear_on_back.owner is not Player player) return false;
         if (!player.input[0].pckp) return false;
 
-        if (spear_on_back.spear?.abstractPhysicalObject is not AbstractSpear carriedAbstractSpear) return false;
-        if (player.grasps[0]?.grabbed?.abstractPhysicalObject is not AbstractSpear heldAbstractSpear) return false;
+        if (spear_on_back.spear?.abstractPhysicalObject is not AbstractSpear carried_abstract_spear) return false;
+        if (player.grasps[0]?.grabbed?.abstractPhysicalObject is not AbstractSpear held_abstract_spear) return false;
 
-        if (carriedAbstractSpear.explosive != heldAbstractSpear.explosive) return false;
-        if (carriedAbstractSpear.electric != heldAbstractSpear.electric) return false;
-        if (carriedAbstractSpear.needle != heldAbstractSpear.needle) return false;
-        if (carriedAbstractSpear.hue != heldAbstractSpear.hue) return false;
+        if (carried_abstract_spear.explosive != held_abstract_spear.explosive) return false;
+        if (carried_abstract_spear.electric != held_abstract_spear.electric) return false;
+        if (carried_abstract_spear.needle != held_abstract_spear.needle) return false;
+        if (carried_abstract_spear.hue != held_abstract_spear.hue) return false;
 
         ++spear_on_back.counter;
         if (spear_on_back.counter <= 20) {
@@ -49,8 +49,8 @@ public static class SpearOnBackMod {
             return true;
         }
 
-        heldAbstractSpear.realizedObject.Destroy();
-        heldAbstractSpear.Destroy();
+        held_abstract_spear.realizedObject.Destroy();
+        held_abstract_spear.Destroy();
         spear_on_back.counter = 0;
         spear_on_back.interactionLocked = true;
         return true;
@@ -62,8 +62,8 @@ public static class SpearOnBackMod {
         if (attached_fields.max_spear_count == -1) return;
         spear_on_back.spear = null;
 
-        for (int stickIndex = attached_fields.abstract_on_back_sticks.Count - 1; stickIndex >= 0; --stickIndex) {
-            AbstractOnBackStick abstract_on_back_stick = attached_fields.abstract_on_back_sticks[stickIndex];
+        for (int stick_index = attached_fields.abstract_on_back_sticks.Count - 1; stick_index >= 0; --stick_index) {
+            AbstractOnBackStick abstract_on_back_stick = attached_fields.abstract_on_back_sticks[stick_index];
             if (abstract_on_back_stick.Spear.realizedObject is Spear spear) {
                 spear.firstChunk.vel = player.mainBodyChunk.vel + Custom.RNV() * 3f * Random.value;
                 spear.ChangeMode(Weapon.Mode.Free);
@@ -72,41 +72,41 @@ public static class SpearOnBackMod {
         }
     }
 
-    public static void SpawnSpear(SpearOnBack spear_on_back, in AbstractSpear? abstractSpear) {
-        if (abstractSpear == null) return;
+    public static void SpawnSpear(SpearOnBack spear_on_back, in AbstractSpear? abstract_spear) {
+        if (abstract_spear == null) return;
         if (spear_on_back.abstractStick != null) return;
         if (spear_on_back.spear != null) return;
         if (spear_on_back.owner is not Player player) return;
 
-        AbstractPhysicalObject abstractPlayer = player.abstractPhysicalObject;
-        World world = abstractSpear.world;
+        AbstractPhysicalObject abstract_player = player.abstractPhysicalObject;
+        World world = abstract_spear.world;
 
         if (world == null) return;
 
         // not sure what is random about spears;
         // but for consistency;
         EntityID id = world.game.GetNewID();
-        id.altSeed = abstractSpear.ID.RandomSeed;
+        id.altSeed = abstract_spear.ID.RandomSeed;
 
-        AbstractSpear newAbstractSpear = new(world, null, abstractPlayer.pos, id, abstractSpear.explosive, abstractSpear.electric) {
-            electricCharge = abstractSpear.electricCharge,
-            hue = abstractSpear.hue,
-            needle = abstractSpear.needle,
+        AbstractSpear new_abstract_spear = new(world, null, abstract_player.pos, id, abstract_spear.explosive, abstract_spear.electric) {
+            electricCharge = abstract_spear.electricCharge,
+            hue = abstract_spear.hue,
+            needle = abstract_spear.needle,
         };
 
-        newAbstractSpear.RealizeInRoom();
-        if (newAbstractSpear.realizedObject is not Spear newSpear) return;
+        new_abstract_spear.RealizeInRoom();
+        if (new_abstract_spear.realizedObject is not Spear new_spear) return;
 
-        if (abstractSpear.realizedObject is Spear spear) {
-            newSpear.spearmasterNeedle = spear.spearmasterNeedle;
-            newSpear.spearmasterNeedleType = spear.spearmasterNeedleType;
-            newSpear.spearmasterNeedle_hasConnection = spear.spearmasterNeedle_hasConnection;
-            newSpear.spearmasterNeedle_fadecounter = spear.spearmasterNeedle_fadecounter;
+        if (abstract_spear.realizedObject is Spear spear) {
+            new_spear.spearmasterNeedle = spear.spearmasterNeedle;
+            new_spear.spearmasterNeedleType = spear.spearmasterNeedleType;
+            new_spear.spearmasterNeedle_hasConnection = spear.spearmasterNeedle_hasConnection;
+            new_spear.spearmasterNeedle_fadecounter = spear.spearmasterNeedle_fadecounter;
         }
 
-        newSpear.ChangeMode(Weapon.Mode.OnBack);
-        spear_on_back.spear = newSpear;
-        spear_on_back.abstractStick = new AbstractOnBackStick(abstractPlayer, newAbstractSpear);
+        new_spear.ChangeMode(Weapon.Mode.OnBack);
+        spear_on_back.spear = new_spear;
+        spear_on_back.abstractStick = new AbstractOnBackStick(abstract_player, new_abstract_spear);
         spear_on_back.interactionLocked = true;
         player.noPickUpOnRelease = 20;
         player.room.PlaySound(SoundID.Slugcat_Pick_Up_Spear, player.mainBodyChunk);
@@ -166,51 +166,51 @@ public static class SpearOnBackMod {
         }
 
         List<AbstractOnBackStick> abstract_on_back_sticks = attached_fields.abstract_on_back_sticks;
-        int currentSpearIndex = abstract_on_back_sticks.Count - 1;
+        int current_spear_index = abstract_on_back_sticks.Count - 1;
 
-        if (currentSpearIndex > -1) {
+        if (current_spear_index > -1) {
             Vector2 chunk0_pos = player.mainBodyChunk.pos;
             Vector2 chunk1_pos = player.bodyChunks[1].pos;
 
-            if (player.graphicsModule is PlayerGraphics playerGraphics) {
-                chunk0_pos = Vector2.Lerp(playerGraphics.drawPositions[0, 0], playerGraphics.head.pos, 0.2f);
-                chunk1_pos = playerGraphics.drawPositions[1, 0];
+            if (player.graphicsModule is PlayerGraphics player_graphics) {
+                chunk0_pos = Vector2.Lerp(player_graphics.drawPositions[0, 0], player_graphics.head.pos, 0.2f);
+                chunk1_pos = player_graphics.drawPositions[1, 0];
             }
 
             Vector2 body_vector = Custom.DirVec(chunk1_pos, chunk0_pos);
-            bool hasGravityAndStuff = player.Consious && player.bodyMode != BodyModeIndex.ZeroG && player.room.gravity > 0.0;
+            bool has_gravity_and_stuff = player.Consious && player.bodyMode != BodyModeIndex.ZeroG && player.room.gravity > 0.0;
 
-            if (hasGravityAndStuff) {
+            if (has_gravity_and_stuff) {
                 spear_on_back.flip = player.bodyMode != BodyModeIndex.Default || player.animation != AnimationIndex.None || (!player.standing || player.bodyChunks[1].pos.y >= player.bodyChunks[0].pos.y - 6.0) ? (player.bodyMode != BodyModeIndex.Stand || player.input[0].x == 0 ? Custom.LerpAndTick(spear_on_back.flip, player.flipDirection * Mathf.Abs(body_vector.x), 0.15f, 1f / 6f) : Custom.LerpAndTick(spear_on_back.flip, player.input[0].x, 0.02f, 0.1f)) : Custom.LerpAndTick(spear_on_back.flip, player.input[0].x * 0.3f, 0.05f, 0.02f);
             } else {
                 spear_on_back.flip = Custom.LerpAndTick(spear_on_back.flip, 0.0f, 0.15f, 1f / 7f);
             }
 
-            for (int index = 0; index <= currentSpearIndex; ++index) {
+            for (int index = 0; index <= current_spear_index; ++index) {
                 if (abstract_on_back_sticks[index].Spear.realizedObject is Spear spear && !spear.slatedForDeletetion) {
-                    if (hasGravityAndStuff) {
+                    if (has_gravity_and_stuff) {
                         if (spear_on_back.counter > 12 && !spear_on_back.interactionLocked && (player.input[0].x != 0 && player.standing)) {
-                            float handDirection = 0.0f;
+                            float hand_direction = 0.0f;
                             for (int index2 = 0; index2 < player.grasps.Length; ++index2) {
                                 if (player.grasps[index2] == null) {
-                                    handDirection = index2 != 0 ? 1f : -1f;
+                                    hand_direction = index2 != 0 ? 1f : -1f;
                                     break;
                                 }
                             }
-                            spear.setRotation = new Vector2?(Custom.DegToVec(Custom.AimFromOneVectorToAnother(chunk1_pos, chunk0_pos) + Custom.LerpMap(spear_on_back.counter, 12f, 20f, 0.0f, 360f * handDirection)));
+                            spear.setRotation = new Vector2?(Custom.DegToVec(Custom.AimFromOneVectorToAnother(chunk1_pos, chunk0_pos) + Custom.LerpMap(spear_on_back.counter, 12f, 20f, 0.0f, 360f * hand_direction)));
                         } else {
                             // structure: [default] - PerpendicularVector * ([rotation when standing] + [rotation when walking/crawling])
-                            spear.setRotation = new Vector2?(body_vector - Custom.PerpendicularVector(body_vector) * ((1.2f + spearXYModifier[index]) * (1f - Mathf.Abs(spear_on_back.flip)) - spear_on_back.flip * 0.02f * spearZModifier[index]));
+                            spear.setRotation = new Vector2?(body_vector - Custom.PerpendicularVector(body_vector) * ((1.2f + _spear_xy_modifier[index]) * (1f - Mathf.Abs(spear_on_back.flip)) - spear_on_back.flip * 0.02f * _spear_z_modifier[index]));
                             spear.ChangeOverlap(body_vector.y < -0.1 && player.bodyMode != BodyModeIndex.ClimbingOnBeam);
                         }
                     } else {
                         // structure: [default] - PerpendicularVector * [rotation when standing]
-                        spear.setRotation = new Vector2?(body_vector - Custom.PerpendicularVector(body_vector) * (1.2f + spearXYModifier[index]));
+                        spear.setRotation = new Vector2?(body_vector - Custom.PerpendicularVector(body_vector) * (1.2f + _spear_xy_modifier[index]));
                         spear.ChangeOverlap(false);
                     }
 
                     // structure: [height] - PerpendicularVector * [depth] // flip is about zero when standing, i.e. no depth required
-                    spear.firstChunk.MoveFromOutsideMyUpdate(eu, Vector2.Lerp(chunk1_pos, chunk0_pos, 0.5f - spearXYModifier[index] / 4f) - Custom.PerpendicularVector(chunk1_pos, chunk0_pos) * (7.5f + spearZModifier[index]) * spear_on_back.flip);
+                    spear.firstChunk.MoveFromOutsideMyUpdate(eu, Vector2.Lerp(chunk1_pos, chunk0_pos, 0.5f - _spear_xy_modifier[index] / 4f) - Custom.PerpendicularVector(chunk1_pos, chunk0_pos) * (7.5f + _spear_z_modifier[index]) * spear_on_back.flip);
                     spear.firstChunk.vel = player.mainBodyChunk.vel;
                     spear.rotationSpeed = 0.0f;
                 }
@@ -264,40 +264,40 @@ public static class SpearOnBackMod {
             if (spear_on_back.spear == null) return;
             if (spear_on_back.abstractStick == null) return;
 
-            AbstractSpear abstractSpear = spear_on_back.spear.abstractSpear; // spear is not null
+            AbstractSpear abstract_spear = spear_on_back.spear.abstractSpear; // spear is not null
             orig(spear_on_back, eu);
-            SpawnSpear(spear_on_back, abstractSpear);
+            SpawnSpear(spear_on_back, abstract_spear);
             return;
         }
 
         List<AbstractOnBackStick> abstract_on_back_sticks = player.abstractCreature.Get_Attached_Fields().abstract_on_back_sticks;
-        int currentSpearIndex = abstract_on_back_sticks.Count - 1;
+        int current_spear_index = abstract_on_back_sticks.Count - 1;
 
-        if (currentSpearIndex <= -1) return;
-        if (abstract_on_back_sticks[currentSpearIndex] is not AbstractOnBackStick abstract_on_back_stick) return;
+        if (current_spear_index <= -1) return;
+        if (abstract_on_back_sticks[current_spear_index] is not AbstractOnBackStick abstract_on_back_stick) return;
         if (abstract_on_back_stick.Spear.realizedObject is not Spear spear) return;
 
         foreach (Creature.Grasp? grasp in player.grasps) {
             if (grasp != null && player.Grabability(grasp.grabbed) >= ObjectGrabability.BigOneHand) return;
         }
 
-        int graspUsed = -1;
+        int grasp_used = -1;
         for (int index = 0; index < 2; ++index) {
             if (player.grasps[index] == null) {
-                graspUsed = index;
+                grasp_used = index;
                 break;
             }
         }
 
-        if (graspUsed == -1) return;
+        if (grasp_used == -1) return;
 
-        if (player.graphicsModule is PlayerGraphics playerGraphics) {
+        if (player.graphicsModule is PlayerGraphics player_graphics) {
             // spear_on_back.spear.firstChunk.MoveFromOutsideMyUpdate(eu, playerGraphics.hands[graspUsed].pos);
-            spear.firstChunk.MoveFromOutsideMyUpdate(eu, playerGraphics.hands[graspUsed].pos);
+            spear.firstChunk.MoveFromOutsideMyUpdate(eu, player_graphics.hands[grasp_used].pos);
         }
 
         spear.ChangeMode(Weapon.Mode.Free);
-        player.SlugcatGrab(spear, graspUsed);
+        player.SlugcatGrab(spear, grasp_used);
         spear_on_back.interactionLocked = true;
         player.noPickUpOnRelease = 20;
 
