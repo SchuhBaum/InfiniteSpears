@@ -17,6 +17,10 @@ public static class AbstractPlayerMod {
     public sealed class Attached_Fields {
         public bool is_blacklisted = true;
         public int max_spear_count = 0;
-        public List<Player.AbstractOnBackStick> abstract_on_back_sticks = new(); // change to actual size when game is created
+
+        // this is only used when max_spear_count > 1; this extends the number of 
+        // backspears that you can carry; in this case the vanilla abstract on back 
+        // stick is ignored and null;
+        public List<Player.AbstractOnBackStick> abstract_on_back_sticks = new();
     }
 }

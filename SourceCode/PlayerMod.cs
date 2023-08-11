@@ -1,7 +1,9 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using MoreSlugcats;
 using System;
+using System.Reflection;
 using UnityEngine;
 using static AbstractPhysicalObject;
 using static InfiniteSpears.AbstractPlayerMod;
@@ -29,6 +31,17 @@ public static class PlayerMod {
         On.Player.ctor += Player_Ctor; // create list of backspears
         On.Player.Die += Player_Die; // drop all backspears
         On.Player.Stun += Player_Stun; // drop all backspears
+
+        if (Type.GetType("Player, Assembly-CSharp") is Type player_class) {
+            try {
+                // don't put slug to back when you have backspears;
+                new Hook(player_class.GetProperty("CanPutSlugToBack", BindingFlags.Public | BindingFlags.Instance).GetMethod, typeof(PlayerMod).GetMethod("Player_CanPutSlugToBack"));
+            } catch (Exception exception) {
+                Debug.Log("InfiniteSpears: " + exception);
+            }
+        } else {
+            Debug.Log("InfiniteSpears: Failed to create property hooks for class Player.");
+        }
     }
 
     internal static void On_Config_Changed() {
@@ -42,6 +55,12 @@ public static class PlayerMod {
     //
     // public
     //
+
+    public static bool Player_CanPutSlugToBack(Func<Player, bool> orig, Player player) {
+        bool vanilla_result = orig(player);
+        if (player.Get_Attached_Fields().abstract_on_back_sticks.Count > 0) return false;
+        return vanilla_result;
+    }
 
     public static bool Uses_A_Persistant_Tracker(AbstractPhysicalObject abstract_physical_object) {
         if (abstract_physical_object.type == AbstractObjectType.NSHSwarmer) return true;

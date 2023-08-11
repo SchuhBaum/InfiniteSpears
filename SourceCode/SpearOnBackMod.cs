@@ -332,6 +332,8 @@ public static class SpearOnBackMod {
         List<AbstractOnBackStick> abstract_on_back_sticks = attached_fields.abstract_on_back_sticks;
         int current_spear_index = abstract_on_back_sticks.Count - 1;
 
+        // keep in mind that spear_on_back.abstractStick is not used and null; maybe I 
+        // should synchronize that as well => TODO?;
         if (current_spear_index == -1) {
             spear_on_back.spear = null;
         } else if (current_spear_index == attached_fields.max_spear_count - 1) {

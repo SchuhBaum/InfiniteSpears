@@ -15,6 +15,7 @@ internal class SpearMod {
     //
 
     private static void Spear_RecreateSticksFromAbstract(On.Spear.orig_RecreateSticksFromAbstract orig, Spear spear) {
+        // vanilla calls this function only when sticksRespawned is false => redundant;
         if (spear.sticksRespawned) return;
 
         foreach (AbstractObjectStick abstract_object_stick in spear.abstractPhysicalObject.stuckObjects) {
@@ -36,9 +37,9 @@ internal class SpearMod {
 
             List<AbstractOnBackStick> abstract_on_back_sticks = attached_fields.abstract_on_back_sticks;
             if (abstract_on_back_sticks.Count >= attached_fields.max_spear_count) break;
+            spear.ChangeMode(Weapon.Mode.OnBack);
             if (abstract_on_back_sticks.Contains(abstract_on_back_stick)) break;
             abstract_on_back_sticks.Add(abstract_on_back_stick);
-            spear.ChangeMode(Weapon.Mode.OnBack);
         }
         orig(spear);
     }
