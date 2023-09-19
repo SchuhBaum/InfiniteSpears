@@ -59,8 +59,7 @@ public static class SpearOnBackMod {
     public static void DropAllSpears(SpearOnBack spear_on_back) {
         if (spear_on_back.owner is not Player player) return;
         Attached_Fields attached_fields = player.Get_Attached_Fields();
-        if (attached_fields.max_spear_count == -1) return;
-        spear_on_back.spear = null;
+        if (attached_fields.has_infinite_spears) return;
 
         for (int stick_index = attached_fields.abstract_on_back_sticks.Count - 1; stick_index >= 0; --stick_index) {
             AbstractOnBackStick abstract_on_back_stick = attached_fields.abstract_on_back_sticks[stick_index];
@@ -70,6 +69,9 @@ public static class SpearOnBackMod {
             }
             abstract_on_back_stick.Deactivate(); // removes the backspear as well
         }
+
+        spear_on_back.abstractStick = null;
+        spear_on_back.spear = null;
     }
 
     public static void SpawnSpear(SpearOnBack spear_on_back, in AbstractSpear? abstract_spear) {
@@ -88,28 +90,28 @@ public static class SpearOnBackMod {
         EntityID id = world.game.GetNewID();
         id.altSeed = abstract_spear.ID.RandomSeed;
 
-        AbstractSpear new_abstract_spear = new(world, null, abstract_player.pos, id, abstract_spear.explosive, abstract_spear.electric) {
+        AbstractSpear abstract_spear_copy = new(world, null, abstract_player.pos, id, abstract_spear.explosive, abstract_spear.electric) {
             electricCharge = abstract_spear.electricCharge,
             hue = abstract_spear.hue,
             needle = abstract_spear.needle,
         };
 
-        new_abstract_spear.RealizeInRoom();
-        if (new_abstract_spear.realizedObject is not Spear new_spear) return;
+        abstract_spear_copy.RealizeInRoom();
+        spear_on_back.abstractStick = new AbstractOnBackStick(abstract_player, abstract_spear_copy);
+        spear_on_back.spear = (Spear)spear_on_back.abstractStick.Spear.realizedObject; // spear_copy;
+        spear_on_back.spear?.ChangeMode(Weapon.Mode.OnBack);
 
-        if (abstract_spear.realizedObject is Spear spear) {
-            new_spear.spearmasterNeedle = spear.spearmasterNeedle;
-            new_spear.spearmasterNeedleType = spear.spearmasterNeedleType;
-            new_spear.spearmasterNeedle_hasConnection = spear.spearmasterNeedle_hasConnection;
-            new_spear.spearmasterNeedle_fadecounter = spear.spearmasterNeedle_fadecounter;
-        }
-
-        new_spear.ChangeMode(Weapon.Mode.OnBack);
-        spear_on_back.spear = new_spear;
-        spear_on_back.abstractStick = new AbstractOnBackStick(abstract_player, new_abstract_spear);
         spear_on_back.interactionLocked = true;
         player.noPickUpOnRelease = 20;
-        player.room.PlaySound(SoundID.Slugcat_Pick_Up_Spear, player.mainBodyChunk);
+        player.room?.PlaySound(SoundID.Slugcat_Pick_Up_Spear, player.mainBodyChunk);
+
+        if (abstract_spear.realizedObject is not Spear spear) return;
+        if (abstract_spear_copy.realizedObject is not Spear spear_copy) return;
+
+        spear_copy.spearmasterNeedle = spear.spearmasterNeedle;
+        spear_copy.spearmasterNeedleType = spear.spearmasterNeedleType;
+        spear_copy.spearmasterNeedle_hasConnection = spear.spearmasterNeedle_hasConnection;
+        spear_copy.spearmasterNeedle_fadecounter = spear.spearmasterNeedle_fadecounter;
     }
 
     //
@@ -123,7 +125,7 @@ public static class SpearOnBackMod {
         }
 
         Attached_Fields attached_fields = player.Get_Attached_Fields();
-        if (attached_fields.max_spear_count == -1 || attached_fields.is_blacklisted) {
+        if (attached_fields.is_blacklisted || attached_fields.has_infinite_spears) {
             orig(spear_on_back);
             return;
         }
@@ -140,6 +142,7 @@ public static class SpearOnBackMod {
             abstract_on_back_stick.Deactivate(); // removes now from abstract_on_back_sticks as well
         }
 
+        spear_on_back.abstractStick = null;
         spear_on_back.spear = null;
         spear_on_back.interactionLocked = true;
     }
@@ -156,7 +159,7 @@ public static class SpearOnBackMod {
             return;
         }
 
-        if (attached_fields.max_spear_count == -1) {
+        if (attached_fields.has_infinite_spears) {
             if (spear_on_back.spear?.slatedForDeletetion == true) {
                 spear_on_back.spear = null; // prevents backspear from being dropped when spear gets abstracted
             }
@@ -178,7 +181,7 @@ public static class SpearOnBackMod {
         }
 
         Vector2 body_vector = Custom.DirVec(chunk1_pos, chunk0_pos);
-        bool has_gravity_and_stuff = player.Consious && player.bodyMode != BodyModeIndex.ZeroG && player.room.gravity > 0.0;
+        bool has_gravity_and_stuff = player.Consious && player.bodyMode != BodyModeIndex.ZeroG && player.room?.gravity > 0.0;
 
         if (has_gravity_and_stuff) {
             spear_on_back.flip = player.bodyMode != BodyModeIndex.Default || player.animation != AnimationIndex.None || (!player.standing || player.bodyChunks[1].pos.y >= player.bodyChunks[0].pos.y - 6.0) ? (player.bodyMode != BodyModeIndex.Stand || player.input[0].x == 0 ? Custom.LerpAndTick(spear_on_back.flip, player.flipDirection * Mathf.Abs(body_vector.x), 0.15f, 1f / 6f) : Custom.LerpAndTick(spear_on_back.flip, player.input[0].x, 0.02f, 0.1f)) : Custom.LerpAndTick(spear_on_back.flip, player.input[0].x * 0.3f, 0.05f, 0.02f);
@@ -224,7 +227,7 @@ public static class SpearOnBackMod {
         }
 
         Attached_Fields attached_fields = player.Get_Attached_Fields();
-        if (attached_fields.max_spear_count == -1 || attached_fields.is_blacklisted) {
+        if (attached_fields.is_blacklisted || attached_fields.has_infinite_spears) {
             orig(spear_on_back, spear);
             return;
         }
@@ -242,7 +245,7 @@ public static class SpearOnBackMod {
         spear.ChangeMode(Weapon.Mode.OnBack);
         spear_on_back.interactionLocked = true;
         player.noPickUpOnRelease = 20;
-        player.room.PlaySound(SoundID.Slugcat_Stash_Spear_On_Back, player.mainBodyChunk);
+        player.room?.PlaySound(SoundID.Slugcat_Stash_Spear_On_Back, player.mainBodyChunk);
 
         abstract_on_back_sticks.Add(new AbstractOnBackStick(player.abstractPhysicalObject, spear.abstractPhysicalObject));
     }
@@ -259,11 +262,12 @@ public static class SpearOnBackMod {
             return;
         }
 
-        if (attached_fields.max_spear_count == -1) {
-            if (spear_on_back.spear == null) return;
+        if (attached_fields.has_infinite_spears) {
             if (spear_on_back.abstractStick == null) return;
+            if (spear_on_back.spear == null) return;
 
-            AbstractSpear abstract_spear = spear_on_back.spear.abstractSpear; // spear is not null
+            // create a copy after calling orig;
+            AbstractSpear abstract_spear = spear_on_back.spear.abstractSpear;
             orig(spear_on_back, eu);
             SpawnSpear(spear_on_back, abstract_spear);
             return;
@@ -296,14 +300,14 @@ public static class SpearOnBackMod {
         }
 
         spear.ChangeMode(Weapon.Mode.Free);
+        // call Deactivate() here in case that an exception is thrown later; calls
+        // abstract_on_back_sticks.Remove(abstract_on_back_stick) as well;
+        abstract_on_back_stick.Deactivate();
+
         player.SlugcatGrab(spear, grasp_used);
         spear_on_back.interactionLocked = true;
         player.noPickUpOnRelease = 20;
-
-        player.room.PlaySound(SoundID.Slugcat_Pick_Up_Spear, player.mainBodyChunk);
-        abstract_on_back_stick.Deactivate(); // removes as well
-
-        // abstract_on_back_sticks.Remove(abstract_on_back_stick);
+        player.room?.PlaySound(SoundID.Slugcat_Pick_Up_Spear, player.mainBodyChunk);
     }
 
     private static void SpearOnBack_Update(On.Player.SpearOnBack.orig_Update orig, SpearOnBack spear_on_back, bool eu) {
@@ -318,11 +322,9 @@ public static class SpearOnBackMod {
             return;
         }
 
-        if (attached_fields.max_spear_count == -1) {
-            // consistency check
-            if (spear_on_back.spear == null && spear_on_back.abstractStick != null) {
-                spear_on_back.spear = (Spear)spear_on_back.abstractStick.Spear.realizedObject;
-            }
+        if (attached_fields.has_infinite_spears) {
+            // consistency check; was there a case where this mattered?;
+            spear_on_back.spear = (Spear)spear_on_back.abstractStick?.Spear.realizedObject!;
 
             if (DespawnSpear(spear_on_back)) return;
             orig(spear_on_back, eu);
@@ -332,12 +334,12 @@ public static class SpearOnBackMod {
         List<AbstractOnBackStick> abstract_on_back_sticks = attached_fields.abstract_on_back_sticks;
         int current_spear_index = abstract_on_back_sticks.Count - 1;
 
-        // keep in mind that spear_on_back.abstractStick is not used and null; maybe I 
-        // should synchronize that as well => TODO?;
         if (current_spear_index == -1) {
+            spear_on_back.abstractStick = null;
             spear_on_back.spear = null;
         } else if (current_spear_index == attached_fields.max_spear_count - 1) {
-            spear_on_back.spear = (Spear)abstract_on_back_sticks[current_spear_index].Spear.realizedObject;
+            spear_on_back.abstractStick = abstract_on_back_sticks[current_spear_index];
+            spear_on_back.spear = (Spear)spear_on_back.abstractStick.Spear.realizedObject;
         } else {
             bool spear_in_hand = false;
             bool hands_are_full = true;
@@ -354,9 +356,11 @@ public static class SpearOnBackMod {
             }
 
             if (hands_are_full || spear_in_hand) {
+                spear_on_back.abstractStick = null;
                 spear_on_back.spear = null;
             } else {
-                spear_on_back.spear = (Spear)abstract_on_back_sticks[current_spear_index].Spear.realizedObject;
+                spear_on_back.abstractStick = abstract_on_back_sticks[current_spear_index];
+                spear_on_back.spear = (Spear)spear_on_back.abstractStick.Spear.realizedObject;
             }
         }
 

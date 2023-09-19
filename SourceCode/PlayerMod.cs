@@ -8,6 +8,8 @@ using UnityEngine;
 using static AbstractPhysicalObject;
 using static InfiniteSpears.AbstractPlayerMod;
 using static InfiniteSpears.MainMod;
+using static MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName;
+
 using static Player;
 using static SlugcatStats;
 using static SlugcatStats.Name;
@@ -63,6 +65,11 @@ public static class PlayerMod {
     }
 
     public static bool Uses_A_Persistant_Tracker(AbstractPhysicalObject abstract_physical_object) {
+        //
+        // copy & paste vanilla function but it works with "key item tracking" disabled
+        // as well;
+        //
+
         if (abstract_physical_object.type == AbstractObjectType.NSHSwarmer) return true;
         if (abstract_physical_object.type == MoreSlugcatsEnums.AbstractObjectType.EnergyCell) return true;
         if (abstract_physical_object.type == MoreSlugcatsEnums.AbstractObjectType.JokeRifle) return true;
@@ -107,21 +114,12 @@ public static class PlayerMod {
                     // vanilla case;
                     return player.grasps[0] == null || player.grasps[1] == null;
                 }
+                if (spear_on_back.abstractStick == null && spear_on_back.spear == null) return true;
 
-                // don't check attached_fields.is_blacklisted since you might have the backspear perk
-                // active;
-                Attached_Fields attached_fields = player.Get_Attached_Fields();
-                if (spear_on_back.spear != null) {
-                    // prioritize spawning spears from backspears;
-                    if (attached_fields.max_spear_count == -1) return false;
-                    return player.grasps[0] == null || player.grasps[1] == null;
-                }
-
-                // abstractStick is not used when Option_MaxSpearCount > 1; (this case should not
-                // matter in any case since the player is realized inside this function and 
-                // spear_on_back.spear != null is already considered;)
-                if (attached_fields.max_spear_count == -1 && spear_on_back.abstractStick != null) return false;
-                return true;
+                // don't check attached_fields.is_blacklisted since you might have the backspear 
+                // perk active; prioritize spawning spears from backspears;
+                if (player.Get_Attached_Fields().has_infinite_spears) return false;
+                return player.grasps[0] == null || player.grasps[1] == null;
             });
         } else {
             if (can_log_il_hooks) {
@@ -157,15 +155,11 @@ public static class PlayerMod {
                 Attached_Fields attached_fields = player.Get_Attached_Fields();
                 // if (attached_fields.isBlacklisted) return; // I might not want to check this since you can have a backspear perk as well
                 if (player.spearOnBack is not SpearOnBack spear_on_back) return;
+                if (spear_on_back.abstractStick != null) return;
                 if (spear_on_back.spear != null) return;
 
-                // abstractStick is not consistently updated if number of backspears > 1;
-                // otherwise this can lead to the situation that you have room on your back
-                // but you still can't spawn needles;
-                if (attached_fields.max_spear_count == -1 && spear_on_back.abstractStick != null) return;
-
                 spear_on_back.abstractStick = new AbstractOnBackStick(player.abstractPhysicalObject, abstract_spear);
-                spear_on_back.spear = (Spear)abstract_spear.realizedObject; // null is okay;
+                spear_on_back.spear = (Spear)spear_on_back.abstractStick.Spear.realizedObject; // null is okay;
                 spear_on_back.interactionLocked = true;
                 player.noPickUpOnRelease = 20;
 
@@ -185,114 +179,46 @@ public static class PlayerMod {
     //
     //
 
-    private static void Player_Ctor(On.Player.orig_ctor orig, Player player, AbstractCreature abstract_creature, World world) {
-        orig(player, abstract_creature, world);
+    private static void Player_Ctor(On.Player.orig_ctor orig, Player player, AbstractCreature abstract_player, World world) {
+        orig(player, abstract_player, world);
 
         // return when this is already initialized; otherwise this can conflict with the
         // swallow everything mod;
-        if (_all_attached_fields.ContainsKey(abstract_creature)) return;
-        Attached_Fields attached_fields = new();
-        _all_attached_fields.Add(abstract_creature, attached_fields);
-        if (player.SlugCatClass is not Name slugcat_name) return;
+        if (_all_attached_fields.ContainsKey(abstract_player)) return;
+
+        if (player.SlugCatClass is not Name slugcat_name) {
+            _all_attached_fields.Add(abstract_player, new(max_spear_count: 0));
+            return;
+        }
 
         if (slugcat_name == Yellow) {
-            if (Option_Max_Spear_Count_Yellow == 0) return;
-            player.spearOnBack = new SpearOnBack(player);
-            if (Option_Max_Spear_Count_Yellow == 1) return;
-
-            attached_fields.max_spear_count = Option_Max_Spear_Count_Yellow;
-            attached_fields.is_blacklisted = false;
-            return;
+            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Yellow));
+        } else if (slugcat_name == White) {
+            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_White));
+        } else if (slugcat_name == Red) {
+            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Red));
+        } else if (ModManager.MSC) {
+            if (slugcat_name == Gourmand) {
+                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Gourmand));
+            } else if (slugcat_name == Artificer) {
+                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Artificer));
+            } else if (slugcat_name == Rivulet) {
+                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Rivulet));
+            } else if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Spear) {
+                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Spearmaster));
+            } else if (slugcat_name == Saint) {
+                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Saint));
+            } else if (slugcat_name == Sofanthiel) {
+                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Sofanthiel));
+            } else {
+                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Custom_Slugcats));
+            }
+        } else {
+            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Custom_Slugcats));
         }
 
-        if (slugcat_name == White) {
-            if (Option_Max_Spear_Count_White == 0) return;
-            player.spearOnBack = new SpearOnBack(player);
-            if (Option_Max_Spear_Count_White == 1) return;
-
-            attached_fields.max_spear_count = Option_Max_Spear_Count_White;
-            attached_fields.is_blacklisted = false;
-            return;
-        }
-
-        if (slugcat_name == Red) {
-            if (Option_Max_Spear_Count_Red == 0) return;
-            player.spearOnBack = new SpearOnBack(player);
-            if (Option_Max_Spear_Count_Red == 1) return;
-
-            attached_fields.max_spear_count = Option_Max_Spear_Count_Red;
-            attached_fields.is_blacklisted = false;
-            return;
-        }
-
-        if (ModManager.MSC) {
-            if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Gourmand) {
-                if (Option_Max_Spear_Count_Gourmand == 0) return;
-                player.spearOnBack = new SpearOnBack(player);
-                if (Option_Max_Spear_Count_Gourmand == 1) return;
-
-                attached_fields.max_spear_count = Option_Max_Spear_Count_Gourmand;
-                attached_fields.is_blacklisted = false;
-                return;
-            }
-
-            if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Artificer) {
-                if (Option_Max_Spear_Count_Artificer == 0) return;
-                player.spearOnBack = new SpearOnBack(player);
-                if (Option_Max_Spear_Count_Artificer == 1) return;
-
-                attached_fields.max_spear_count = Option_Max_Spear_Count_Artificer;
-                attached_fields.is_blacklisted = false;
-                return;
-            }
-
-            if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Rivulet) {
-                if (Option_Max_Spear_Count_Rivulet == 0) return;
-                player.spearOnBack = new SpearOnBack(player);
-                if (Option_Max_Spear_Count_Rivulet == 1) return;
-
-                attached_fields.max_spear_count = Option_Max_Spear_Count_Rivulet;
-                attached_fields.is_blacklisted = false;
-                return;
-            }
-
-            if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Spear) {
-                if (Option_Max_Spear_Count_Spearmaster == 0) return;
-                player.spearOnBack = new SpearOnBack(player);
-                if (Option_Max_Spear_Count_Spearmaster == 1) return;
-
-                attached_fields.max_spear_count = Option_Max_Spear_Count_Spearmaster;
-                attached_fields.is_blacklisted = false;
-                return;
-            }
-
-            if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Saint) {
-                if (Option_Max_Spear_Count_Saint == 0) return;
-                player.spearOnBack = new SpearOnBack(player);
-                if (Option_Max_Spear_Count_Saint == 1) return;
-
-                attached_fields.max_spear_count = Option_Max_Spear_Count_Saint;
-                attached_fields.is_blacklisted = false;
-                return;
-            }
-
-            if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Sofanthiel) {
-                if (Option_Max_Spear_Count_Sofanthiel == 0) return;
-                player.spearOnBack = new SpearOnBack(player);
-                if (Option_Max_Spear_Count_Sofanthiel == 1) return;
-
-                attached_fields.max_spear_count = Option_Max_Spear_Count_Sofanthiel;
-                attached_fields.is_blacklisted = false;
-                return;
-            }
-        }
-
-        if (Option_Max_Spear_Count_Custom_Slugcats == 0) return;
+        if (player.Get_Attached_Fields().max_spear_count == 0) return;
         player.spearOnBack = new SpearOnBack(player);
-        if (Option_Max_Spear_Count_Custom_Slugcats == 1) return;
-
-        attached_fields.max_spear_count = Option_Max_Spear_Count_Custom_Slugcats;
-        attached_fields.is_blacklisted = false;
     }
 
     private static void Player_Die(On.Player.orig_Die orig, Player player) {
