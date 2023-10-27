@@ -30,7 +30,7 @@ public static class SpearOnBackMod {
     // public
     //
 
-    public static bool DespawnSpear(SpearOnBack spear_on_back) {
+    public static bool CanDespawnSpear(SpearOnBack spear_on_back) {
         if (spear_on_back.interactionLocked) return false;
         if (spear_on_back.owner is not Player player) return false;
         if (!player.input[0].pckp) return false;
@@ -42,18 +42,16 @@ public static class SpearOnBackMod {
         if (carried_abstract_spear.electric != held_abstract_spear.electric) return false;
         if (carried_abstract_spear.needle != held_abstract_spear.needle) return false;
         if (carried_abstract_spear.hue != held_abstract_spear.hue) return false;
+        return true;
+    }
 
-        ++spear_on_back.counter;
-        if (spear_on_back.counter <= 20) {
-            // keep the counter from resetting
-            return true;
-        }
+    public static void DespawnSpear(SpearOnBack spear_on_back) {
+        if (spear_on_back.owner is not Player player) return;
+        if (player.grasps[0]?.grabbed?.abstractPhysicalObject is not AbstractSpear held_abstract_spear) return;
 
         held_abstract_spear.realizedObject.Destroy();
         held_abstract_spear.Destroy();
-        spear_on_back.counter = 0;
         spear_on_back.interactionLocked = true;
-        return true;
     }
 
     public static void DropAllSpears(SpearOnBack spear_on_back) {
@@ -326,7 +324,17 @@ public static class SpearOnBackMod {
             // consistency check; was there a case where this mattered?;
             spear_on_back.spear = (Spear)spear_on_back.abstractStick?.Spear.realizedObject!;
 
-            if (DespawnSpear(spear_on_back)) return;
+            if (CanDespawnSpear(spear_on_back)) {
+                // the animation does not match in PlayerGraphics.Update() when you have a spear 
+                // on your back and slugcat's left hand is free; it tries to grab the spear with 
+                // the left hand;
+                ++spear_on_back.counter;
+                if (spear_on_back.counter <= 20) return;
+                DespawnSpear(spear_on_back);
+                spear_on_back.counter = 0;
+                return;
+            }
+
             orig(spear_on_back, eu);
             return;
         }
@@ -334,10 +342,19 @@ public static class SpearOnBackMod {
         List<AbstractOnBackStick> abstract_on_back_sticks = attached_fields.abstract_on_back_sticks;
         int current_spear_index = abstract_on_back_sticks.Count - 1;
 
+        // needed in case that spears are one-handed (Spearmaster);
+        bool main_hand_is_empty = player.grasps[0] == null;
+        bool off_hand_holds_big_item = player.grasps[1] != null && player.Grabability(player.grasps[1].grabbed) >= ObjectGrabability.BigOneHand;
+
         if (current_spear_index == -1) {
             spear_on_back.abstractStick = null;
             spear_on_back.spear = null;
         } else if (current_spear_index == attached_fields.max_spear_count - 1) {
+            spear_on_back.abstractStick = abstract_on_back_sticks[current_spear_index];
+            spear_on_back.spear = (Spear)spear_on_back.abstractStick.Spear.realizedObject;
+        } else if (main_hand_is_empty && !off_hand_holds_big_item) {
+            // this case is needed; otherwise it plays the wrong animation when you can dual
+            // wield;
             spear_on_back.abstractStick = abstract_on_back_sticks[current_spear_index];
             spear_on_back.spear = (Spear)spear_on_back.abstractStick.Spear.realizedObject;
         } else {
@@ -349,13 +366,17 @@ public static class SpearOnBackMod {
             for (int index = 0; index < 2; ++index) {
                 if (player.grasps[index] == null) {
                     hands_are_full = false;
-                } else if (player.grasps[index].grabbed is Spear) {
+                    continue;
+                }
+
+                if (player.grasps[index].grabbed is Spear) {
                     spear_in_hand = true;
                     break;
                 }
             }
 
             if (hands_are_full || spear_in_hand) {
+                // this case makes sure that you can pick up spears directly to your back;
                 spear_on_back.abstractStick = null;
                 spear_on_back.spear = null;
             } else {
@@ -366,20 +387,27 @@ public static class SpearOnBackMod {
 
         if (spear_on_back.increment) {
             ++spear_on_back.counter;
+
+            // prioritize SpearToHand; otherwise you need to drop spears in order to dual 
+            // wield with Spearmaster;
+            if (spear_on_back.counter > 20 && current_spear_index > -1 && main_hand_is_empty && !off_hand_holds_big_item) {
+                spear_on_back.SpearToHand(eu);
+                spear_on_back.counter = 0;
+            }
+
             // check if you can SpearToBack
-            if (current_spear_index < attached_fields.max_spear_count - 1 && spear_on_back.counter > 20) {
-                for (int index = 0; index < 2; ++index) {
-                    if (player.grasps[index] != null && player.grasps[index].grabbed is Spear) {
-                        player.bodyChunks[0].pos += Custom.DirVec(player.grasps[index].grabbed.firstChunk.pos, player.bodyChunks[0].pos) * 2f;
-                        spear_on_back.SpearToBack(player.grasps[index].grabbed as Spear);
-                        spear_on_back.counter = 0;
-                        break;
-                    }
+            if (spear_on_back.counter > 20 && current_spear_index < attached_fields.max_spear_count - 1) {
+                foreach (Creature.Grasp? grasp in player.grasps) {
+                    if (grasp?.grabbed is not Spear spear) continue;
+                    player.bodyChunks[0].pos += Custom.DirVec(grasp.grabbed.firstChunk.pos, player.bodyChunks[0].pos) * 2f;
+                    spear_on_back.SpearToBack(spear);
+                    spear_on_back.counter = 0;
+                    break;
                 }
             }
 
             // hands are empty // check if you can SpearToHand
-            if (current_spear_index > -1 && spear_on_back.counter > 20) {
+            if (spear_on_back.counter > 20 && current_spear_index > -1) {
                 spear_on_back.SpearToHand(eu);
                 spear_on_back.counter = 0;
             }

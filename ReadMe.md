@@ -1,5 +1,5 @@
 ## InfiniteSpears
-###### Version: 2.1.8
+###### Version: 2.1.9
 This is a mod for Rain World v1.9.
 
 ### Description
@@ -16,7 +16,7 @@ This mod has additional options:
 
 ### Installation
 0. Update Rain World to version 1.9 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.1.8).
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.1.9).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -31,7 +31,7 @@ There are two licenses available - MIT and Unlicense. You can choose which one y
 
 ### Changelog
 #### (Rain World v1.9)
-v2.1.8:
+v2.1.9:
 - Made the IL hook more robust.
 - (swallowed items) Fixed some bugs where specific consumables could not be duplicated.
 - IL hooks should no longer be logged multiple times when other mods add these IL hooks as well.
@@ -41,6 +41,7 @@ v2.1.8:
 - Added for each slugcat a separate slider for the number of backspears.
 - Potentially fixed a bug where the game would freeze because you had more than 7 backspears (duplicate glitch?).
 - Fixed a bug where you could carry backspears and a slugpup on your back at the same time.
+- Added that retrieving a spear from your back is prioritized when you can dual wield them (like Spearmaster).
 
 v2.1.0:  
 - Added support for Rain World 1.9.
