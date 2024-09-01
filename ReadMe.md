@@ -1,5 +1,5 @@
 ## InfiniteSpears
-###### Version: 2.1.9
+###### Version: 2.2.0
 This is a mod for Rain World v1.9.
 
 ### Description
@@ -16,7 +16,7 @@ This mod has additional options:
 
 ### Installation
 0. Update Rain World to version 1.9 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.1.9).
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.2.0).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -27,10 +27,13 @@ See the corresponding sections on the [Steam Workshop page](https://steamcommuni
 If you have feedback, you can message me on Discord `@schuhbaum` or write an email to SchuhBaum71@gmail.com.
 
 ### License
-There are two licenses available - MIT and Unlicense. You can choose which one you want to use.  
+See the file LICENSE-MIT.
 
 ### Changelog
 #### (Rain World v1.9)
+v2.2.0:
+- (slugs and spears) Added this option (disabled by default). When enabled, you can carry slugs and spears on your back at the same time.
+
 v2.1.9:
 - Made the IL hook more robust.
 - (swallowed items) Fixed some bugs where specific consumables could not be duplicated.

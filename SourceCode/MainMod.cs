@@ -1,4 +1,4 @@
-using BepInEx;
+﻿using BepInEx;
 using MonoMod.Cil;
 using System.Security.Permissions;
 using UnityEngine;
@@ -11,7 +11,7 @@ using static InfiniteSpears.MainModOptions;
 
 namespace InfiniteSpears;
 
-[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.1.9")]
+[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.2.0")]
 public class MainMod : BaseUnityPlugin {
     //
     // meta data
@@ -19,13 +19,14 @@ public class MainMod : BaseUnityPlugin {
 
     public static readonly string mod_id = "InfiniteSpears";
     public static readonly string author = "SchuhBaum";
-    public static readonly string version = "2.1.9";
+    public static readonly string version = "2.2.0";
 
     //
     // options
     //
 
     public static bool Option_JokeRifle => joke_rifle.Value;
+    public static bool Option_SlugsAndSpears => slugs_and_spears.Value;
     public static bool Option_SwallowedItems => swallowed_items.Value;
 
     public static int Option_Max_Spear_Count_Yellow => max_spear_count_slider_yellow.Value;

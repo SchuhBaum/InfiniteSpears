@@ -1,10 +1,11 @@
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using MoreSlugcats;
 using System;
 using System.Reflection;
 using UnityEngine;
+
 using static AbstractPhysicalObject;
 using static InfiniteSpears.AbstractPlayerMod;
 using static InfiniteSpears.MainMod;
@@ -18,8 +19,11 @@ namespace InfiniteSpears;
 
 public static class PlayerMod {
     //
-    // variables
+    // parameters and variables
     //
+
+    private static Hook? hook_Player_CanPutSlugToBack = null;
+    private static Hook? hook_Player_CanPutSpearToBack = null;
 
     public static Attached_Fields Get_Attached_Fields(this Player player) => player.abstractCreature.Get_Attached_Fields();
 
@@ -27,41 +31,66 @@ public static class PlayerMod {
     // main
     //
 
-    internal static void OnEnable() {
-        IL.Player.GrabUpdate += IL_Player_GrabUpdate;
+    internal static void On_Config_Changed() {
+        hook_Player_CanPutSlugToBack?.Dispose();
+        hook_Player_CanPutSlugToBack = null;
+        hook_Player_CanPutSpearToBack?.Dispose();
+        hook_Player_CanPutSpearToBack = null;
 
-        On.Player.ctor += Player_Ctor; // create list of backspears
-        On.Player.Die += Player_Die; // drop all backspears
-        On.Player.Stun += Player_Stun; // drop all backspears
+        On.Player.Regurgitate -= Player_Regurgitate;
+
+        if (Option_SwallowedItems) {
+            On.Player.Regurgitate += Player_Regurgitate;
+        }
 
         if (Type.GetType("Player, Assembly-CSharp") is Type player_class) {
-            try {
-                // don't put slug to back when you have backspears;
-                new Hook(player_class.GetProperty("CanPutSlugToBack", BindingFlags.Public | BindingFlags.Instance).GetMethod, typeof(PlayerMod).GetMethod("Player_CanPutSlugToBack"));
-            } catch (Exception exception) {
-                Debug.Log("InfiniteSpears: " + exception);
+            if (Option_SlugsAndSpears) {
+                try {
+                    hook_Player_CanPutSlugToBack = new Hook(player_class.GetProperty("CanPutSlugToBack", BindingFlags.Public | BindingFlags.Instance).GetMethod, typeof(PlayerMod).GetMethod("Player_CanPutSlugToBack_Allow"));
+                } catch (Exception exception) {
+                    Debug.Log("InfiniteSpears: " + exception);
+                }
+
+                try {
+                    hook_Player_CanPutSpearToBack = new Hook(player_class.GetProperty("CanPutSpearToBack", BindingFlags.Public | BindingFlags.Instance).GetMethod, typeof(PlayerMod).GetMethod("Player_CanPutSpearToBack"));
+                } catch (Exception exception) {
+                    Debug.Log("InfiniteSpears: " + exception);
+                }
+            } else {
+                try {
+                    hook_Player_CanPutSlugToBack = new Hook(player_class.GetProperty("CanPutSlugToBack", BindingFlags.Public | BindingFlags.Instance).GetMethod, typeof(PlayerMod).GetMethod("Player_CanPutSlugToBack_Prevent"));
+                } catch (Exception exception) {
+                    Debug.Log("InfiniteSpears: " + exception);
+                }
             }
         } else {
             Debug.Log("InfiniteSpears: Failed to create property hooks for class Player.");
         }
     }
 
-    internal static void On_Config_Changed() {
-        On.Player.Regurgitate -= Player_Regurgitate;
-
-        if (Option_SwallowedItems) {
-            On.Player.Regurgitate += Player_Regurgitate;
-        }
+    internal static void OnEnable() {
+        IL.Player.GrabUpdate += IL_Player_GrabUpdate;
+        On.Player.ctor += Player_Ctor; // create list of backspears
+        On.Player.Die += Player_Die; // drop all backspears
+        On.Player.Stun += Player_Stun; // drop all backspears
     }
 
     //
     // public
     //
 
-    public static bool Player_CanPutSlugToBack(Func<Player, bool> orig, Player player) {
+    public static bool Player_CanPutSlugToBack_Allow(Func<Player, bool> orig, Player player) { // Option_SlugsAndSpears
+        return (ModManager.MSC || ModManager.CoopAvailable) && player.slugOnBack != null && !player.slugOnBack.interactionLocked && player.slugOnBack.slugcat == null;
+    }
+
+    public static bool Player_CanPutSlugToBack_Prevent(Func<Player, bool> orig, Player player) {
         bool vanilla_result = orig(player);
         if (player.Get_Attached_Fields().abstract_on_back_sticks.Count > 0) return false;
         return vanilla_result;
+    }
+
+    public static bool Player_CanPutSpearToBack(Func<Player, bool> orig, Player player) { // Option_SlugsAndSpears
+        return player.spearOnBack != null && !player.spearOnBack.interactionLocked && player.spearOnBack.spear == null;
     }
 
     public static bool Uses_A_Persistant_Tracker(AbstractPhysicalObject abstract_physical_object) {

@@ -1,4 +1,4 @@
-using RWCustom;
+﻿using RWCustom;
 using System.Collections.Generic;
 using UnityEngine;
 using static InfiniteSpears.AbstractPlayerMod;
@@ -385,7 +385,11 @@ public static class SpearOnBackMod {
             }
         }
 
-        if (spear_on_back.increment) {
+        // check pckp in order to prevent spearmaster needles from getting put to back
+        // directly after being produced; you need to hold pckp to produce them;
+        // for some reason there is a delay; !input[2].pckp is enough when standing still;
+        // !input[3].pckp is enough when walking;
+        if (spear_on_back.increment && (spear_on_back.counter > 0 || !player.input[9].pckp)) {
             ++spear_on_back.counter;
 
             // prioritize SpearToHand; otherwise you need to drop spears in order to dual 
