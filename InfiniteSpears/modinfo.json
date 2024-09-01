@@ -6,6 +6,7 @@
   "description": "This mod has two main features. You can either a) carry one spear on your back, and spawn or despawn spears using it, OR b) carry multiple spears on your back which behave normally.",
   "requirements": [],
   "requirements_names": [],
+  "target_game_version": "v1.9.15",
   "tags": ["Accessibility", "Game Mechanics"],
   "checksum_override_version": true
 }
