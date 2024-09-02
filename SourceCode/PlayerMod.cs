@@ -24,6 +24,8 @@ public static class PlayerMod {
 
     private static Hook? hook_Player_CanPutSlugToBack = null;
     private static Hook? hook_Player_CanPutSpearToBack = null;
+    private static Hook? hook_Player_CanRetrieveSlugFromBack = null;
+    private static Hook? hook_Player_CanRetrieveSpearFromBack = null;
 
     public static Attached_Fields Get_Attached_Fields(this Player player) => player.abstractCreature.Get_Attached_Fields();
 
@@ -33,9 +35,14 @@ public static class PlayerMod {
 
     internal static void On_Config_Changed() {
         hook_Player_CanPutSlugToBack?.Dispose();
-        hook_Player_CanPutSlugToBack = null;
         hook_Player_CanPutSpearToBack?.Dispose();
-        hook_Player_CanPutSpearToBack = null;
+        hook_Player_CanRetrieveSlugFromBack?.Dispose();
+        hook_Player_CanRetrieveSpearFromBack?.Dispose();
+
+        hook_Player_CanPutSlugToBack         = null;
+        hook_Player_CanPutSpearToBack        = null;
+        hook_Player_CanRetrieveSlugFromBack  = null;
+        hook_Player_CanRetrieveSpearFromBack = null;
 
         On.Player.Regurgitate -= Player_Regurgitate;
 
@@ -46,19 +53,61 @@ public static class PlayerMod {
         if (Type.GetType("Player, Assembly-CSharp") is Type player_class) {
             if (Option_SlugsAndSpears) {
                 try {
-                    hook_Player_CanPutSlugToBack = new Hook(player_class.GetProperty("CanPutSlugToBack", BindingFlags.Public | BindingFlags.Instance).GetMethod, typeof(PlayerMod).GetMethod("Player_CanPutSlugToBack_Allow"));
+                    hook_Player_CanPutSlugToBack = new Hook(
+                        player_class.GetProperty(
+                            "CanPutSlugToBack",
+                            BindingFlags.Public | BindingFlags.Instance
+                        ).GetMethod,
+                        typeof(PlayerMod).GetMethod("Player_CanPutSlugToBack_Allow")
+                    );
                 } catch (Exception exception) {
                     Debug.Log("InfiniteSpears: " + exception);
                 }
 
                 try {
-                    hook_Player_CanPutSpearToBack = new Hook(player_class.GetProperty("CanPutSpearToBack", BindingFlags.Public | BindingFlags.Instance).GetMethod, typeof(PlayerMod).GetMethod("Player_CanPutSpearToBack"));
+                    hook_Player_CanPutSpearToBack = new Hook(
+                        player_class.GetProperty(
+                            "CanPutSpearToBack",
+                            BindingFlags.Public | BindingFlags.Instance
+                        ).GetMethod,
+                        typeof(PlayerMod).GetMethod("Player_CanPutSpearToBack")
+                    );
+                } catch (Exception exception) {
+                    Debug.Log("InfiniteSpears: " + exception);
+                }
+
+                try {
+                    hook_Player_CanRetrieveSlugFromBack = new Hook(
+                        player_class.GetProperty(
+                            "CanRetrieveSlugFromBack",
+                            BindingFlags.Public | BindingFlags.Instance
+                        ).GetMethod,
+                        typeof(PlayerMod).GetMethod("Player_CanRetrieveSlugFromBack")
+                    );
+                } catch (Exception exception) {
+                    Debug.Log("InfiniteSpears: " + exception);
+                }
+
+                try {
+                    hook_Player_CanRetrieveSpearFromBack = new Hook(
+                        player_class.GetProperty(
+                            "CanRetrieveSpearFromBack",
+                            BindingFlags.Public | BindingFlags.Instance
+                        ).GetMethod,
+                        typeof(PlayerMod).GetMethod("Player_CanRetrieveSpearFromBack")
+                    );
                 } catch (Exception exception) {
                     Debug.Log("InfiniteSpears: " + exception);
                 }
             } else {
                 try {
-                    hook_Player_CanPutSlugToBack = new Hook(player_class.GetProperty("CanPutSlugToBack", BindingFlags.Public | BindingFlags.Instance).GetMethod, typeof(PlayerMod).GetMethod("Player_CanPutSlugToBack_Prevent"));
+                    hook_Player_CanPutSlugToBack = new Hook(
+                        player_class.GetProperty(
+                            "CanPutSlugToBack",
+                            BindingFlags.Public | BindingFlags.Instance
+                        ).GetMethod,
+                        typeof(PlayerMod).GetMethod("Player_CanPutSlugToBack_Prevent")
+                    );
                 } catch (Exception exception) {
                     Debug.Log("InfiniteSpears: " + exception);
                 }
@@ -80,6 +129,8 @@ public static class PlayerMod {
     //
 
     public static bool Player_CanPutSlugToBack_Allow(Func<Player, bool> orig, Player player) { // Option_SlugsAndSpears
+        // When using Slugpup Safari, this hook gets ignored.
+        if (player.input[0].y == 0) return false;
         return (ModManager.MSC || ModManager.CoopAvailable) && player.slugOnBack != null && !player.slugOnBack.interactionLocked && player.slugOnBack.slugcat == null;
     }
 
@@ -90,7 +141,20 @@ public static class PlayerMod {
     }
 
     public static bool Player_CanPutSpearToBack(Func<Player, bool> orig, Player player) { // Option_SlugsAndSpears
+        if (player.input[0].y != 0) return false;
         return player.spearOnBack != null && !player.spearOnBack.interactionLocked && player.spearOnBack.spear == null;
+    }
+
+    public static bool Player_CanRetrieveSlugFromBack(Func<Player, bool> orig, Player player) { // Option_SlugsAndSpears
+        bool result = orig(player);
+        if (player.input[0].y == 0) return false;
+        return result;
+    }
+
+    public static bool Player_CanRetrieveSpearFromBack(Func<Player, bool> orig, Player player) { // Option_SlugsAndSpears
+        bool result = orig(player);
+        if (player.input[0].y != 0) return false;
+        return result;
     }
 
     public static bool Uses_A_Persistant_Tracker(AbstractPhysicalObject abstract_physical_object) {

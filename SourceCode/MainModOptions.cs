@@ -14,7 +14,7 @@ public class MainModOptions : OptionInterface {
     //
 
     public static Configurable<bool> joke_rifle = main_mod_options.config.Bind("joke_rifle", defaultValue: false, new ConfigurableInfo("When enabled, you have infinite ammunition for the joke rifle.", null, "", "Joke Rifle"));
-    public static Configurable<bool> slugs_and_spears = main_mod_options.config.Bind("slugs_and_spears", defaultValue: false, new ConfigurableInfo("When enabled, you can carry slugcats and spear no you back at the same time.", null, "", "Slugs and Spears"));
+    public static Configurable<bool> slugs_and_spears = main_mod_options.config.Bind("slugs_and_spears", defaultValue: false, new ConfigurableInfo("When enabled, you can carry slugcats and spear on your back at the same time.\nHold up/down to interact with slugcats. Do the opposite to interact with spears.", null, "", "Slugs and Spears"));
     public static Configurable<bool> swallowed_items = main_mod_options.config.Bind("swallowed_items", defaultValue: false, new ConfigurableInfo("When enabled, most swallowed item are duplicated when regurgitating unless your hands are full.", null, "", "Swallowed Items"));
 
     public static Configurable<int> max_spear_count_slider_yellow = main_mod_options.config.Bind("max_spear_count_slider_yellow", defaultValue: -1, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Monk (-1)"));
