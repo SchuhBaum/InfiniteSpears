@@ -163,12 +163,23 @@ public static class PlayerMod {
         // as well;
         //
 
-        if (abstract_physical_object.type == AbstractObjectType.NSHSwarmer) return true;
-        if (abstract_physical_object.type == MoreSlugcatsEnums.AbstractObjectType.EnergyCell) return true;
-        if (abstract_physical_object.type == MoreSlugcatsEnums.AbstractObjectType.JokeRifle) return true;
+        AbstractObjectType type = abstract_physical_object.type;
+        if (type == AbstractObjectType.NSHSwarmer) return true;
+        if (type == MoreSlugcatsEnums.AbstractObjectType.EnergyCell) {
+            return true;
+        }
+        if (type == MoreSlugcatsEnums.AbstractObjectType.JokeRifle) {
+            return true;
+        }
 
-        if (abstract_physical_object is DataPearl.AbstractDataPearl abstract_data_pearl && DataPearl.PearlIsNotMisc(abstract_data_pearl.dataPearlType)) return true;
-        if (abstract_physical_object is VultureMask.AbstractVultureMask abstract_vulture_mask && abstract_vulture_mask.scavKing) return true;
+        if (
+            abstract_physical_object is DataPearl.AbstractDataPearl pearl
+            && DataPearl.PearlIsNotMisc(pearl.dataPearlType)
+        ) return true;
+        if (
+            abstract_physical_object is VultureMask.AbstractVultureMask mask
+            && mask.scavKing
+        ) return true;
 
         return false;
     }
@@ -324,8 +335,10 @@ public static class PlayerMod {
         orig(player);
     }
 
-    private static void Player_Regurgitate(On.Player.orig_Regurgitate orig, Player player) // Option_SwallowedItems
-    {
+    // Option_SwallowedItems
+    private static void Player_Regurgitate(
+        On.Player.orig_Regurgitate orig, Player player
+    ) {
         bool hands_are_full = true;
         foreach (Creature.Grasp? grasp in player.grasps) {
             if (grasp?.grabbed == null) {
@@ -350,6 +363,16 @@ public static class PlayerMod {
         }
 
         if (Uses_A_Persistant_Tracker(abstract_physical_object)) {
+            orig(player);
+            return;
+        }
+
+        // Pebble pearls are not tracked but are special nonetheless. They
+        // track all other pebble pearls such that they can form an orbit. I
+        // don't want to deal with that. Currently the game freezes when you
+        // try to regurgitate the "copied" normal pearl.
+        AbstractObjectType type = abstract_physical_object.type;
+        if (type == AbstractObjectType.PebblesPearl) {
             orig(player);
             return;
         }
@@ -396,7 +419,12 @@ public static class PlayerMod {
             }
 
             if (abstract_physical_object is DataPearl.AbstractDataPearl abstract_data_pearl) {
-                player.objectInStomach = new DataPearl.AbstractDataPearl(abstract_physical_object.world, abstract_physical_object.type, null, abstract_physical_object.pos, id, -1, -1, null, abstract_data_pearl.dataPearlType);
+                player.objectInStomach = new DataPearl.AbstractDataPearl(
+                    abstract_physical_object.world,
+                    abstract_physical_object.type, null,
+                    abstract_physical_object.pos, id, -1, -1, null,
+                    abstract_data_pearl.dataPearlType
+                );
                 return;
             }
 
