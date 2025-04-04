@@ -1,6 +1,6 @@
 ## InfiniteSpears
-###### Version: 2.2.2
-This is a mod for Rain World v1.9.
+###### Version: 2.2.3
+This is a mod for Rain World v1.10.
 
 ### Description
 This mod has two main features. You can either  
@@ -15,8 +15,8 @@ This mod has additional options:
 - `(Swallowed Items)` Most swallowed item are duplicated when regurgitating unless your hands are full.
 
 ### Installation
-0. Update Rain World to version 1.9 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.2.2).
+0. Update Rain World to version 1.10 if needed.
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.2.3).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -30,6 +30,10 @@ If you have feedback, you can message me on Discord `@schuhbaum` or write an ema
 See the file LICENSE-MIT.
 
 ### Changelog
+#### (Rain World v1.10)
+v2.2.3:
+- Added a slider for the Watcher slugcat to set the number of backspears.
+
 #### (Rain World v1.9)
 v2.2.2:
 - (smallowed items) Fixed a bug where pebble pearls could freeze the game. I

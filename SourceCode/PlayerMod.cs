@@ -295,28 +295,33 @@ public static class PlayerMod {
             return;
         }
 
+        // General
         if (slugcat_name == Yellow) {
             _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Yellow));
         } else if (slugcat_name == White) {
             _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_White));
         } else if (slugcat_name == Red) {
             _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Red));
-        } else if (ModManager.MSC) {
-            if (slugcat_name == Gourmand) {
-                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Gourmand));
-            } else if (slugcat_name == Artificer) {
-                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Artificer));
-            } else if (slugcat_name == Rivulet) {
-                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Rivulet));
-            } else if (slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Spear) {
-                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Spearmaster));
-            } else if (slugcat_name == Saint) {
-                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Saint));
-            } else if (slugcat_name == Sofanthiel) {
-                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Sofanthiel));
-            } else {
-                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Custom_Slugcats));
-            }
+
+        // MSC DLC
+        } else if (ModManager.MSC && slugcat_name == Gourmand) {
+            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Gourmand));
+        } else if (ModManager.MSC && slugcat_name == Artificer) {
+            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Artificer));
+        } else if (ModManager.MSC && slugcat_name == Rivulet) {
+            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Rivulet));
+        } else if (ModManager.MSC && slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Spear) {
+            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Spearmaster));
+        } else if (ModManager.MSC && slugcat_name == Saint) {
+            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Saint));
+
+        // Watcher DLC
+        } else if (ModManager.Watcher && slugcat_name == Watcher.WatcherEnums.SlugcatStatsName.Watcher) {
+            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Watcher));
+
+        // Custom
+        } else if (ModManager.MSC && slugcat_name == Sofanthiel) {
+            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Sofanthiel));
         } else {
             _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Custom_Slugcats));
         }

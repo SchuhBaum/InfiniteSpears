@@ -27,6 +27,8 @@ public class MainModOptions : OptionInterface {
     public static Configurable<int> max_spear_count_slider_spearmaster = main_mod_options.config.Bind("max_spear_count_slider_spearmaster", defaultValue: -1, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Spearmaster (-1)"));
     public static Configurable<int> max_spear_count_slider_saint = main_mod_options.config.Bind("max_spear_count_slider_saint", defaultValue: 0, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Saint (0)"));
 
+    public static Configurable<int> max_spear_count_slider_watcher = main_mod_options.config.Bind("max_spear_count_slider_watcher", defaultValue: 0, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Watcher (0)"));
+
     public static Configurable<int> max_spear_count_slider_sofanthiel = main_mod_options.config.Bind("max_spear_count_slider_sofanthiel", defaultValue: 0, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Inv (0)"));
     public static Configurable<int> max_spear_count_slider_custom_slugcats = main_mod_options.config.Bind("max_spear_count_slider_custom_slugcats", defaultValue: 0, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Custom Slugcats (0)"));
 
@@ -86,15 +88,18 @@ public class MainModOptions : OptionInterface {
 
     public override void Initialize() {
         base.Initialize();
-        int number_of_tabs = 3;
+
+        int number_of_tabs = 4;
         Tabs = new OpTab[number_of_tabs];
 
+        int tab_index = -1;
+
         //
-        // General A
+        // General
         //
 
-        int tab_index = Mathf.Min(0, number_of_tabs);
-        Tabs[tab_index] = new OpTab(this, "General A");
+        tab_index = Mathf.Min(tab_index+1, number_of_tabs-1);
+        Tabs[tab_index] = new OpTab(this, "General");
         InitializeMarginAndPos();
 
         //
@@ -146,10 +151,10 @@ public class MainModOptions : OptionInterface {
         DrawBox(ref Tabs[tab_index]);
 
         //
-        // General B
+        // MSC DLC
         //
-        tab_index = Mathf.Min(1, number_of_tabs);
-        Tabs[tab_index] = new OpTab(this, "General B");
+        tab_index = Mathf.Min(tab_index+1, number_of_tabs-1);
+        Tabs[tab_index] = new OpTab(this, "MSC DLC");
         InitializeMarginAndPos();
 
         //
@@ -184,10 +189,45 @@ public class MainModOptions : OptionInterface {
         DrawBox(ref Tabs[tab_index]);
 
         //
-        // General C
+        // Watcher DLC
         //
-        tab_index = Mathf.Min(2, number_of_tabs);
-        Tabs[tab_index] = new OpTab(this, "General C");
+        tab_index = Mathf.Min(tab_index+1, number_of_tabs-1);
+        Tabs[tab_index] = new OpTab(this, "Watcher DLC");
+        InitializeMarginAndPos();
+
+        //
+        // Title
+        //
+        AddNewLine();
+        AddTextLabel("Infinite Spears Mod", has_big_text: true);
+        DrawTextLabels(ref Tabs[tab_index]);
+
+        //
+        // Subtitle
+        //
+        AddNewLine(0.5f);
+        AddTextLabel("Version " + version, FLabelAlignment.Left);
+        AddTextLabel("by " + author, FLabelAlignment.Right);
+        DrawTextLabels(ref Tabs[tab_index]);
+
+        AddNewLine();
+
+        //
+        // content
+        //
+
+        AddBox();
+
+        AddSlider(max_spear_count_slider_watcher, (string)max_spear_count_slider_watcher.info.Tags[0], "-1 (infinite)", "7");
+        DrawSliders(ref Tabs[tab_index]);
+
+        DrawBox(ref Tabs[tab_index]);
+
+        //
+        // Custom
+        //
+        tab_index = Mathf.Min(tab_index+1, number_of_tabs-1);
+        Tabs[tab_index] = new OpTab(this, "Custom");
         InitializeMarginAndPos();
 
         //

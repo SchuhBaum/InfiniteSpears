@@ -11,7 +11,7 @@ using static InfiniteSpears.MainModOptions;
 
 namespace InfiniteSpears;
 
-[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.2.2")]
+[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.2.3")]
 public class MainMod : BaseUnityPlugin {
     //
     // meta data
@@ -19,7 +19,7 @@ public class MainMod : BaseUnityPlugin {
 
     public static readonly string mod_id = "InfiniteSpears";
     public static readonly string author = "SchuhBaum";
-    public static readonly string version = "2.2.2";
+    public static readonly string version = "2.2.3";
 
     //
     // options
@@ -38,6 +38,8 @@ public class MainMod : BaseUnityPlugin {
     public static int Option_Max_Spear_Count_Rivulet => max_spear_count_slider_rivulet.Value;
     public static int Option_Max_Spear_Count_Spearmaster => max_spear_count_slider_spearmaster.Value;
     public static int Option_Max_Spear_Count_Saint => max_spear_count_slider_saint.Value;
+
+    public static int Option_Max_Spear_Count_Watcher => max_spear_count_slider_watcher.Value;
 
     public static int Option_Max_Spear_Count_Sofanthiel => max_spear_count_slider_sofanthiel.Value;
     public static int Option_Max_Spear_Count_Custom_Slugcats => max_spear_count_slider_custom_slugcats.Value;
