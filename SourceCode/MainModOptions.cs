@@ -274,6 +274,8 @@ public class MainModOptions : OptionInterface {
         Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Spearmaster " + Option_Max_Spear_Count_Spearmaster);
         Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Saint " + Option_Max_Spear_Count_Saint);
 
+        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Watcher " + Option_Max_Spear_Count_Watcher);
+
         Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Sofanthiel " + Option_Max_Spear_Count_Sofanthiel);
         Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Custom_Slugcats " + Option_Max_Spear_Count_Custom_Slugcats);
     }
