@@ -1,5 +1,7 @@
 
 .git
+.vscode
+tags
 
 SourceCode/bin
 SourceCode/obj
@@ -8,4 +10,3 @@ InfiniteSpears/plugins/
 InfiniteSpears.zip
 steam_description.txt
 
-.vscode

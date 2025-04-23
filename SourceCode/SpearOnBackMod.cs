@@ -57,7 +57,10 @@ public static class SpearOnBackMod {
     public static void DropAllSpears(SpearOnBack spear_on_back) {
         if (spear_on_back.owner is not Player player) return;
         Attached_Fields attached_fields = player.Get_Attached_Fields();
-        if (attached_fields.has_infinite_spears) return;
+        if (attached_fields.has_infinite_spears) {
+            spear_on_back.DropSpear();
+            return;
+        }
 
         for (int stick_index = attached_fields.abstract_on_back_sticks.Count - 1; stick_index >= 0; --stick_index) {
             AbstractOnBackStick abstract_on_back_stick = attached_fields.abstract_on_back_sticks[stick_index];

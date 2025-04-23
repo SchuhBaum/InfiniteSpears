@@ -23,7 +23,7 @@ public static class AbstractPlayerMod {
         // this is only used when max_spear_count > 1; this extends the number of 
         // backspears that you can carry; in this case the vanilla abstract_on_back 
         // stick is ignored and null;
-        public readonly List<AbstractOnBackStick> abstract_on_back_sticks = new();
+        public readonly List<AbstractOnBackStick> abstract_on_back_sticks = new List<AbstractOnBackStick>();
 
         public Attached_Fields(int max_spear_count) {
             if (max_spear_count == 0) {

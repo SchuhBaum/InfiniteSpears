@@ -1,5 +1,5 @@
 ## InfiniteSpears
-###### Version: 2.2.4
+###### Version: 2.2.5
 This is a mod for Rain World v1.10.
 
 ### Description
@@ -16,7 +16,7 @@ This mod has additional options:
 
 ### Installation
 0. Update Rain World to version 1.10 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.2.4).
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.2.5).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -31,6 +31,10 @@ See the file LICENSE-MIT.
 
 ### Changelog
 #### (Rain World v1.10)
+v2.2.5:
+- Fixed a bug where the player would run and fall really fast when using a warp
+  point while carrying a backspear.
+
 v2.2.4:
 - Changed the requirement to v1.10 instead of v1.10.1.
 

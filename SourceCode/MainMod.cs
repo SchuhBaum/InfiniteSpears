@@ -11,7 +11,7 @@ using static InfiniteSpears.MainModOptions;
 
 namespace InfiniteSpears;
 
-[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.2.4")]
+[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.2.5")]
 public class MainMod : BaseUnityPlugin {
     //
     // meta data
@@ -19,7 +19,7 @@ public class MainMod : BaseUnityPlugin {
 
     public static readonly string mod_id = "InfiniteSpears";
     public static readonly string author = "SchuhBaum";
-    public static readonly string version = "2.2.4";
+    public static readonly string version = "2.2.5";
 
     //
     // options
@@ -126,17 +126,18 @@ public class MainMod : BaseUnityPlugin {
         Debug.Log("InfiniteSpears: version " + version);
 
         can_log_il_hooks = true;
+
         AbstractObjectStickMod.OnEnable();
         PlayerCarryableItemMod.OnEnable();
         PlayerMod.OnEnable();
-
         RainWorldGameMod.OnEnable();
+        RoomCameraMod.OnEnable();
         ProcessManagerMod.OnEnable();
         ShortcutHelperMod.OnEnable();
         SpearMod.OnEnable();
-
         SpearOnBackMod.OnEnable();
         WeaponMod.OnEnable();
+
         can_log_il_hooks = false;
     }
 }
