@@ -7,13 +7,14 @@ using System.Reflection;
 using UnityEngine;
 
 using static AbstractPhysicalObject;
-using static InfiniteSpears.AbstractPlayerMod;
-using static InfiniteSpears.MainMod;
 using static MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName;
-
 using static Player;
 using static SlugcatStats;
 using static SlugcatStats.Name;
+
+using static InfiniteSpears.AbstractPlayerMod;
+using static InfiniteSpears.MainMod;
+using static InfiniteSpears.MainModOptions;
 
 namespace InfiniteSpears;
 
@@ -323,7 +324,10 @@ public static class PlayerMod {
         } else if (ModManager.MSC && slugcat_name == Sofanthiel) {
             _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Sofanthiel));
         } else {
-            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Custom_Slugcats));
+            var parsed_name = Regex.Replace(slugcat_name.value, @"[^a-zA-Z0-9_]", "_");
+            if (!blacklisted_custom_slugcat_names.Contains(parsed_name)) {
+                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Custom_Slugcat(parsed_name)));
+            }
         }
 
         if (player.Get_Attached_Fields().max_spear_count == 0) return;

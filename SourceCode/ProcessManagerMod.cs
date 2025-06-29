@@ -45,7 +45,20 @@ public static class ProcessManagerMod {
 
         ProcessID current_process_id = process_manager.currentMainLoop.ID;
         orig(process_manager, next_process_id);
-        if (current_process_id != ProcessID.Initialization) return;
-        Initialize_Option_Specific_Hooks();
+
+        if (current_process_id == ProcessID.Initialization) {
+            // Doing this inside MainMod.PostModsInit() does not work reliably.
+            foreach (var entry in SlugcatStats.Name.values.entries) {
+                var name = Regex.Replace(entry, @"[^a-zA-Z0-9_]", "_");
+                if (blacklisted_custom_slugcat_names.Contains(name)) {
+                    continue;
+                }
+
+                var configurable = main_mod_options.config.Bind($"max_spear_count_slider_custom_slugcat_{name}", defaultValue: 0, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", $"Number of BackSpears for {name} (0)"));
+                max_spear_count_slider_custom_slugcats.Add(configurable);
+            }
+
+            Initialize_Option_Specific_Hooks();
+        }
     }
 }

@@ -30,7 +30,20 @@ public class MainModOptions : OptionInterface {
     public static Configurable<int> max_spear_count_slider_watcher = main_mod_options.config.Bind("max_spear_count_slider_watcher", defaultValue: 0, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Watcher (0)"));
 
     public static Configurable<int> max_spear_count_slider_sofanthiel = main_mod_options.config.Bind("max_spear_count_slider_sofanthiel", defaultValue: 0, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Inv (0)"));
-    public static Configurable<int> max_spear_count_slider_custom_slugcats = main_mod_options.config.Bind("max_spear_count_slider_custom_slugcats", defaultValue: 0, new ConfigurableInfo("For values X > 0, the player can simply carry X spears on the back.", new ConfigAcceptableRange<int>(-1, 7), "", "Number of BackSpears for Custom Slugcats (0)"));
+
+    //
+
+    public static HashSet<string> blacklisted_custom_slugcat_names = new HashSet<string>() {
+        "White", "Yellow", "Red", "Night",
+
+        "Rivulet", "Artificer", "Saint", "Spear", "Gourmand", "Slugpup", "Inv",
+        
+        "JollyPlayer1", "JollyPlayer2", "JollyPlayer3", "JollyPlayer4",
+
+        "Watcher"
+    };
+
+    public static List<Configurable<int>> max_spear_count_slider_custom_slugcats = new List<Configurable<int>>();
 
     //
     // parameters
@@ -254,8 +267,25 @@ public class MainModOptions : OptionInterface {
         AddBox();
 
         AddSlider(max_spear_count_slider_sofanthiel, (string)max_spear_count_slider_sofanthiel.info.Tags[0], "-1 (infinite)", "7");
-        AddSlider(max_spear_count_slider_custom_slugcats, (string)max_spear_count_slider_custom_slugcats.info.Tags[0], "-1 (infinite)", "7");
-        DrawSliders(ref Tabs[tab_index]);
+        foreach (var configurable in max_spear_count_slider_custom_slugcats)
+        {
+            AddSlider(configurable, (string)configurable.info.Tags[0], "-1 (infinite)", "7");
+        }
+
+        float width = _margin_x.y - _margin_x.x;
+        float outer_height = 400f;
+
+        // The sliders are 80f. Add margins at the top and bottom.
+        float inner_height = 80f * (max_spear_count_slider_custom_slugcats.Count+1) + 2f*_spacing;
+
+        // We need to add the scroll box before we can add items to it. This
+        // messes up the vertical flow if we would update _position.y directly.
+        var new_position_y = _position.y - outer_height;
+        var scroll_box = new OpScrollBox(new Vector2(_position.x, new_position_y), new Vector2(width, outer_height), inner_height);
+        Tabs[tab_index].AddItems((UIelement)scroll_box);
+
+        DrawSliders(ref scroll_box);
+        _position.y = new_position_y;
 
         DrawBox(ref Tabs[tab_index]);
     }
@@ -277,7 +307,14 @@ public class MainModOptions : OptionInterface {
         Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Watcher " + Option_Max_Spear_Count_Watcher);
 
         Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Sofanthiel " + Option_Max_Spear_Count_Sofanthiel);
-        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Custom_Slugcats " + Option_Max_Spear_Count_Custom_Slugcats);
+        foreach (var entry in SlugcatStats.Name.values.entries) {
+            var name = Regex.Replace(entry, @"[^a-zA-Z0-9_]", "_");
+            if (blacklisted_custom_slugcat_names.Contains(name)) {
+                continue;
+            }
+
+            Debug.Log($"InfiniteSpears: Option_Max_Spear_Count_Custom_Slugcat_{name} " + Option_Max_Spear_Count_Custom_Slugcat(name));
+        }
     }
 
     //
@@ -360,6 +397,28 @@ public class MainModOptions : OptionInterface {
     }
 
     private void DrawSliders(ref OpTab tab) {
+        IHoldUIelements cast = tab;
+        DrawSliders(ref cast);
+    }
+
+    private void DrawSliders(ref OpScrollBox scroll_box) {
+        IHoldUIelements cast = scroll_box;
+
+        var old_margin_x = _margin_x;
+        var old_y = _position.y;
+
+        _margin_x.x = 0f;
+        _margin_x.y = scroll_box.CanvasSize.x;
+        _position.y = scroll_box.CanvasSize.y;
+
+        AddNewLine();
+        DrawSliders(ref cast);
+
+        _margin_x = old_margin_x;
+        _position.y = old_y;
+    }
+
+    private void DrawSliders(ref IHoldUIelements container) {
         if (_slider_configurables.Count != _slider_main_text_labels.Count) return;
         if (_slider_configurables.Count != _slider_text_labels_left.Count) return;
         if (_slider_configurables.Count != _slider_text_labels_right.Count) return;
@@ -375,22 +434,22 @@ public class MainModOptions : OptionInterface {
             OpLabel op_label = _slider_text_labels_left[slider_index];
             op_label.pos = new Vector2(_margin_x.x, _position.y + 5f);
             op_label.size = new Vector2(slider_label_size_x, _font_height);
-            tab.AddItems(op_label);
+            container.AddItems(op_label);
 
             Configurable<int> configurable = _slider_configurables[slider_index];
             OpSlider slider = new(configurable, new Vector2(slider_center - 0.5f * slider_size_x, _position.y), (int)slider_size_x) {
                 size = new Vector2(slider_size_x, _font_height),
                 description = configurable.info?.description ?? ""
             };
-            tab.AddItems(slider);
+            container.AddItems(slider);
 
             op_label = _slider_text_labels_right[slider_index];
             op_label.pos = new Vector2(slider_center + 0.5f * slider_size_x + 0.5f * _spacing, _position.y + 5f);
             op_label.size = new Vector2(slider_label_size_x, _font_height);
-            tab.AddItems(op_label);
+            container.AddItems(op_label);
 
             AddTextLabel(_slider_main_text_labels[slider_index]);
-            DrawTextLabels(ref tab);
+            DrawTextLabels(ref container);
 
             if (slider_index < _slider_configurables.Count - 1) {
                 AddNewLine();
@@ -417,6 +476,11 @@ public class MainModOptions : OptionInterface {
     }
 
     private void DrawTextLabels(ref OpTab tab) {
+        IHoldUIelements cast = tab;
+        DrawTextLabels(ref cast);
+    }
+
+    private void DrawTextLabels(ref IHoldUIelements container) {
         if (_text_labels.Count == 0) {
             return;
         }
@@ -425,7 +489,7 @@ public class MainModOptions : OptionInterface {
         foreach (OpLabel text_label in _text_labels) {
             text_label.pos = _position;
             text_label.size += new Vector2(width - 20f, 0.0f);
-            tab.AddItems(text_label);
+            container.AddItems(text_label);
             _position.x += width;
         }
 
