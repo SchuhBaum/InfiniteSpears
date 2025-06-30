@@ -17,13 +17,13 @@ internal static class RainWorldGameMod {
     //
 
     private static void RainWorldGame_Ctor(On.RainWorldGame.orig_ctor orig, RainWorldGame game, ProcessManager manager) {
-        Debug.Log("InfiniteSpears: Initialize variables.");
+        Debug.Log($"{mod_id}: Initialize variables.");
         AbstractPlayerMod._all_attached_fields.Clear();
         orig(game, manager);
     }
 
     private static void RainWorldGame_ShutDownProcess(On.RainWorldGame.orig_ShutDownProcess orig, RainWorldGame game) {
-        Debug.Log("InfiniteSpears: Cleanup.");
+        Debug.Log($"{mod_id}: Cleanup.");
         orig(game);
         AbstractPlayerMod._all_attached_fields.Clear();
     }

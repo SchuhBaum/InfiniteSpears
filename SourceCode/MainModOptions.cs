@@ -1,8 +1,6 @@
 ﻿using Menu.Remix.MixedUI;
 using System.Collections.Generic;
 using UnityEngine;
-using static InfiniteSpears.MainMod;
-using static InfiniteSpears.ProcessManagerMod;
 
 namespace InfiniteSpears;
 
@@ -91,7 +89,7 @@ public class MainModOptions : OptionInterface {
 
         orig(option_interface);
         if (option_interface != main_mod_options) return;
-        Debug.Log("InfiniteSpears: Save_Config_File.");
+        Debug.Log($"{mod_id}: Save_Config_File.");
         Initialize_Option_Specific_Hooks();
     }
 
@@ -291,29 +289,29 @@ public class MainModOptions : OptionInterface {
     }
 
     public void Log_All_Options() {
-        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Yellow " + Option_Max_Spear_Count_Yellow);
-        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_White " + Option_Max_Spear_Count_White);
-        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Red " + Option_Max_Spear_Count_Red);
+        Debug.Log($"{mod_id}: Option_Max_Spear_Count_Yellow {Option_Max_Spear_Count_Yellow}");
+        Debug.Log($"{mod_id}: Option_Max_Spear_Count_White {Option_Max_Spear_Count_White}");
+        Debug.Log($"{mod_id}: Option_Max_Spear_Count_Red {Option_Max_Spear_Count_Red}");
 
-        Debug.Log("InfiniteSpears: Option_JokeRifle " + Option_JokeRifle);
-        Debug.Log("InfiniteSpears: Option_SwallowedItems " + Option_SwallowedItems);
+        Debug.Log($"{mod_id}: Option_JokeRifle {Option_JokeRifle}");
+        Debug.Log($"{mod_id}: Option_SwallowedItems {Option_SwallowedItems}");
 
-        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Gourmand " + Option_Max_Spear_Count_Gourmand);
-        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Artificer " + Option_Max_Spear_Count_Artificer);
-        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Rivulet " + Option_Max_Spear_Count_Rivulet);
-        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Spearmaster " + Option_Max_Spear_Count_Spearmaster);
-        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Saint " + Option_Max_Spear_Count_Saint);
+        Debug.Log($"{mod_id}: Option_Max_Spear_Count_Gourmand {Option_Max_Spear_Count_Gourmand}");
+        Debug.Log($"{mod_id}: Option_Max_Spear_Count_Artificer {Option_Max_Spear_Count_Artificer}");
+        Debug.Log($"{mod_id}: Option_Max_Spear_Count_Rivulet {Option_Max_Spear_Count_Rivulet}");
+        Debug.Log($"{mod_id}: Option_Max_Spear_Count_Spearmaster {Option_Max_Spear_Count_Spearmaster}");
+        Debug.Log($"{mod_id}: Option_Max_Spear_Count_Saint {Option_Max_Spear_Count_Saint}");
 
-        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Watcher " + Option_Max_Spear_Count_Watcher);
+        Debug.Log($"{mod_id}: Option_Max_Spear_Count_Watcher {Option_Max_Spear_Count_Watcher}");
 
-        Debug.Log("InfiniteSpears: Option_Max_Spear_Count_Sofanthiel " + Option_Max_Spear_Count_Sofanthiel);
+        Debug.Log($"{mod_id}: Option_Max_Spear_Count_Sofanthiel {Option_Max_Spear_Count_Sofanthiel}");
         foreach (var entry in SlugcatStats.Name.values.entries) {
             var name = Regex.Replace(entry, @"[^a-zA-Z0-9_]", "_");
             if (blacklisted_custom_slugcat_names.Contains(name)) {
                 continue;
             }
 
-            Debug.Log($"InfiniteSpears: Option_Max_Spear_Count_Custom_Slugcat_{name} " + Option_Max_Spear_Count_Custom_Slugcat(name));
+            Debug.Log($"{mod_id}: Option_Max_Spear_Count_Custom_Slugcat_{name} {Option_Max_Spear_Count_Custom_Slugcat(name)}");
         }
     }
 

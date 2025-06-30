@@ -1,4 +1,3 @@
-using static InfiniteSpears.MainMod;
 
 namespace InfiniteSpears;
 

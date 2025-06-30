@@ -1,6 +1,5 @@
 using UnityEngine;
-using static InfiniteSpears.MainMod;
-using static InfiniteSpears.MainModOptions;
+
 using static ProcessManager;
 
 namespace InfiniteSpears;
@@ -23,7 +22,7 @@ public static class ProcessManagerMod {
         // for every other mod adding the corresponding IL hook;
 
         main_mod_options.Log_All_Options();
-        Debug.Log("InfiniteSpears: Initialize option specific hooks.");
+        Debug.Log($"{mod_id}: Initialize option specific hooks.");
 
         can_log_il_hooks = true;
         JokeRifleMod.On_Config_Changed();

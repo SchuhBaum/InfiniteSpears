@@ -12,10 +12,6 @@ using static Player;
 using static SlugcatStats;
 using static SlugcatStats.Name;
 
-using static InfiniteSpears.AbstractPlayerMod;
-using static InfiniteSpears.MainMod;
-using static InfiniteSpears.MainModOptions;
-
 namespace InfiniteSpears;
 
 public static class PlayerMod {
@@ -62,7 +58,7 @@ public static class PlayerMod {
                         typeof(PlayerMod).GetMethod("Player_CanPutSlugToBack_Allow")
                     );
                 } catch (Exception exception) {
-                    Debug.Log("InfiniteSpears: " + exception);
+                    Debug.Log($"{mod_id}: {exception}");
                 }
 
                 try {
@@ -74,7 +70,7 @@ public static class PlayerMod {
                         typeof(PlayerMod).GetMethod("Player_CanPutSpearToBack")
                     );
                 } catch (Exception exception) {
-                    Debug.Log("InfiniteSpears: " + exception);
+                    Debug.Log($"{mod_id}: {exception}");
                 }
 
                 try {
@@ -86,7 +82,7 @@ public static class PlayerMod {
                         typeof(PlayerMod).GetMethod("Player_CanRetrieveSlugFromBack")
                     );
                 } catch (Exception exception) {
-                    Debug.Log("InfiniteSpears: " + exception);
+                    Debug.Log($"{mod_id}: {exception}");
                 }
 
                 try {
@@ -98,7 +94,7 @@ public static class PlayerMod {
                         typeof(PlayerMod).GetMethod("Player_CanRetrieveSpearFromBack")
                     );
                 } catch (Exception exception) {
-                    Debug.Log("InfiniteSpears: " + exception);
+                    Debug.Log($"{mod_id}: {exception}");
                 }
             } else {
                 try {
@@ -110,11 +106,11 @@ public static class PlayerMod {
                         typeof(PlayerMod).GetMethod("Player_CanPutSlugToBack_Prevent")
                     );
                 } catch (Exception exception) {
-                    Debug.Log("InfiniteSpears: " + exception);
+                    Debug.Log($"{mod_id}: {exception}");
                 }
             }
         } else {
-            Debug.Log("InfiniteSpears: Failed to create property hooks for class Player.");
+            Debug.Log($"{mod_id}: Failed to create property hooks for class Player.");
         }
     }
 
@@ -202,7 +198,7 @@ public static class PlayerMod {
               instruction => instruction.MatchCall<Creature>("get_grasps")
             )) {
             if (can_log_il_hooks) {
-                Debug.Log("InfiniteSpears: IL_Player_GrabUpdate: Index " + cursor.Index); // 597
+                Debug.Log($"{mod_id}: IL_Player_GrabUpdate: Index {cursor.Index}"); // 597
             }
 
             cursor.Goto(cursor.Index + 4);
@@ -228,7 +224,7 @@ public static class PlayerMod {
             });
         } else {
             if (can_log_il_hooks) {
-                Debug.Log("InfiniteSpears: IL_Player_GrabUpdate failed.");
+                Debug.Log($"{mod_id}: IL_Player_GrabUpdate failed.");
             }
             return;
         }
@@ -240,7 +236,7 @@ public static class PlayerMod {
               instruction => instruction.MatchCall<Player>("FreeHand")
             )) {
             if (can_log_il_hooks) {
-                Debug.Log("InfiniteSpears: IL_Player_GrabUpdate: Index " + cursor.Index); // 955
+                Debug.Log($"{mod_id}: IL_Player_GrabUpdate: Index {cursor.Index}"); // 955
             }
 
             cursor.Goto(cursor.Index + 2);
@@ -273,7 +269,7 @@ public static class PlayerMod {
             });
         } else {
             if (can_log_il_hooks) {
-                Debug.Log("InfiniteSpears: IL_Player_GrabUpdate failed.");
+                Debug.Log($"{mod_id}: IL_Player_GrabUpdate failed.");
             }
             return;
         }
@@ -291,44 +287,46 @@ public static class PlayerMod {
         // swallow everything mod;
         if (_all_attached_fields.ContainsKey(abstract_player)) return;
 
+        Attached_Fields attached_fields = new Attached_Fields(max_spear_count: 0);
         if (player.SlugCatClass is not Name slugcat_name) {
-            _all_attached_fields.Add(abstract_player, new(max_spear_count: 0));
+            _all_attached_fields.Add(abstract_player, attached_fields);
             return;
         }
 
         // General
         if (slugcat_name == Yellow) {
-            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Yellow));
+            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Yellow);
         } else if (slugcat_name == White) {
-            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_White));
+            attached_fields = new Attached_Fields(Option_Max_Spear_Count_White);
         } else if (slugcat_name == Red) {
-            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Red));
+            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Red);
 
         // MSC DLC
         } else if (ModManager.MSC && slugcat_name == Gourmand) {
-            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Gourmand));
+            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Gourmand);
         } else if (ModManager.MSC && slugcat_name == Artificer) {
-            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Artificer));
+            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Artificer);
         } else if (ModManager.MSC && slugcat_name == Rivulet) {
-            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Rivulet));
+            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Rivulet);
         } else if (ModManager.MSC && slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Spear) {
-            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Spearmaster));
+            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Spearmaster);
         } else if (ModManager.MSC && slugcat_name == Saint) {
-            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Saint));
+            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Saint);
 
         // Watcher DLC
         } else if (ModManager.Watcher && slugcat_name == Watcher.WatcherEnums.SlugcatStatsName.Watcher) {
-            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Watcher));
+            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Watcher);
 
         // Custom
         } else if (ModManager.MSC && slugcat_name == Sofanthiel) {
-            _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Sofanthiel));
+            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Sofanthiel);
         } else {
             var parsed_name = Regex.Replace(slugcat_name.value, @"[^a-zA-Z0-9_]", "_");
             if (!blacklisted_custom_slugcat_names.Contains(parsed_name)) {
-                _all_attached_fields.Add(abstract_player, new(Option_Max_Spear_Count_Custom_Slugcat(parsed_name)));
+                attached_fields = new Attached_Fields(Option_Max_Spear_Count_Custom_Slugcat(parsed_name));
             }
         }
+        _all_attached_fields.Add(abstract_player, attached_fields);
 
         if (player.Get_Attached_Fields().max_spear_count == 0) return;
         player.spearOnBack = new SpearOnBack(player);
