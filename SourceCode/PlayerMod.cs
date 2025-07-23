@@ -154,6 +154,37 @@ public static class PlayerMod {
         return result;
     }
 
+    public static int PlayerMod_UpdateFreeHand(int free_hand, Player player, AbstractSpear abstract_spear) {
+        // Who knows if this is going to work. Rain Meadow does update this as
+        // well. That is the reason why I want to return an int. Then it can be
+        // chained. But the intention is that you don't execute the function
+        // SlugcatGrab when I run my part. Now it is executed and -1 might not
+        // propagate as expected.
+
+        // vanilla case
+        if (free_hand > -1) {
+            return free_hand;
+        }
+
+        Attached_Fields attached_fields = player.Get_Attached_Fields();
+
+        // I might not want to check this since you can have a backspear perk as well
+        // if (attached_fields.isBlacklisted) return -1;
+
+        if (player.spearOnBack is not SpearOnBack spear_on_back) return -1;
+        if (spear_on_back.abstractStick != null) return -1;
+        if (spear_on_back.spear != null) return -1;
+
+        spear_on_back.abstractStick = new AbstractOnBackStick(player.abstractPhysicalObject, abstract_spear);
+        spear_on_back.spear = (Spear)spear_on_back.abstractStick.Spear.realizedObject; // null is okay;
+        spear_on_back.interactionLocked = true;
+        player.noPickUpOnRelease = 20;
+
+        if (abstract_spear.realizedObject is not Spear spear) return -1;
+        spear.ChangeMode(Weapon.Mode.OnBack);
+        return -1;
+    }
+
     public static bool Uses_A_Persistant_Tracker(AbstractPhysicalObject abstract_physical_object) {
         //
         // copy & paste vanilla function but it works with "key item tracking" disabled
@@ -236,37 +267,21 @@ public static class PlayerMod {
               instruction => instruction.MatchCall<Player>("FreeHand")
             )) {
             if (can_log_il_hooks) {
-                Debug.Log($"{mod_id}: IL_Player_GrabUpdate: Index {cursor.Index}"); // 955
+                Debug.Log($"{mod_id}: IL_Player_GrabUpdate: Index {cursor.Index}");
             }
 
-            cursor.Goto(cursor.Index + 2);
-            cursor = cursor.RemoveRange(4); // 957-960
-
-            // cursor.GotoNext() didn't work for some reason;
+            // Diffuse the if condition but jumping in place. We want to be
+            // compatible to Rain Meadow here as much as possible. Do NOT remove
+            // these instructions.
+            cursor.GotoNext(instruction => instruction.MatchBle(out ILLabel _));
             cursor.Goto(cursor.Index + 1);
-            cursor.RemoveRange(4); // 962-965
+            cursor.MarkLabel((ILLabel)cursor.Prev.Operand);
 
-            cursor.EmitDelegate<Action<Player, AbstractSpear>>((player, abstract_spear) => {
-                // vanilla case
-                if (player.FreeHand() > -1) {
-                    player.SlugcatGrab(abstract_spear.realizedObject, player.FreeHand());
-                    return;
-                }
-
-                Attached_Fields attached_fields = player.Get_Attached_Fields();
-                // if (attached_fields.isBlacklisted) return; // I might not want to check this since you can have a backspear perk as well
-                if (player.spearOnBack is not SpearOnBack spear_on_back) return;
-                if (spear_on_back.abstractStick != null) return;
-                if (spear_on_back.spear != null) return;
-
-                spear_on_back.abstractStick = new AbstractOnBackStick(player.abstractPhysicalObject, abstract_spear);
-                spear_on_back.spear = (Spear)spear_on_back.abstractStick.Spear.realizedObject; // null is okay;
-                spear_on_back.interactionLocked = true;
-                player.noPickUpOnRelease = 20;
-
-                if (abstract_spear.realizedObject is not Spear spear) return;
-                spear.ChangeMode(Weapon.Mode.OnBack);
-            });
+            cursor.GotoNext(MoveType.After,
+                    instruction => instruction.MatchCall<Player>(nameof(Player.FreeHand)));
+            cursor.Emit(OpCodes.Ldarg_0);
+            cursor.Emit(OpCodes.Ldloc, 19);
+            cursor.EmitDelegate(PlayerMod_UpdateFreeHand);
         } else {
             if (can_log_il_hooks) {
                 Debug.Log($"{mod_id}: IL_Player_GrabUpdate failed.");

@@ -1,5 +1,5 @@
 ## InfiniteSpears
-###### Version: 2.2.7
+###### Version: 2.2.8
 This is a mod for Rain World v1.10.
 
 ### Description
@@ -16,7 +16,7 @@ This mod has additional options:
 
 ### Installation
 0. Update Rain World to version 1.10 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.2.7).
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.2.8).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -31,6 +31,10 @@ See the file LICENSE-MIT.
 
 ### Changelog
 #### (Rain World v1.10)
+v2.2.8:
+- Fixed a bug where the IL hook for GrabUpdate would conflict with the one from
+  Rain Meadow. This caused an invalid program exception on startup.
+
 v2.2.7:
 - Restored using a default value if no slugcat is found. Otherwise, it might crash.
 
