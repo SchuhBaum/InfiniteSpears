@@ -1,6 +1,6 @@
 ## InfiniteSpears
-###### Version: 2.2.8
-This is a mod for Rain World v1.10.
+###### Version: 2.3.0
+This is a mod for Rain World v1.11.
 
 ### Description
 This mod has two main features. You can either  
@@ -15,8 +15,8 @@ This mod has additional options:
 - `(Swallowed Items)` Most swallowed item are duplicated when regurgitating unless your hands are full.
 
 ### Installation
-0. Update Rain World to version 1.10 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.2.8).
+0. Update Rain World to version 1.11 if needed.
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.3.0).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -30,6 +30,10 @@ If you have feedback, you can message me on Discord `@schuhbaum` or write an ema
 See the file LICENSE-MIT.
 
 ### Changelog
+#### (Rain World v1.11)
+v2.3.0:
+- Bumped version requirement to v1.11.
+
 #### (Rain World v1.10)
 v2.2.8:
 - Fixed a bug where the IL hook for GrabUpdate would conflict with the one from
