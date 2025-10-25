@@ -1,17 +1,4 @@
-﻿using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using MonoMod.RuntimeDetour;
-using MoreSlugcats;
-using System;
-using System.Reflection;
-using UnityEngine;
-
-using static AbstractPhysicalObject;
-using static MoreSlugcats.MoreSlugcatsEnums.SlugcatStatsName;
-using static Player;
-using static SlugcatStats;
-using static SlugcatStats.Name;
-
+﻿
 namespace InfiniteSpears;
 
 public static class PlayerMod {
@@ -414,91 +401,108 @@ public static class PlayerMod {
         EntityID id = abstract_physical_object.world.game.GetNewID();
         id.altSeed = abstract_physical_object.ID.RandomSeed;
 
-        if (abstract_physical_object is EggBugEgg.AbstractBugEgg abstract_egg_bug_egg) {
-            player.objectInStomach = new EggBugEgg.AbstractBugEgg(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_egg_bug_egg.hue);
+        if (
+            type == AbstractObjectType.Lantern ||
+            type == AbstractObjectType.Rock ||
+            type == AbstractObjectType.ScavengerBomb ||
+            type == DLCSharedEnums.AbstractObjectType.SingularityBomb ||
+            type == WatcherEnums.AbstractObjectType.Boomerang
+        ) {
+            player.objectInStomach = new(abstract_physical_object.world, type, null, abstract_physical_object.pos, id);
             return;
         }
 
-        if (abstract_physical_object is FireEgg.AbstractBugEgg abstract_fire_egg) {
-            player.objectInStomach = new FireEgg.AbstractBugEgg(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_fire_egg.hue);
+        if (
+            type == AbstractObjectType.FirecrackerPlant ||
+            type == AbstractObjectType.FlareBomb || 
+            type == AbstractObjectType.FlyLure ||
+            type == AbstractObjectType.JellyFish ||
+            type == AbstractObjectType.KarmaFlower ||
+            type == AbstractObjectType.Mushroom ||
+            type == AbstractObjectType.NeedleEgg ||
+            type == AbstractObjectType.PuffBall ||
+            type == AbstractObjectType.SlimeMold ||
+            type == DLCSharedEnums.AbstractObjectType.DandelionPeach ||
+            type == DLCSharedEnums.AbstractObjectType.GlowWeed ||
+            type == DLCSharedEnums.AbstractObjectType.GooieDuck
+        ) {
+            player.objectInStomach = new AbstractConsumable(abstract_physical_object.world, type, null, abstract_physical_object.pos, id, -1, -1, null);
             return;
         }
 
-        if (abstract_physical_object is AbstractBullet abstract_bullet) {
-            player.objectInStomach = new AbstractBullet(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_bullet.bulletType, abstract_bullet.timeToLive);
-            return;
-        }
+        switch (abstract_physical_object) {
+            case AbstractBullet abstract_bullet:
+                player.objectInStomach = new AbstractBullet(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_bullet.bulletType, abstract_bullet.timeToLive);
+                return;
 
-        if (abstract_physical_object is AbstractCreature abstract_creature) {
-            player.objectInStomach = new AbstractCreature(abstract_physical_object.world, abstract_creature.creatureTemplate, null, abstract_physical_object.pos, id);
-            return;
-        }
+            case AbstractCreature abstract_creature:
+                player.objectInStomach = new AbstractCreature(abstract_physical_object.world, abstract_creature.creatureTemplate, null, abstract_physical_object.pos, id);
+                return;
 
-        if (abstract_physical_object is AbstractConsumable) {
-            if (abstract_physical_object is BubbleGrass.AbstractBubbleGrass abstract_bubble_grass) {
+            case AbstractSpear abstract_spear:
+                player.objectInStomach = new AbstractSpear(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_spear.explosive, abstract_spear.electric) {
+                    electricCharge = abstract_spear.electricCharge,
+                    hue = abstract_spear.hue,
+                    needle = abstract_spear.needle,
+                };
+                return;
+
+            case BubbleGrass.AbstractBubbleGrass abstract_bubble_grass:
                 player.objectInStomach = new BubbleGrass.AbstractBubbleGrass(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_bubble_grass.oxygenLeft, -1, -1, null);
                 return;
-            }
 
-            if (abstract_physical_object is DataPearl.AbstractDataPearl abstract_data_pearl) {
-                player.objectInStomach = new DataPearl.AbstractDataPearl(
-                    abstract_physical_object.world,
-                    abstract_physical_object.type, null,
-                    abstract_physical_object.pos, id, -1, -1, null,
-                    abstract_data_pearl.dataPearlType
-                );
+            case DangleFruit.AbstractDangleFruit abstract_dangle_fruit:
+                player.objectInStomach = new DangleFruit.AbstractDangleFruit(abstract_physical_object.world, null, abstract_physical_object.pos, id, -1, -1, abstract_dangle_fruit.rotted, null);
                 return;
-            }
 
-            if (abstract_physical_object is LillyPuck.AbstractLillyPuck abstract_lilly_puck) {
+            case DataPearl.AbstractDataPearl abstract_data_pearl:
+                player.objectInStomach = new DataPearl.AbstractDataPearl(abstract_physical_object.world, type, null, abstract_physical_object.pos, id, -1, -1, null, abstract_data_pearl.dataPearlType);
+                return;
+
+            case EggBugEgg.AbstractBugEgg abstract_egg_bug_egg:
+                player.objectInStomach = new EggBugEgg.AbstractBugEgg(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_egg_bug_egg.hue);
+                return;
+
+            case FireEgg.AbstractBugEgg abstract_fire_egg:
+                player.objectInStomach = new FireEgg.AbstractBugEgg(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_fire_egg.hue);
+                return;
+
+            case GraffitiBomb.AbstractGraffitiBomb abstract_graffiti_bomb:
+                player.objectInStomach = new GraffitiBomb.AbstractGraffitiBomb(abstract_physical_object.world, null, abstract_physical_object.pos, id, -1, -1, null, abstract_graffiti_bomb.color);
+                return;
+
+            case LillyPuck.AbstractLillyPuck abstract_lilly_puck:
                 player.objectInStomach = new LillyPuck.AbstractLillyPuck(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_lilly_puck.bites, -1, -1, null);
                 return;
-            }
 
-            if (abstract_physical_object is SeedCob.AbstractSeedCob abstract_seed_cob) {
+            case OverseerCarcass.AbstractOverseerCarcass abstract_overseer_carcass:
+                player.objectInStomach = new OverseerCarcass.AbstractOverseerCarcass(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_overseer_carcass.color, abstract_overseer_carcass.ownerIterator);
+                return;
+
+            case SeedCob.AbstractSeedCob abstract_seed_cob:
                 player.objectInStomach = new SeedCob.AbstractSeedCob(abstract_physical_object.world, null, abstract_physical_object.pos, id, -1, -1, abstract_seed_cob.dead, null);
                 return;
-            }
 
-            if (abstract_physical_object is SporePlant.AbstractSporePlant abstract_spore_plant) {
+            case SporePlant.AbstractSporePlant abstract_spore_plant:
                 player.objectInStomach = new SporePlant.AbstractSporePlant(abstract_physical_object.world, null, abstract_physical_object.pos, id, -1, -1, null, abstract_spore_plant.used, abstract_spore_plant.pacified);
                 return;
-            }
 
-            if (abstract_physical_object is WaterNut.AbstractWaterNut abstract_water_nut) {
+            case VultureMask.AbstractVultureMask abstract_vulture_mask:
+                player.objectInStomach = new VultureMask.AbstractVultureMask(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_vulture_mask.colorSeed, abstract_vulture_mask.king);
+                return;
+
+            case Watcher.BoxWorm.Larva.AbstractLarva abstract_larva:
+                player.objectInStomach = new Watcher.BoxWorm.Larva.AbstractLarva(abstract_physical_object.world, null, abstract_physical_object.pos, id);
+                return;
+
+            case WaterNut.AbstractWaterNut abstract_water_nut:
                 player.objectInStomach = new WaterNut.AbstractWaterNut(abstract_physical_object.world, null, abstract_physical_object.pos, id, -1, -1, null, abstract_water_nut.swollen);
                 return;
-            }
 
-            player.objectInStomach = new AbstractConsumable(abstract_physical_object.world, abstract_physical_object.type, null, abstract_physical_object.pos, id, -1, -1, null);
-            return;
+            default:
+                Debug.Log($"{mod_id}.Player_Regurgitate: [WARNING] Trying to duplicate {type}. But it is not whitelisted.");
+                return;
         }
-
-        if (abstract_physical_object is OverseerCarcass.AbstractOverseerCarcass abstract_overseer_carcass) {
-            player.objectInStomach = new OverseerCarcass.AbstractOverseerCarcass(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_overseer_carcass.color, abstract_overseer_carcass.ownerIterator);
-            return;
-        }
-
-        if (abstract_physical_object is JokeRifle.AbstractRifle abstract_rifle) {
-            player.objectInStomach = new JokeRifle.AbstractRifle(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_rifle.ammoStyle);
-            return;
-        }
-
-        if (abstract_physical_object is AbstractSpear abstract_spear) {
-            player.objectInStomach = new AbstractSpear(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_spear.explosive, abstract_spear.electric) {
-                electricCharge = abstract_spear.electricCharge,
-                hue = abstract_spear.hue,
-                needle = abstract_spear.needle,
-            };
-            return;
-        }
-
-        if (abstract_physical_object is VultureMask.AbstractVultureMask abstract_vulture_mask) {
-            player.objectInStomach = new VultureMask.AbstractVultureMask(abstract_physical_object.world, null, abstract_physical_object.pos, id, abstract_vulture_mask.colorSeed, abstract_vulture_mask.king);
-            return;
-        }
-
-        player.objectInStomach = new(abstract_physical_object.world, abstract_physical_object.type, null, abstract_physical_object.pos, id);
     }
 
     private static void Player_Stun(On.Player.orig_Stun orig, Player player, int stun) {
