@@ -93,10 +93,12 @@ public static class SpearOnBackMod {
         EntityID id = world.game.GetNewID();
         id.altSeed = abstract_spear.ID.RandomSeed;
 
-        AbstractSpear abstract_spear_copy = new(world, null, abstract_player.pos, id, abstract_spear.explosive, abstract_spear.electric) {
+        var abstract_spear_copy = new AbstractSpear(world, null, abstract_player.pos, id, abstract_spear.explosive, abstract_spear.electric) {
             electricCharge = abstract_spear.electricCharge,
             hue = abstract_spear.hue,
             needle = abstract_spear.needle,
+            poison = abstract_spear.poison,
+            poisonHue = abstract_spear.poisonHue,
         };
 
         abstract_spear_copy.RealizeInRoom();
