@@ -34,6 +34,7 @@ public static class SpearOnBackMod {
         if (spear_on_back.interactionLocked) return false;
         if (spear_on_back.owner is not Player player) return false;
         if (!player.input[0].pckp) return false;
+        if (player.eatCounter < 40) return false;
 
         if (spear_on_back.spear?.abstractPhysicalObject is not AbstractSpear carried_abstract_spear) return false;
         if (player.grasps[0]?.grabbed?.abstractPhysicalObject is not AbstractSpear held_abstract_spear) return false;
@@ -52,6 +53,7 @@ public static class SpearOnBackMod {
         held_abstract_spear.realizedObject.Destroy();
         held_abstract_spear.Destroy();
         spear_on_back.interactionLocked = true;
+        spear_on_back.owner.noPickUpOnRelease = 20;
     }
 
     public static void DropAllSpears(SpearOnBack spear_on_back) {
@@ -146,6 +148,7 @@ public static class SpearOnBackMod {
         spear_on_back.abstractStick = null;
         spear_on_back.spear = null;
         spear_on_back.interactionLocked = true;
+        spear_on_back.owner.noPickUpOnRelease = 20;
     }
 
     private static void SpearOnBack_GraphicsModuleUpdated(On.Player.SpearOnBack.orig_GraphicsModuleUpdated orig, SpearOnBack spear_on_back, bool actually_viewed, bool eu) {
@@ -323,6 +326,7 @@ public static class SpearOnBackMod {
             return;
         }
 
+        attached_fields.interaction_was_locked = spear_on_back.interactionLocked;
         if (attached_fields.has_infinite_spears) {
             // consistency check; was there a case where this mattered?;
             spear_on_back.spear = (Spear)spear_on_back.abstractStick?.Spear.realizedObject!;

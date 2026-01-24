@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace InfiniteSpears;
 
-[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.3.1")]
+[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.3.2")]
 public class MainMod : BaseUnityPlugin {
     //
     // meta data
@@ -18,13 +18,14 @@ public class MainMod : BaseUnityPlugin {
 
     public static readonly string mod_id = "InfiniteSpears";
     public static readonly string author = "SchuhBaum";
-    public static readonly string version = "2.3.1";
+    public static readonly string version = "2.3.2";
 
     //
     // options
     //
 
     public static bool Option_JokeRifle => joke_rifle.Value;
+    public static bool Option_PickUpOnRelease => pick_up_on_release.Value;
     public static bool Option_SlugsAndSpears => slugs_and_spears.Value;
     public static bool Option_SwallowedItems => swallowed_items.Value;
 

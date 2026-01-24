@@ -18,6 +18,20 @@ public static class PlayerMod {
     //
 
     internal static void On_Config_Changed() {
+        IL.Player.GrabUpdate -= IL_Player_GrabUpdate_PickUpOnRelease;
+        On.Player.Regurgitate -= Player_Regurgitate;
+
+        if (Option_PickUpOnRelease) {
+            IL.Player.GrabUpdate += IL_Player_GrabUpdate_PickUpOnRelease;
+        }
+
+        if (Option_SwallowedItems) {
+            On.Player.Regurgitate += Player_Regurgitate;
+        }
+
+        //
+        //
+
         hook_Player_CanPutSlugToBack?.Dispose();
         hook_Player_CanPutSpearToBack?.Dispose();
         hook_Player_CanRetrieveSlugFromBack?.Dispose();
@@ -27,12 +41,6 @@ public static class PlayerMod {
         hook_Player_CanPutSpearToBack        = null;
         hook_Player_CanRetrieveSlugFromBack  = null;
         hook_Player_CanRetrieveSpearFromBack = null;
-
-        On.Player.Regurgitate -= Player_Regurgitate;
-
-        if (Option_SwallowedItems) {
-            On.Player.Regurgitate += Player_Regurgitate;
-        }
 
         if (Type.GetType("Player, Assembly-CSharp") is Type player_class) {
             if (Option_SlugsAndSpears) {
@@ -139,6 +147,27 @@ public static class PlayerMod {
         bool result = orig(player);
         if (player.input[0].y != 0) return false;
         return result;
+    }
+
+    public static bool PlayerMod_CantPressPickup(Player player) {
+        Attached_Fields attached_fields = player.Get_Attached_Fields();
+
+        bool use_vanilla = false;
+        if (attached_fields.is_blacklisted) use_vanilla = true;
+        else if (attached_fields.interaction_was_locked) use_vanilla = true;
+
+        if (use_vanilla) {
+            // vanilla case
+            return !(player.input[0].pckp && !player.input[1].pckp);
+        }
+
+        // Prioritize interacting with backspears, i.e. only grab stuff lying
+        // around on key-up rather than key-down.
+        if (!player.input[0].pckp && player.input[1].pckp) {
+            player.noPickUpOnRelease = 20;
+            return false;
+        }
+        return true;
     }
 
     public static int PlayerMod_UpdateFreeHand(int free_hand, Player player, AbstractSpear abstract_spear) {
@@ -276,6 +305,38 @@ public static class PlayerMod {
             return;
         }
         // LogAllInstructions(context);
+    }
+
+    private static void IL_Player_GrabUpdate_PickUpOnRelease(ILContext context) {
+        // if (can_log_il_hooks) { LogAllInstructions(context); }
+        ILCursor cursor = new(context);
+
+        if (!cursor.TryGotoNext(instruction => instruction.MatchCall<Player>("PickupPressed"))) {
+            if (can_log_il_hooks) {
+                Debug.Log($"{mod_id}: IL_Player_GrabUpdate_PickUpOnRelease failed.");
+            }
+            return;
+        }
+
+        for (int i = 0; i < 2; ++i) {
+            if (cursor.TryGotoNext(instruction => instruction.MatchCall<Player>("PickupPressed"))) {
+                if (can_log_il_hooks) {
+                    Debug.Log($"{mod_id}: IL_Player_GrabUpdate_PickUpOnRelease: Index {cursor.Index}");
+                }
+                cursor.Goto(cursor.Index - 12);
+                cursor.RemoveRange(10);
+                cursor.EmitDelegate<Func<Player, bool>>(PlayerMod_CantPressPickup);
+                cursor.Goto(cursor.Index + 12);
+
+            } else {
+                if (can_log_il_hooks) {
+                    Debug.Log($"{mod_id}: IL_Player_GrabUpdate_PickUpOnRelease failed.");
+                }
+                return;
+            }
+        }
+
+        // if (can_log_il_hooks) { LogAllInstructions(context); }
     }
 
     //

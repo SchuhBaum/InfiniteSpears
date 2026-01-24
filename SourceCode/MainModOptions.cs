@@ -12,6 +12,7 @@ public class MainModOptions : OptionInterface {
     //
 
     public static Configurable<bool> joke_rifle = main_mod_options.config.Bind("joke_rifle", defaultValue: false, new ConfigurableInfo("When enabled, you have infinite ammunition for the joke rifle.", null, "", "Joke Rifle"));
+    public static Configurable<bool> pick_up_on_release = main_mod_options.config.Bind("pick_up_on_release", defaultValue: false, new ConfigurableInfo("When enabled, backspears have priority. You only pick up items from the ground when releasing the grab key.", null, "", "Pick Up on Release"));
     public static Configurable<bool> slugs_and_spears = main_mod_options.config.Bind("slugs_and_spears", defaultValue: false, new ConfigurableInfo("When enabled, you can carry slugcats and spear on your back at the same time.\nHold up/down to interact with slugcats. Do the opposite to interact with spears.", null, "", "Slugs and Spears"));
     public static Configurable<bool> swallowed_items = main_mod_options.config.Bind("swallowed_items", defaultValue: false, new ConfigurableInfo("When enabled, most swallowed item are duplicated when regurgitating unless your hands are full.", null, "", "Swallowed Items"));
 
@@ -134,11 +135,11 @@ public class MainModOptions : OptionInterface {
         // Description
         //
         AddBox();
-        AddNewLine(1.5f); // add some space for word wrapping and new lines
-        AddTextLabel("Description:\n\nYou can either\na) carry one spear on your back, and spawn or despawn spears using it\nOR\nb) carry multiple spears on your back which behave normally.", FLabelAlignment.Left);
+        AddNewLine(); // add some space for word wrapping and new lines
+        AddTextLabel("You can either\na) carry one spear on your back, and spawn or despawn spears using it\nOR\nb) carry multiple spears on your back which behave normally.", FLabelAlignment.Left);
 
         DrawTextLabels(ref Tabs[tab_index]);
-        AddNewLine(1.5f);
+        AddNewLine();
         DrawBox(ref Tabs[tab_index]);
 
         AddNewLine();
@@ -155,6 +156,7 @@ public class MainModOptions : OptionInterface {
         AddNewLine(2f);
 
         AddCheckBox(joke_rifle, (string)joke_rifle.info.Tags[0]);
+        AddCheckBox(pick_up_on_release, (string)pick_up_on_release.info.Tags[0]);
         AddCheckBox(slugs_and_spears, (string)slugs_and_spears.info.Tags[0]);
         AddCheckBox(swallowed_items, (string)swallowed_items.info.Tags[0]);
         DrawCheckBoxes(ref Tabs[tab_index]);

@@ -1,5 +1,5 @@
 ## InfiniteSpears
-###### Version: 2.3.1
+###### Version: 2.3.2
 This is a mod for Rain World v1.11.
 
 ### Description
@@ -16,7 +16,7 @@ This mod has additional options:
 
 ### Installation
 0. Update Rain World to version 1.11 if needed.
-1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.3.1).
+1. Download the file  `InfiniteSpears.zip` from [Releases](https://github.com/SchuhBaum/InfiniteSpears/releases/tag/v2.3.2).
 2. Extract its content in the folder `[Steam]\SteamApps\common\Rain World\RainWorld_Data\StreamingAssets\mods`.
 3. Start the game as normal. In the main menu select `Remix` and enable the mod. 
 
@@ -31,6 +31,10 @@ See the file LICENSE-MIT.
 
 ### Changelog
 #### (Rain World v1.11)
+v2.3.2:
+- (pick up on release) Added this option (disabled by default). When enabled,
+  backspears have priority. You only pick up items from the ground when
+  releasing the grab key.
 v2.3.1:
 - (swallowed items) Switched to a whitelist model. Only whitelisted items can
   get duplicated. Otherwise, creating items in a corrupted state might freeze

@@ -20,6 +20,8 @@ public static class AbstractPlayerMod {
         public readonly bool has_infinite_spears;
         public readonly int max_spear_count;
 
+        public bool interaction_was_locked;
+
         // this is only used when max_spear_count > 1; this extends the number of 
         // backspears that you can carry; in this case the vanilla abstract_on_back 
         // stick is ignored and null;
