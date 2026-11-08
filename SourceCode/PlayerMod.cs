@@ -4,18 +4,14 @@ namespace InfiniteSpears;
 public static class PlayerMod {
     //
     // parameters and variables
-    //
 
     private static Hook? hook_Player_CanPutSlugToBack = null;
     private static Hook? hook_Player_CanPutSpearToBack = null;
     private static Hook? hook_Player_CanRetrieveSlugFromBack = null;
     private static Hook? hook_Player_CanRetrieveSpearFromBack = null;
 
-    public static Attached_Fields Get_Attached_Fields(this Player player) => player.abstractCreature.Get_Attached_Fields();
-
     //
     // main
-    //
 
     internal static void On_Config_Changed() {
         IL.Player.GrabUpdate -= IL_Player_GrabUpdate_PickUpOnRelease;
@@ -118,7 +114,6 @@ public static class PlayerMod {
 
     //
     // public
-    //
 
     public static bool Player_CanPutSlugToBack_Allow(Func<Player, bool> orig, Player player) { // Option_SlugsAndSpears
         // When using Slugpup Safari, this hook gets ignored.
@@ -230,7 +225,6 @@ public static class PlayerMod {
 
     //
     // private
-    //
 
     private static void IL_Player_GrabUpdate(ILContext context) {
         // LogAllInstructions(context);
@@ -343,56 +337,78 @@ public static class PlayerMod {
     //
     //
 
-    private static void Player_Ctor(On.Player.orig_ctor orig, Player player, AbstractCreature abstract_player, World world) {
+    // NOTE: I can almost initialize in AbstractCreature_Ctor. The problem is
+    // that the PlayerState is initialized after the abstract creature is
+    // created. And `SlugCatClass` relies on it.
+    private static void
+    Player_Ctor(
+        On.Player.orig_ctor orig,
+        Player player,
+        AbstractCreature abstract_player,
+        World world)
+    {
         orig(player, abstract_player, world);
 
         // return when this is already initialized; otherwise this can conflict with the
         // swallow everything mod;
         if (_all_attached_fields.ContainsKey(abstract_player)) return;
 
-        Attached_Fields attached_fields = new Attached_Fields(max_spear_count: 0);
-        if (player.SlugCatClass is not Name slugcat_name) {
+        try
+        {
+            Attached_Fields attached_fields = new Attached_Fields(max_spear_count: 0);
+
+            var slugcat_name = player.SlugCatClass;
+            if (slugcat_name == null) {
+                _all_attached_fields.Add(abstract_player, attached_fields);
+                return;
+            }
+
+            // General
+            if (slugcat_name == Yellow) {
+                attached_fields = new Attached_Fields(Option_Max_Spear_Count_Yellow);
+            } else if (slugcat_name == White) {
+                attached_fields = new Attached_Fields(Option_Max_Spear_Count_White);
+            } else if (slugcat_name == Red) {
+                attached_fields = new Attached_Fields(Option_Max_Spear_Count_Red);
+
+            // MSC DLC
+            } else if (ModManager.MSC && slugcat_name == Gourmand) {
+                attached_fields = new Attached_Fields(Option_Max_Spear_Count_Gourmand);
+            } else if (ModManager.MSC && slugcat_name == Artificer) {
+                attached_fields = new Attached_Fields(Option_Max_Spear_Count_Artificer);
+            } else if (ModManager.MSC && slugcat_name == Rivulet) {
+                attached_fields = new Attached_Fields(Option_Max_Spear_Count_Rivulet);
+            } else if (ModManager.MSC && slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Spear) {
+                attached_fields = new Attached_Fields(Option_Max_Spear_Count_Spearmaster);
+            } else if (ModManager.MSC && slugcat_name == Saint) {
+                attached_fields = new Attached_Fields(Option_Max_Spear_Count_Saint);
+
+            // Watcher DLC
+            } else if (ModManager.Watcher && slugcat_name == Watcher.WatcherEnums.SlugcatStatsName.Watcher) {
+                attached_fields = new Attached_Fields(Option_Max_Spear_Count_Watcher);
+
+            // Custom
+            } else if (ModManager.MSC && slugcat_name == Sofanthiel) {
+                attached_fields = new Attached_Fields(Option_Max_Spear_Count_Sofanthiel);
+            } else {
+                var parsed_name = Regex.Replace(slugcat_name.value, @"[^a-zA-Z0-9_]", "_");
+                if (!blacklisted_custom_slugcat_names.Contains(parsed_name)) {
+                    attached_fields = new Attached_Fields(Option_Max_Spear_Count_Custom_Slugcat(parsed_name));
+                }
+            }
+
             _all_attached_fields.Add(abstract_player, attached_fields);
-            return;
-        }
 
-        // General
-        if (slugcat_name == Yellow) {
-            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Yellow);
-        } else if (slugcat_name == White) {
-            attached_fields = new Attached_Fields(Option_Max_Spear_Count_White);
-        } else if (slugcat_name == Red) {
-            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Red);
-
-        // MSC DLC
-        } else if (ModManager.MSC && slugcat_name == Gourmand) {
-            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Gourmand);
-        } else if (ModManager.MSC && slugcat_name == Artificer) {
-            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Artificer);
-        } else if (ModManager.MSC && slugcat_name == Rivulet) {
-            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Rivulet);
-        } else if (ModManager.MSC && slugcat_name == MoreSlugcatsEnums.SlugcatStatsName.Spear) {
-            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Spearmaster);
-        } else if (ModManager.MSC && slugcat_name == Saint) {
-            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Saint);
-
-        // Watcher DLC
-        } else if (ModManager.Watcher && slugcat_name == Watcher.WatcherEnums.SlugcatStatsName.Watcher) {
-            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Watcher);
-
-        // Custom
-        } else if (ModManager.MSC && slugcat_name == Sofanthiel) {
-            attached_fields = new Attached_Fields(Option_Max_Spear_Count_Sofanthiel);
-        } else {
-            var parsed_name = Regex.Replace(slugcat_name.value, @"[^a-zA-Z0-9_]", "_");
-            if (!blacklisted_custom_slugcat_names.Contains(parsed_name)) {
-                attached_fields = new Attached_Fields(Option_Max_Spear_Count_Custom_Slugcat(parsed_name));
+            if (!attached_fields.is_blacklisted && player.spearOnBack == null) {
+                player.spearOnBack = new SpearOnBack(player);
             }
         }
-        _all_attached_fields.Add(abstract_player, attached_fields);
-
-        if (player.Get_Attached_Fields().max_spear_count == 0) return;
-        player.spearOnBack = new SpearOnBack(player);
+        finally
+        {
+            if (is_rain_meadow_enabled && !IsAbstractPhysicalObjectMine(abstract_player)) {
+                InvokeRequestSettings(abstract_player);
+            }
+        }
     }
 
     private static void Player_Die(On.Player.orig_Die orig, Player player) {

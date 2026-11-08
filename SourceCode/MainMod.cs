@@ -1,8 +1,4 @@
-﻿using BepInEx;
-using MonoMod.Cil;
-using System.Security.Permissions;
-using UnityEngine;
-
+﻿
 // allows access to private members;
 #pragma warning disable CS0618
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -10,19 +6,20 @@ using UnityEngine;
 
 namespace InfiniteSpears;
 
-[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.3.3")]
-public class MainMod : BaseUnityPlugin {
+[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.3.4")]
+public class InfiniteSpears : BaseUnityPlugin {
     //
     // meta data
-    //
 
     public static readonly string mod_id = "InfiniteSpears";
     public static readonly string author = "SchuhBaum";
-    public static readonly string version = "2.3.3";
+    public static readonly string version = "2.3.4";
+
+    // For debugging multiplayer issues.
+    // public static readonly string unique_id = Guid.NewGuid().ToString();
 
     //
     // options
-    //
 
     public static bool Option_JokeRifle => joke_rifle.Value;
     public static bool Option_PickUpOnRelease => pick_up_on_release.Value;
@@ -53,24 +50,31 @@ public class MainMod : BaseUnityPlugin {
     }
 
     //
-    // variables
+    // other mods
+
+    public static bool is_rain_meadow_enabled = false;
+
     //
+    // variables
 
     public static bool is_initialized = false;
     public static bool can_log_il_hooks = false;
 
     // 
     // main
-    // 
 
-    public MainMod() { }
+    public InfiniteSpears() { }
     public void OnEnable() => On.RainWorld.OnModsInit += RainWorld_OnModsInit; // look for dependencies and initialize hooks
 
     //
     // public
-    //
 
-    public static void LogAllInstructions(ILContext? context, int index_string_length = 9, int op_code_string_length = 14) {
+    public static void
+    LogAllInstructions(
+        ILContext? context,
+        int index_string_length = 9,
+        int op_code_string_length = 14)
+    {
         if (context == null) return;
 
         Debug.Log("-----------------------------------------------------------------");
@@ -120,9 +124,14 @@ public class MainMod : BaseUnityPlugin {
         Debug.Log("-----------------------------------------------------------------");
     }
 
+    public static void
+    LogStackTrace()
+    {
+        Debug.Log($"{mod_id}.LogStackTrace: {Environment.StackTrace}");
+    }
+
     //
     // private
-    //
 
     private void RainWorld_OnModsInit(On.RainWorld.orig_OnModsInit orig, RainWorld rain_world) {
         orig(rain_world);
@@ -133,11 +142,29 @@ public class MainMod : BaseUnityPlugin {
 
         Debug.Log($"{mod_id}: version {version}");
 
+        foreach (ModManager.Mod mod in ModManager.ActiveMods) {
+            if (mod.id == "henpemaz_rainmeadow") {
+                is_rain_meadow_enabled = true;
+                continue;
+            }
+        }
+
+        if (is_rain_meadow_enabled) {
+            Debug.Log($"{mod_id}: RainMeadow found.");
+        } else {
+            Debug.Log($"{mod_id}: RainMeadow not found.");
+        }
+
         can_log_il_hooks = true;
 
         AbstractObjectStickMod.OnEnable();
         PlayerCarryableItemMod.OnEnable();
         PlayerMod.OnEnable();
+
+        if (is_rain_meadow_enabled) {
+            RainMeadowMod.OnEnable();
+        }
+
         RainWorldGameMod.OnEnable();
         RoomCameraMod.OnEnable();
         ProcessManagerMod.OnEnable();

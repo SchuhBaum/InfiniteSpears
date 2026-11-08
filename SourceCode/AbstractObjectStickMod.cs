@@ -1,5 +1,3 @@
-using UnityEngine;
-using static Weapon.Mode;
 
 namespace InfiniteSpears;
 
@@ -21,14 +19,17 @@ internal class AbstractObjectStickMod {
         // there seems to be sources where the spear gets deactivated but the mode is 
         // not changed and they clip through the floor;
         if (abstract_on_back_stick.Spear.realizedObject is Spear spear && spear.mode == OnBack) {
-            Debug.Log($"{mod_id}: Trying to deactivate AbstractOnBackStick but the spear is still on the back. Release spear.");
+            Debug.Log($"{mod_id}: Trying to deactivate AbstractOnBackStick but the spear {spear.abstractPhysicalObject.ID} is still on the back. Release spear.");
             spear.ChangeMode(Free);
         }
 
-        // blacklisted means that max_spear_count is zero or one; if it is -1 there is
-        // nothing to remove as well; in any case, I can simply call Remove(...) since 
-        // it does not trigger an exception; it only returns false;
-        // if (abstract_player.Get_Attached_Fields().is_blacklisted) return;
-        abstract_player.Get_Attached_Fields().abstract_on_back_sticks.Remove(abstract_on_back_stick);
+        var player = abstract_player.realizedCreature as Player;
+        if (player == null) return;
+
+        var attached_fields = player.Get_Attached_Fields();
+        if (attached_fields.is_blacklisted) return;
+        if (attached_fields.has_infinite_spears) return;
+
+        attached_fields.abstract_on_back_sticks.Remove(abstract_on_back_stick);
     }
 }

@@ -1,7 +1,4 @@
-﻿using Menu.Remix.MixedUI;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿
 namespace InfiniteSpears;
 
 public class MainModOptions : OptionInterface {

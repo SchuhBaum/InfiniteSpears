@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using static AbstractPhysicalObject;
-using static InfiniteSpears.AbstractPlayerMod;
-using static Player;
 
 namespace InfiniteSpears;
 
@@ -29,6 +25,9 @@ internal class SpearMod {
             spear.ChangeMode(Weapon.Mode.OnBack);
 
             if (abstract_on_back_stick.Player.realizedObject is not Player player) continue;
+
+            // Break assumes that a spear can only be stuck (e.g. held, carried)
+            // by one player at a time.
             Attached_Fields attached_fields = player.Get_Attached_Fields();
             if (attached_fields.is_blacklisted) break;
             if (attached_fields.has_infinite_spears) break;

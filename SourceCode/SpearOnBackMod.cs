@@ -1,9 +1,4 @@
-﻿using RWCustom;
-using System.Collections.Generic;
-using UnityEngine;
-using static InfiniteSpears.AbstractPlayerMod;
-using static Player;
-
+﻿
 namespace InfiniteSpears;
 
 public static class SpearOnBackMod {
@@ -46,11 +41,14 @@ public static class SpearOnBackMod {
         return true;
     }
 
-    public static void DespawnSpear(SpearOnBack spear_on_back) {
+    public static void
+    DespawnSpear(
+        SpearOnBack spear_on_back)
+    {
         if (spear_on_back.owner is not Player player) return;
         if (player.grasps[0]?.grabbed?.abstractPhysicalObject is not AbstractSpear held_abstract_spear) return;
 
-        held_abstract_spear.realizedObject.Destroy();
+        held_abstract_spear.realizedObject?.Destroy();
         held_abstract_spear.Destroy();
         spear_on_back.interactionLocked = true;
         spear_on_back.owner.noPickUpOnRelease = 20;
@@ -77,7 +75,11 @@ public static class SpearOnBackMod {
         spear_on_back.spear = null;
     }
 
-    public static void SpawnSpear(SpearOnBack spear_on_back, in AbstractSpear? abstract_spear) {
+    public static void
+    SpawnSpearToBack(
+        SpearOnBack spear_on_back,
+        in AbstractSpear? abstract_spear)
+    {
         if (abstract_spear == null) return;
         if (spear_on_back.abstractStick != null) return;
         if (spear_on_back.spear != null) return;
@@ -102,28 +104,36 @@ public static class SpearOnBackMod {
         };
 
         abstract_spear_copy.RealizeInRoom();
-        spear_on_back.abstractStick = new AbstractOnBackStick(abstract_player, abstract_spear_copy);
-        spear_on_back.spear = (Spear)spear_on_back.abstractStick.Spear.realizedObject; // spear_copy;
-        spear_on_back.spear?.ChangeMode(Weapon.Mode.OnBack);
 
-        spear_on_back.interactionLocked = true;
-        player.noPickUpOnRelease = 20;
-        player.room?.PlaySound(SoundID.Slugcat_Pick_Up_Spear, player.mainBodyChunk);
+        var spear = abstract_spear.realizedObject as Spear;
+        var spear_copy = abstract_spear_copy.realizedObject as Spear;
+        if (spear != null && spear_copy != null)
+        {
+            spear_copy.spearmasterNeedle = spear.spearmasterNeedle;
+            spear_copy.spearmasterNeedleType = spear.spearmasterNeedleType;
+            spear_copy.spearmasterNeedle_hasConnection = spear.spearmasterNeedle_hasConnection;
+            spear_copy.spearmasterNeedle_fadecounter = spear.spearmasterNeedle_fadecounter;
+        }
 
-        if (abstract_spear.realizedObject is not Spear spear) return;
-        if (abstract_spear_copy.realizedObject is not Spear spear_copy) return;
+        if (spear_copy != null)
+        {
+            spear_on_back.SpearToBack(spear_copy);
+        }
 
-        spear_copy.spearmasterNeedle = spear.spearmasterNeedle;
-        spear_copy.spearmasterNeedleType = spear.spearmasterNeedleType;
-        spear_copy.spearmasterNeedle_hasConnection = spear.spearmasterNeedle_hasConnection;
-        spear_copy.spearmasterNeedle_fadecounter = spear.spearmasterNeedle_fadecounter;
+        // Debug.Log($"{mod_id}: Copied spear {abstract_spear_copy.ID} from {abstract_spear.ID}.");
     }
 
     //
     // private
     //
 
+    // TODO: fix dropping spears; it should be one at a time;
     private static void SpearOnBack_DropSpear(On.Player.SpearOnBack.orig_DropSpear orig, SpearOnBack spear_on_back) {
+        if (is_rain_meadow_enabled && !IsAbstractPhysicalObjectMine(spear_on_back.owner?.abstractCreature)) {
+            orig(spear_on_back);
+            return;
+        }
+
         if (spear_on_back.owner is not Player player) {
             orig(spear_on_back);
             return;
@@ -227,6 +237,11 @@ public static class SpearOnBackMod {
     }
 
     private static void SpearOnBack_SpearToBack(On.Player.SpearOnBack.orig_SpearToBack orig, SpearOnBack spear_on_back, Spear spear) {
+        if (is_rain_meadow_enabled && !IsAbstractPhysicalObjectMine(spear_on_back.owner?.abstractCreature)) {
+            orig(spear_on_back, spear);
+            return;
+        }
+
         if (spear_on_back.owner is not Player player) {
             orig(spear_on_back, spear);
             return;
@@ -257,6 +272,11 @@ public static class SpearOnBackMod {
     }
 
     private static void SpearOnBack_SpearToHand(On.Player.SpearOnBack.orig_SpearToHand orig, SpearOnBack spear_on_back, bool eu) {
+        if (is_rain_meadow_enabled && !IsAbstractPhysicalObjectMine(spear_on_back.owner?.abstractCreature)) {
+            orig(spear_on_back, eu);
+            return;
+        }
+
         if (spear_on_back.owner is not Player player) {
             orig(spear_on_back, eu);
             return;
@@ -275,7 +295,7 @@ public static class SpearOnBackMod {
             // create a copy after calling orig;
             AbstractSpear abstract_spear = spear_on_back.spear.abstractSpear;
             orig(spear_on_back, eu);
-            SpawnSpear(spear_on_back, abstract_spear);
+            SpawnSpearToBack(spear_on_back, abstract_spear);
             return;
         }
 
@@ -317,6 +337,11 @@ public static class SpearOnBackMod {
     }
 
     private static void SpearOnBack_Update(On.Player.SpearOnBack.orig_Update orig, SpearOnBack spear_on_back, bool eu) {
+        if (is_rain_meadow_enabled && !IsAbstractPhysicalObjectMine(spear_on_back.owner?.abstractCreature)) {
+            orig(spear_on_back, eu);
+            return;
+        }
+
         if (spear_on_back.owner is not Player player) {
             orig(spear_on_back, eu);
             return;

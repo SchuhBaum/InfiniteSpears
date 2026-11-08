@@ -1,17 +1,18 @@
-using System.Collections.Generic;
-using static Player;
 
 namespace InfiniteSpears;
 
 public static class AbstractPlayerMod {
     //
     // variables
-    //
 
     internal static readonly Dictionary<AbstractCreature, Attached_Fields> _all_attached_fields = new();
-    public static Attached_Fields Get_Attached_Fields(this AbstractCreature abstract_player) => _all_attached_fields[abstract_player];
 
-    //
+    // NOTE: This can fail. Because the attached fields are created when the
+    // player is realized.
+    // public static Attached_Fields Get_Attached_Fields(this AbstractCreature abstract_player) => _all_attached_fields[abstract_player];
+
+    public static Attached_Fields Get_Attached_Fields(this Player player) => _all_attached_fields[player.abstractCreature];
+
     //
     //
 
@@ -28,23 +29,22 @@ public static class AbstractPlayerMod {
         public readonly List<AbstractOnBackStick> abstract_on_back_sticks = new List<AbstractOnBackStick>();
 
         public Attached_Fields(int max_spear_count) {
+            this.max_spear_count = max_spear_count;
+
             if (max_spear_count == 0) {
                 is_blacklisted = true;
                 has_infinite_spears = false;
-                this.max_spear_count = 0;
                 return;
             }
 
             if (max_spear_count is < 0 or > 7) {
                 is_blacklisted = false;
                 has_infinite_spears = true;
-                this.max_spear_count = 1;
                 return;
             }
 
             is_blacklisted = false;
             has_infinite_spears = false;
-            this.max_spear_count = max_spear_count;
         }
     }
 }

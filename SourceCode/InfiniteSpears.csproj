@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
     <Nullable>enable</Nullable>
     <LangVersion>10.0</LangVersion>
-    <Version>2.3.3</Version>
+    <TargetFramework>net48</TargetFramework>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Version>2.3.4</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +18,7 @@
     <Reference Include="..\..\references\MonoMod.RuntimeDetour.dll"/>
     <Reference Include="..\..\references\MonoMod.Utils.dll"/>
     
+    <Reference Include="..\..\references\Rain Meadow.dll"/>
     <Reference Include="..\..\references\Unity.Mathematics.dll"/> 
     <Reference Include="..\..\references\UnityEngine.dll"/> 
     <Reference Include="..\..\references\UnityEngine.CoreModule.dll"/>

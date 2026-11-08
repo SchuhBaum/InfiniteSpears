@@ -1,8 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine;
-
-using static Player;
-using static AbstractPhysicalObject;
 
 namespace InfiniteSpears;
 
