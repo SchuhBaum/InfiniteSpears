@@ -11,8 +11,6 @@ public static class AbstractPlayerMod {
     // player is realized.
     // public static Attached_Fields Get_Attached_Fields(this AbstractCreature abstract_player) => _all_attached_fields[abstract_player];
 
-    public static Attached_Fields Get_Attached_Fields(this Player player) => _all_attached_fields[player.abstractCreature];
-
     //
     //
 

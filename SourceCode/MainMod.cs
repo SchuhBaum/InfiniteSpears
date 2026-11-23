@@ -6,14 +6,14 @@
 
 namespace InfiniteSpears;
 
-[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.3.4")]
+[BepInPlugin("SchuhBaum.InfiniteSpears", "InfiniteSpears", "2.3.5")]
 public class InfiniteSpears : BaseUnityPlugin {
     //
     // meta data
 
     public static readonly string mod_id = "InfiniteSpears";
     public static readonly string author = "SchuhBaum";
-    public static readonly string version = "2.3.4";
+    public static readonly string version = "2.3.5";
 
     // For debugging multiplayer issues.
     // public static readonly string unique_id = Guid.NewGuid().ToString();

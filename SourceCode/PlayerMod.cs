@@ -10,6 +10,9 @@ public static class PlayerMod {
     private static Hook? hook_Player_CanRetrieveSlugFromBack = null;
     private static Hook? hook_Player_CanRetrieveSpearFromBack = null;
 
+    // NOTE: This function is used by OopsMyBad mod. Don't move it.
+    public static Attached_Fields Get_Attached_Fields(this Player player) => _all_attached_fields[player.abstractCreature];
+
     //
     // main
 
